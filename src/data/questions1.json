@@ -1,0 +1,690 @@
+[
+  {
+    "id": "q001",
+    "domain": "essential",
+    "type": "single",
+    "question": "A company is implementing a new network architecture and needs to consider the requirements for training and inference. Which of the following statements is true about training and inference architecture?",
+    "question_ko": "한 회사가 새로운 네트워크 아키텍처를 도입하고 있으며, 학습(Training)과 추론(Inference)을 위한 요구사항 및 고려사항을 검토해야 합니다. 다음 중 학습 및 추론 아키텍처에 대한 설명으로 옳은 것은 무엇입니까?",
+    "choices": [
+      "Training architecture and inference architecture have the same requirements and considerations.",
+      "Training architecture is only concerned with hardware requirements, while inference architecture is only concerned with software requirements.",
+      "Training architecture is focused on optimizing performance while inference architecture is focused on reducing latency.",
+      "Training architecture and inference architecture cannot be the same."
+    ],
+    "choices_ko": [
+      "학습 아키텍처와 추론 아키텍처는 요구사항과 고려사항이 동일합니다.",
+      "학습 아키텍처는 하드웨어 요구사항만 고려하는 반면, 추론 아키텍처는 소프트웨어 요구사항만 고려합니다.",
+      "학습 아키텍처는 성능 최적화에 초점을 맞추는 반면, 추론 아키텍처는 지연 시간(Latency) 단축에 초점을 맞춥니다.",
+      "학습 아키텍처와 추론 아키텍처는 동일하게 구성될 수 없습니다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "학습(Training)은 대규모 데이터셋을 처리하기 위해 전반적인 시스템 성능과 처리량(Throughput)을 최적화하는 데 집중하는 반면, 추론(Inference)은 최종 사용자에게 빠른 실시간 예측 결과를 제공하기 위해 지연 시간(Latency)을 줄이는 데 초점을 맞춥니다. 두 아키텍처는 목적이 다를 뿐 하드웨어와 소프트웨어를 모두 고려해야 하므로, '요구사항이 동일하다', '하드웨어만/소프트웨어만 고려한다', '동일하게 구성될 수 없다' 같은 극단적 서술의 보기는 모두 오답입니다.",
+    "explanation_en": "Training focuses on optimizing throughput and overall system performance for processing large datasets, while inference prioritizes reducing latency to deliver fast, real-time predictions to end users. Both architectures involve hardware and software considerations, so extreme statements claiming they have identical requirements, that each cares only about hardware or software, or that they can never be configured the same are all distractors."
+  },
+  {
+    "id": "q002",
+    "domain": "essential",
+    "type": "single",
+    "question": "For which workloads is NVIDIA Merlin typically used?",
+    "question_ko": "NVIDIA Merlin은 주로 어떤 워크로드에 사용됩니까?",
+    "choices": [
+      "Recommender systems",
+      "Natural language processing",
+      "Data analytics"
+    ],
+    "choices_ko": [
+      "추천 시스템 (Recommender systems)",
+      "자연어 처리 (Natural language processing)",
+      "데이터 분석 (Data analytics)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA Merlin은 딥러닝 기반의 추천 시스템(RecSys)을 구축하기 위해 특별히 설계된 애플리케이션 프레임워크입니다. 대규모 정형 데이터(Tabular data)와 희소 특성(Sparse features)을 처리하는 데 최적화되어 있으며, 데이터 전처리를 위한 NVTabular, 거대한 임베딩 테이블 학습을 위한 HugeCTR 등의 라이브러리를 포함하고 Triton Inference Server와 매끄럽게 연동되어 배포됩니다. 매핑으로 기억하세요: 대화형 AI = Riva, 자율주행 = DRIVE, 추천 시스템 = Merlin.",
+    "explanation_en": "NVIDIA Merlin is an application framework specifically designed for building deep learning-based recommender systems (RecSys). It handles massive tabular datasets and sparse features using optimized libraries like NVTabular (for preprocessing) and HugeCTR (for training large embedding tables), and integrates seamlessly with Triton Inference Server for deployment. Mapping to remember: conversational AI = Riva, autonomous driving = DRIVE, recommendations = Merlin."
+  },
+  {
+    "id": "q003",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which NVIDIA parallel computing platform and programming model allows developers to program in popular languages and express parallelism through extensions?",
+    "question_ko": "개발자가 대중적인 프로그래밍 언어를 사용하면서 확장 기능을 통해 병렬 처리를 구현할 수 있도록 지원하는 NVIDIA의 병렬 컴퓨팅 플랫폼이자 프로그래밍 모델은 무엇입니까?",
+    "choices": [
+      "CUDA",
+      "cuML",
+      "cuGraph"
+    ],
+    "choices_ko": [
+      "CUDA",
+      "cuML",
+      "cuGraph"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "CUDA는 엔비디아 GPU를 활용하기 위한 가장 기초적이고 핵심적인 병렬 컴퓨팅 플랫폼이자 프로그래밍 모델입니다. 개발자는 C, C++, Python 같은 기존 언어에 간단한 확장 문법을 더해 GPU의 강력한 병렬 연산 기능을 직접 제어할 수 있습니다. 참고로 cuML(머신러닝)과 cuGraph(그래프 연산)는 CUDA 환경 '위에서' 작동하는 상위 라이브러리이므로 플랫폼 자체가 아닙니다.",
+    "explanation_en": "CUDA is NVIDIA's foundational parallel computing platform and programming model. It allows developers to use familiar programming languages (like C, C++, and Python) with simple extensions to harness the massive parallel processing power of NVIDIA GPUs. Note that cuML (machine learning) and cuGraph (graph analytics) are higher-level libraries that run on top of CUDA, not the platform itself."
+  },
+  {
+    "id": "q004",
+    "domain": "essential",
+    "type": "multiple",
+    "question": "Which of the following aspects have led to an increase in the adoption of AI? (Choose two.)",
+    "question_ko": "다음 중 인공지능(AI) 도입이 급격히 증가하게 된 주요 요인은 무엇입니까? (2개 선택)",
+    "choices": [
+      "Moore's Law",
+      "Rule-based machine learning",
+      "High Powered GPUs",
+      "Large amounts of data"
+    ],
+    "choices_ko": [
+      "무어의 법칙 (Moore's Law)",
+      "규칙 기반 머신러닝 (Rule-based machine learning)",
+      "고성능 GPU (High Powered GPUs)",
+      "대규모 데이터 (Large amounts of data)"
+    ],
+    "answer": [
+      2,
+      3
+    ],
+    "explanation": "현대 AI(특히 딥러닝)가 대중적으로 확산될 수 있었던 결정적인 계기는 신경망을 학습시킬 수 있는 '대규모 데이터'의 축적과, 이 데이터를 기반으로 한 복잡한 병렬 연산을 가속할 수 있는 '고성능 GPU'의 등장입니다. 무어의 법칙은 CPU 트랜지스터 밀도에 관한 일반론이고, 규칙 기반 머신러닝은 오히려 데이터 기반 학습 이전의 낡은 접근 방식이므로 오답입니다.",
+    "explanation_en": "The boom in modern AI (especially deep learning) was driven by two pillars: the availability of massive amounts of data to feed neural networks, and the emergence of high-powered GPUs capable of handling the immense parallel computing required to process that data. Moore's Law is a general observation about CPU transistor density, and rule-based machine learning is the older pre-data-driven approach, so both are distractors."
+  },
+  {
+    "id": "q005",
+    "domain": "essential",
+    "type": "single",
+    "question": "In training and inference architecture requirements, what is the main difference between training and inference?",
+    "question_ko": "학습 및 추론 아키텍처 요구사항 측면에서, 학습(Training)과 추론(Inference)의 가장 핵심적인 차이점은 무엇입니까?",
+    "choices": [
+      "Training requires real-time processing, while inference requires large amounts of data.",
+      "Training requires large amounts of data, while inference requires real-time processing.",
+      "Training and inference both require large amounts of data.",
+      "Training and inference both require real-time processing."
+    ],
+    "choices_ko": [
+      "학습은 실시간 처리가 필요한 반면, 추론은 대규모 데이터가 필요합니다.",
+      "학습은 대규모 데이터가 필요한 반면, 추론은 실시간 처리가 필요합니다.",
+      "학습과 추론 모두 대규모 데이터가 필요합니다.",
+      "학습과 추론 모두 실시간 처리가 필요합니다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "학습(Training)은 모델이 패턴을 학습하고 파라미터를 조정할 수 있도록 방대한 양의 데이터를 주입하는 과정으로 데이터 집약적이지만, 실시간성이 중요하지는 않습니다. 반면 추론(Inference)은 학습된 모델을 활용해 새로운 데이터에 대한 예측을 수행하는 단계로, 챗봇이나 추천 서비스처럼 사용자에게 빠른 피드백을 제공하기 위한 실시간 처리(낮은 지연 시간)가 최우선으로 요구됩니다. 요약: Training = 대규모 데이터/스토리지, Inference = Low Latency.",
+    "explanation_en": "Training involves feeding a model large volumes of data so it can learn patterns and adjust its parameters — data-heavy but not time-sensitive. Inference uses the trained model to make predictions on new data, which requires fast, real-time processing (low latency) for applications like chatbots or recommendation systems. Summary: Training = large data/storage, Inference = low latency."
+  },
+  {
+    "id": "q006",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which of the following statements is true about GPUs and CPUs?",
+    "question_ko": "다음 중 GPU와 CPU에 대한 설명으로 옳은 것은 무엇입니까?",
+    "choices": [
+      "GPUs are optimized for parallel tasks, while CPUs are optimized for serial tasks.",
+      "GPUs have very low bandwidth main memory while CPUs have very high bandwidth main memory.",
+      "GPUs and CPUs have the same number of cores, but GPUs have higher clock speeds.",
+      "GPUs and CPUs have identical architectures and can be used interchangeably."
+    ],
+    "choices_ko": [
+      "GPU는 병렬 작업에 최적화되어 있는 반면, CPU는 직렬(순차) 작업에 최적화되어 있습니다.",
+      "GPU는 주메모리 대역폭이 매우 낮은 반면, CPU는 주메모리 대역폭이 매우 높습니다.",
+      "GPU와 CPU는 코어 수가 동일하지만, GPU의 클럭 속도가 더 높습니다.",
+      "GPU와 CPU는 아키텍처가 동일하므로 서로 바꿔서 사용할 수 있습니다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "GPU는 수천 개의 작은 코어로 대량의 연산을 동시에 처리하는 병렬 처리(Parallel)에 최적화되어 있어 AI 워크로드에 필수적입니다. 반면 CPU는 소수의 강력한 코어로 명령어를 순서대로 처리하는 직렬/순차 처리(Sequential)에 강점이 있습니다. 참고로 GPU는 HBM이나 GDDR 같은 '초고대역폭' 메모리를 사용하므로 'GPU는 저대역폭 메모리'라는 보기는 사실과 정반대이며, 코어 수 동일·아키텍처 호환 같은 서술도 모두 틀렸습니다.",
+    "explanation_en": "GPUs consist of thousands of smaller cores designed to handle multiple tasks simultaneously (parallel processing), which is ideal for AI workloads. CPUs feature fewer, more powerful cores optimized for step-by-step (serial/sequential) execution. Also note that GPUs actually use high-bandwidth memory (HBM or GDDR), so the claim that GPUs have low-bandwidth main memory is the exact opposite of reality — as are the claims about identical core counts or interchangeable architectures."
+  },
+  {
+    "id": "q007",
+    "domain": "ops",
+    "type": "multiple",
+    "question": "Which two components are included in GPU Operator? (Choose two.)",
+    "question_ko": "GPU Operator에 포함되어 있는 두 가지 구성 요소는 무엇입니까? (2개 선택)",
+    "choices": [
+      "Drivers",
+      "PyTorch",
+      "DCGM",
+      "TensorFlow"
+    ],
+    "choices_ko": [
+      "드라이버 (Drivers)",
+      "PyTorch",
+      "DCGM",
+      "TensorFlow"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explanation": "NVIDIA GPU Operator는 쿠버네티스(Kubernetes) 환경에서 GPU를 사용하기 위해 필요한 필수 인프라 소프트웨어의 설치 및 수명 주기 관리를 자동화해 주는 도구입니다. 여기에는 GPU 드라이버(Drivers), CUDA 런타임, 디바이스 플러그인뿐만 아니라 GPU 상태 모니터링/헬스 체크를 위한 DCGM(Data Center GPU Manager)이 포함됩니다. 반면 PyTorch나 TensorFlow는 개발자가 컨테이너 '내부'에서 사용하는 딥러닝 프레임워크(애플리케이션 레이어)이므로 인프라 관리 도구인 GPU Operator에 포함되지 않습니다. 인프라 계층 vs 애플리케이션 계층 구분이 핵심입니다.",
+    "explanation_en": "The NVIDIA GPU Operator automates the infrastructure management and provisioning of NVIDIA software components required to use GPUs in a Kubernetes cluster. It automatically installs and manages the underlying stack, including GPU Drivers, CUDA, the NVIDIA Device Plugin, and DCGM (Data Center GPU Manager) for monitoring. Deep learning frameworks like PyTorch and TensorFlow are application-layer tools and are not part of the infrastructure operator — the key is distinguishing infrastructure layer vs. application layer."
+  },
+  {
+    "id": "q008",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which phase of deep learning benefits the greatest from a multi-node architecture?",
+    "question_ko": "딥러닝의 다음 단계 중 멀티 노드(Multi-node) 아키텍처의 이점을 가장 크게 누릴 수 있는 단계는 무엇입니까?",
+    "choices": [
+      "Data Augmentation",
+      "Training",
+      "Inference"
+    ],
+    "choices_ko": [
+      "데이터 증강 (Data Augmentation)",
+      "학습 (Training)",
+      "추론 (Inference)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "대규모 모델을 다루는 딥러닝 학습(Training)은 단일 서버(노드)의 컴퓨팅 성능과 메모리 한계를 넘어서는 경우가 많습니다. 이때 고속 네트워크(InfiniBand 등)로 여러 대의 서버를 연결하는 멀티 노드 아키텍처 기반의 분산 학습을 구성하면, 방대한 연산을 효율적으로 분산 처리하여 학습 시간을 획기적으로 단축할 수 있습니다. 추론은 단일 GPU·엣지 기기로도 충분한 경우가 많고, 데이터 증강은 전처리 단계라 멀티 노드의 수혜가 상대적으로 작습니다.",
+    "explanation_en": "Deep learning training, especially for large-scale models, requires massive computational power and memory that often exceeds the capacity of a single server (node). Distributed training across a multi-node architecture (connected via high-speed networks like InfiniBand) allows the workload to scale efficiently, significantly reducing training time. Inference can often run on a single GPU or edge device, and data augmentation is a preprocessing step that benefits far less from multiple nodes."
+  },
+  {
+    "id": "q009",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which architecture is the core concept behind large language models?",
+    "question_ko": "대형 언어 모델(LLM)의 핵심 개념이 되는 기반 아키텍처는 무엇입니까?",
+    "choices": [
+      "BERT Large model",
+      "State space model",
+      "Transformer model",
+      "Attention model"
+    ],
+    "choices_ko": [
+      "BERT Large 모델",
+      "상태 공간 모델 (State space model)",
+      "트랜스포머 모델 (Transformer model)",
+      "어텐션 모델 (Attention model)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "트랜스포머(Transformer) 아키텍처는 ChatGPT, Gemini, LLaMA 등 오늘날 대중적으로 사용되는 모든 대형 언어 모델(LLM)의 근간이 되는 핵심 기반 기술입니다. '어텐션(Attention)'은 이 아키텍처 내부의 핵심 메커니즘 이름이고, BERT는 트랜스포머를 기반으로 개발된 특정 모델의 이름이므로, 전체 구조를 일컫는 '트랜스포머 모델'이 가장 정확한 정답입니다. 층위 구분: 아키텍처(Transformer) > 메커니즘(Attention) > 개별 모델(BERT).",
+    "explanation_en": "The Transformer architecture is the foundational framework behind modern Large Language Models (LLMs) like ChatGPT, Gemini, and LLaMA. 'Attention' is a key mechanism within that architecture, and BERT is a specific model built upon it — so the overall architecture itself, the Transformer model, is the most precise answer. Hierarchy: architecture (Transformer) > mechanism (Attention) > individual model (BERT)."
+  },
+  {
+    "id": "q010",
+    "domain": "essential",
+    "type": "single",
+    "question": "What is a key value of using NVIDIA NIMs?",
+    "question_ko": "NVIDIA NIM을 사용하는 핵심 가치는 무엇입니까?",
+    "choices": [
+      "They provide fast and simple deployment of AI models.",
+      "They have community support.",
+      "They allow the deployment of NVIDIA SDKs."
+    ],
+    "choices_ko": [
+      "AI 모델을 빠르고 간단하게 배포할 수 있도록 지원합니다.",
+      "커뮤니티 지원을 제공합니다.",
+      "NVIDIA SDK 배포를 지원합니다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA NIM(NVIDIA Inference Microservices)은 생성형 AI 모델의 배포를 가속화하기 위해 가볍고 사용하기 쉽게 설계된 마이크로서비스 모음입니다. 표준 API와 최적화된 추론 엔진이 사전 패키징된 컨테이너 형태로 제공되므로, 기업들은 복잡한 인프라 최적화 과정 없이 엔터프라이즈급 AI 모델을 매우 빠르고 안전하게 배포할 수 있습니다. 핵심 키워드: 'fast & simple deployment'.",
+    "explanation_en": "NVIDIA NIM (NVIDIA Inference Microservices) is a set of easy-to-use microservices designed to accelerate the deployment of generative AI models. It provides pre-packaged, optimized containers with standard APIs, allowing enterprises to deploy AI models quickly, securely, and with peak performance on NVIDIA infrastructure. Key phrase: 'fast and simple deployment'."
+  },
+  {
+    "id": "q011",
+    "domain": "essential",
+    "type": "single",
+    "question": "The foundation of the NVIDIA software stack is the DGX OS. Which of the following Linux distributions is DGX OS built upon?",
+    "question_ko": "NVIDIA 소프트웨어 스택의 기반은 DGX OS입니다. DGX OS는 다음 중 어떤 리눅스(Linux) 배포판을 기반으로 구축되었습니까?",
+    "choices": [
+      "Ubuntu",
+      "Red Hat",
+      "CentOS"
+    ],
+    "choices_ko": [
+      "우분투 (Ubuntu)",
+      "레드햇 (Red Hat)",
+      "센토스 (CentOS)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX OS는 엔비디아가 자사의 DGX 하드웨어 시스템에 최적화하여 제공하는 전용 운영체제이며, 오픈소스 리눅스 배포판인 우분투(Ubuntu)를 기반으로 제작되었습니다. 설치 시점부터 엔비디아 GPU 드라이버, CUDA 라이브러리, 컨테이너 런타임 등이 사전 통합·최적화되어 있어 엔터프라이즈 AI 워크로드를 즉시 안정적으로 구동할 수 있습니다.",
+    "explanation_en": "DGX OS is NVIDIA's optimized operating system tailored for its DGX systems, built on top of the Ubuntu Linux distribution. It comes pre-configured with essential NVIDIA drivers, CUDA, and container runtimes to ensure enterprise-grade stability and peak performance for AI workloads out of the box."
+  },
+  {
+    "id": "q012",
+    "domain": "essential",
+    "type": "single",
+    "question": "What is the name of NVIDIA's SDK that accelerates machine learning?",
+    "question_ko": "머신러닝을 가속화하는 NVIDIA의 SDK 이름은 무엇입니까?",
+    "choices": [
+      "Clara",
+      "RAPIDS",
+      "cuDNN"
+    ],
+    "choices_ko": [
+      "Clara",
+      "RAPIDS",
+      "cuDNN"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RAPIDS는 데이터 사이언스와 머신러닝(ML) 워크로드를 처음부터 끝까지 GPU로 가속하기 위해 설계된 엔비디아의 오픈소스 라이브러리 스위트(SDK)입니다. 기존의 pandas를 cuDF로, scikit-learn을 cuML로 대체하여 머신러닝을 가속합니다. 반면 cuDNN은 '딥러닝' 신경망 연산 가속에 특화되어 있고, Clara는 헬스케어 분야 전용 프레임워크입니다. SDK란 개발자가 GPU 저수준 코드를 직접 짜지 않아도 GPU의 병렬 처리 능력을 자동으로 활용하게 해주는 '도구 모음'이라는 뜻 — 그래서 '머신러닝을 가속하는 SDK'는 'ML 작업을 GPU로 더 빠르게 돌려주는 도구 모음'을 의미합니다.",
+    "explanation_en": "RAPIDS is NVIDIA's open-source suite of GPU-accelerated libraries designed to accelerate end-to-end data science and machine learning workflows — replacing pandas with cuDF and scikit-learn with cuML. In contrast, cuDNN is specifically a deep learning library focused on neural network primitives, and Clara is an application framework for healthcare. An SDK here means a toolkit that lets developers use GPU parallelism without writing low-level GPU code."
+  },
+  {
+    "id": "q013",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which aspect of computing uses large amounts of data to train complex neural networks?",
+    "question_ko": "대규모 데이터를 사용하여 복잡한 신경망(Neural Networks)을 학습시키는 컴퓨팅 분야는 무엇입니까?",
+    "choices": [
+      "Machine learning",
+      "Deep learning",
+      "Inferencing"
+    ],
+    "choices_ko": [
+      "머신러닝 (Machine learning)",
+      "딥러닝 (Deep learning)",
+      "추론 (Inferencing)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "딥러닝(Deep learning)은 머신러닝의 하위 영역으로, 다층 구조의 복잡한 인공신경망(Neural Network)을 사용한다는 점이 가장 큰 특징입니다. 이 신경망을 제대로 학습시키기 위해서는 방대한 양의 데이터가 필수적으로 요구됩니다. 문제 지문의 '복잡한 신경망(neural networks)' 키워드가 곧 DL을 가리키는 시그널입니다.",
+    "explanation_en": "Deep learning is a specific subset of machine learning that utilizes multi-layered (complex) neural networks. It relies heavily on large amounts of data to train these networks so they can recognize patterns and make decisions. The phrase 'complex neural networks' in the question is the signal for DL."
+  },
+  {
+    "id": "q014",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which of the following statements correctly differentiates between AI, Machine Learning, and Deep Learning?",
+    "question_ko": "다음 중 인공지능(AI), 머신러닝(Machine Learning), 딥러닝(Deep Learning)의 차이점을 올바르게 설명한 것은 무엇입니까?",
+    "choices": [
+      "Machine Learning is a subset of AI, and AI is a subset of Deep Learning.",
+      "AI and Deep Learning are the same, while Machine Learning is a separate concept.",
+      "AI is a subset of Machine Learning, and Machine Learning is a subset of Deep Learning.",
+      "Deep Learning is a subset of Machine Learning, and Machine Learning is a subset of AI."
+    ],
+    "choices_ko": [
+      "머신러닝은 AI의 하위 개념이고, AI는 딥러닝의 하위 개념입니다.",
+      "AI와 딥러닝은 동일한 개념이며, 머신러닝은 이와는 별개의 개념입니다.",
+      "AI는 머신러닝의 하위 개념이고, 머신러닝은 딥러닝의 하위 개념입니다.",
+      "딥러닝은 머신러닝의 하위 개념이고, 머신러닝은 AI의 하위 개념입니다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "인공지능(AI)은 인간의 지능을 모방하는 기술 전체를 아우르는 가장 넓은 개념입니다. 머신러닝(ML)은 데이터로부터 규칙을 학습하는 AI의 한 분야(하위 개념)이며, 딥러닝(DL)은 머신러닝 중에서도 다층 인공신경망을 활용하는 더 구체적인 하위 개념입니다. 즉 AI ⊃ ML ⊃ DL 구조이며, 포함 방향이 뒤집힌 보기들이 함정입니다.",
+    "explanation_en": "AI is the broadest umbrella term for technology that mimics human intelligence. Machine Learning (ML) is a specific subset of AI focused on learning rules from data. Deep Learning (DL) is a further subset within Machine Learning that uses multi-layered neural networks. So the containment is AI ⊃ ML ⊃ DL — options that reverse this direction are the traps."
+  },
+  {
+    "id": "q015",
+    "domain": "essential",
+    "type": "single",
+    "question": "How is the architecture different in a GPU versus a CPU?",
+    "question_ko": "GPU와 CPU의 아키텍처는 어떻게 다릅니까?",
+    "choices": [
+      "A GPU acts as a PCIe controller to maximize bandwidth.",
+      "A GPU is architected to support massively parallel execution of simple instructions.",
+      "A GPU is a single large and complex core to support massive compute operations."
+    ],
+    "choices_ko": [
+      "GPU는 대역폭을 극대화하기 위해 PCIe 컨트롤러 역할을 합니다.",
+      "GPU는 단순한 명령어의 대규모 병렬 실행을 지원하도록 설계되었습니다.",
+      "GPU는 대규모 컴퓨팅 연산을 지원하기 위한 하나의 크고 복잡한 코어로 구성되어 있습니다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "GPU는 수천 개의 작고 단순한 코어로 구성되어 있어, 단순한 명령어를 동시에 처리하는 대규모 병렬 실행(Massively parallel execution)에 최적화되어 있습니다. 반면 CPU는 직렬(순차) 처리에 최적화된 소수의 크고 복잡한 코어로 구성됩니다. '하나의 크고 복잡한 코어'는 CPU에 대한 설명이고, GPU는 PCIe 컨트롤러가 아니라 PCIe에 '연결되는' 장치이므로 나머지 보기는 오답입니다.",
+    "explanation_en": "A GPU is designed with thousands of smaller, simpler cores that work together to handle massively parallel execution of simple instructions simultaneously. A CPU, in contrast, consists of fewer, larger, more complex cores optimized for sequential processing. 'A single large and complex core' describes a CPU, and a GPU is a device connected via PCIe, not a PCIe controller — so the other options are wrong."
+  },
+  {
+    "id": "q016",
+    "domain": "essential",
+    "type": "single",
+    "question": "What factors have led to significant breakthroughs in Deep Learning?",
+    "question_ko": "딥러닝 분야에서 중대한 기술적 돌파구(혁신)를 이끌어낸 핵심 요인들은 무엇입니까?",
+    "choices": [
+      "Advances in hardware, availability of fast internet connections, and improvements in training algorithms",
+      "Advances in sensors, availability of large datasets, and improvements to the \"Bag of Words\" algorithm",
+      "Advances in hardware, availability of large datasets, and improvements in training algorithms",
+      "Advances in smartphones, social media sites, and improvements in statistical techniques"
+    ],
+    "choices_ko": [
+      "하드웨어의 발전, 빠른 인터넷 연결의 가용성, 학습 알고리즘의 개선",
+      "센서의 발전, 대규모 데이터셋의 가용성, \"Bag of Words\" 알고리즘의 개선",
+      "하드웨어의 발전, 대규모 데이터셋의 가용성, 학습 알고리즘의 개선",
+      "스마트폰의 발전, 소셜 미디어 사이트의 확산, 통계적 기법의 개선"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "현대 딥러닝의 폭발적인 발전은 세 가지 핵심 기둥이 맞물려 가능해졌습니다. 첫째는 대규모 병렬 연산을 가능하게 한 하드웨어의 발전(NVIDIA GPU), 둘째는 복잡한 신경망을 학습시킬 수 있는 방대한 대규모 데이터셋의 확보, 셋째는 이를 효율적으로 처리하는 학습 알고리즘의 고도화입니다. 세 요소가 '정확히 모두' 들어간 보기를 골라야 하며, 인터넷 속도·센서·스마트폰·Bag of Words가 섞인 보기는 함정입니다.",
+    "explanation_en": "The modern deep learning revolution was driven by three essential pillars: 1) breakthroughs in hardware (powerful NVIDIA GPUs for parallel processing), 2) the availability of massive datasets required to train complex models, and 3) innovations in training algorithms and neural network architectures. Pick the option containing exactly all three — options mixing in internet speed, sensors, smartphones, or 'Bag of Words' are traps."
+  },
+  {
+    "id": "q017",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which type of GPU core was specifically designed to realistically simulate the lighting of a scene?",
+    "question_ko": "어떤 유형의 GPU 코어가 화면의 조명(Lighting)을 사실적으로 시뮬레이션하기 위해 특별히 설계되었습니까?",
+    "choices": [
+      "Tensor Cores",
+      "CUDA Cores",
+      "Ray Tracing Cores"
+    ],
+    "choices_ko": [
+      "텐서 코어 (Tensor Cores)",
+      "쿠다 코어 (CUDA Cores)",
+      "레이 트레이싱 코어 (Ray Tracing Cores)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "레이 트레이싱(RT) 코어는 빛의 물리적 동작, 그림자, 반사 등을 실시간으로 사실적으로 시뮬레이션하도록 설계된 엔비디아 GPU 전용 하드웨어 가속기입니다. 코어 3종의 역할을 매핑해 두세요: RT 코어 = 광선추적(조명/그림자), Tensor 코어 = AI 행렬 연산 전용, CUDA 코어 = 일반 병렬 연산.",
+    "explanation_en": "Ray Tracing (RT) Cores are hardware accelerators on NVIDIA GPUs designed specifically to simulate the physical behavior of light, shadows, and reflections in real time. Core mapping to memorize: RT Cores = lighting/ray tracing, Tensor Cores = AI matrix multiplication, CUDA Cores = general-purpose parallel processing."
+  },
+  {
+    "id": "q018",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which GPUs should be used when training a neural network for self-driving cars?",
+    "question_ko": "자율주행 자동차용 신경망을 학습(Training)할 때 어떤 GPU를 사용해야 합니까?",
+    "choices": [
+      "NVIDIA H100 GPUs",
+      "NVIDIA L4 GPUs",
+      "NVIDIA DRIVE Orin"
+    ],
+    "choices_ko": [
+      "NVIDIA H100 GPU",
+      "NVIDIA L4 GPU",
+      "NVIDIA DRIVE Orin"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "자율주행 차량을 위한 복잡한 딥러닝 모델의 '학습(Training)'은 방대한 연산량이 필요하므로 대규모 데이터 센터에서 수행되며, 여기에 가장 적합한 것은 초고성능 인프라용 GPU인 NVIDIA H100입니다. 반면 NVIDIA DRIVE Orin은 차량 내부에 탑재되어 이미 학습된 모델을 실시간으로 구동하는 차량용 '추론(Inference)' 시스템(SoC)입니다. '자율주행'이라는 단어에 낚여 DRIVE를 고르게 만드는 함정 — 질문이 Training인지 Inference인지부터 확인하세요.",
+    "explanation_en": "Training complex deep learning models for autonomous vehicles requires immense computational power and is performed in large-scale data centers, making the NVIDIA H100 GPU the correct choice. NVIDIA DRIVE Orin is an in-vehicle SoC designed to run those already-trained models (inference) inside the car in real time. Don't get baited by the phrase 'self-driving' into picking DRIVE — always check whether the question asks about training or inference."
+  },
+  {
+    "id": "q019",
+    "domain": "infra",
+    "type": "single",
+    "question": "A customer is evaluating an AI cluster for training and is questioning why they should use a large number of nodes. Why would multi-node training be advantageous?",
+    "question_ko": "한 고객이 학습(Training)용 AI 클러스터를 검토하던 중, 왜 많은 수의 노드를 사용해야 하는지 의문을 제기했습니다. 멀티 노드 학습(Multi-node training)이 유익한 이유는 무엇입니까?",
+    "choices": [
+      "The model is too large to fit into GPU memory",
+      "The model is being used by a large number of users",
+      "The model is being used for large scale inference workloads"
+    ],
+    "choices_ko": [
+      "모델이 너무 커서 GPU 메모리에 다 들어가지 않기 때문에",
+      "대규모의 사용자가 해당 모델을 사용하고 있기 때문에",
+      "해당 모델이 대규모 추론(Inference) 워크로드에 사용되고 있기 때문에"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "멀티 노드 학습은 대형 언어 모델(LLM)처럼 모델의 크기가 너무 커서 단일 GPU나 단일 서버(노드)의 메모리 용량에 모두 담을 수 없을 때 이를 극복하기 위해 필수적으로 사용됩니다. 모델과 데이터셋을 여러 노드에 분산시켜 하드웨어 메모리 한계를 넘어서는 것입니다. '대규모 사용자'나 '대규모 추론 워크로드' 보기는 학습 단계가 아닌, 서비스 배포 후 발생하는 추론(Inference) 단계의 요구사항이므로 오답입니다.",
+    "explanation_en": "Multi-node training is essential when a model (such as an LLM) is too massive to fit within the memory capacity of a single GPU or a single server. Distributing the model and dataset across multiple nodes overcomes hardware memory limits. The options about a large number of users and large-scale inference workloads describe challenges of the inference phase, not training."
+  },
+  {
+    "id": "q020",
+    "domain": "infra",
+    "type": "single",
+    "question": "When should RoCE be considered to enhance network performance in a multi-node AI computing environment?",
+    "question_ko": "멀티 노드 AI 컴퓨팅 환경에서 네트워크 성능을 향상시키기 위해 RoCE 도입을 가장 우선적으로 고려해야 하는 경우는 언제입니까?",
+    "choices": [
+      "A network that experiences a high packet loss rate (PLR).",
+      "A network with large amounts of storage traffic.",
+      "A network that cannot utilize the full available bandwidth due to high CPU utilization."
+    ],
+    "choices_ko": [
+      "패킷 손실률(PLR)이 높은 네트워크 환경",
+      "방대한 양의 스토리지 트래픽이 발생하는 네트워크 환경",
+      "높은 CPU 사용률로 인해 사용 가능한 전체 네트워크 대역폭을 활용하지 못하는 네트워크 환경"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "RoCE(RDMA over Converged Ethernet)는 이더넷 네트워크 상에서 RDMA(원격 직접 메모리 액세스)를 구현하는 기술입니다. RDMA는 CPU의 개입 없이 서버 간 메모리 데이터를 직접 전송하므로, 기존 TCP/IP 프로토콜 처리로 인해 발생하는 CPU 부하를 제거합니다. 따라서 '높은 CPU 사용률 때문에 가용 대역폭을 다 쓰지 못하는' 상황이 RoCE 도입의 최적 시나리오입니다. RDMA 계열 기술의 존재 이유가 곧 'CPU 우회'라는 점을 기억하세요.",
+    "explanation_en": "RoCE (RDMA over Converged Ethernet) delivers Remote Direct Memory Access over Ethernet networks. Because RDMA transfers data directly between server memories without involving the CPU, it removes the processing overhead of traditional networking stacks like TCP/IP. RoCE is therefore most effective when a network cannot achieve its full bandwidth because the CPU is the bottleneck — the very reason RDMA-family technologies exist is CPU bypass."
+  },
+  {
+    "id": "q021",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which are three key features of InfiniBand networking technology?",
+    "question_ko": "InfiniBand 네트워킹 기술의 세 가지 핵심 특징은 무엇입니까?",
+    "choices": [
+      "High reliability, high latency, and CPU offloads.",
+      "High latency, high reliability, and high bandwidth.",
+      "GPU offloads, low latency, high reliability.",
+      "Low latency, high bandwidth, and CPU offloads."
+    ],
+    "choices_ko": [
+      "높은 신뢰성, 높은 지연 시간(High latency), CPU 오프로드",
+      "높은 지연 시간, 높은 신뢰성, 높은 대역폭",
+      "GPU 오프로드, 낮은 지연 시간, 높은 신뢰성",
+      "낮은 지연 시간(Low latency), 높은 대역폭(High bandwidth), CPU 오프로드(CPU offloads)"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "InfiniBand는 현대 AI 데이터 센터 및 클러스터(예: DGX SuperPOD)에서 필수적으로 사용되는 초고속 상호 연결 기술입니다. 대표적인 3대 특징은 낮은 지연 시간(Low latency), 높은 대역폭(High bandwidth), 그리고 RDMA 기술로 호스트 CPU의 연산 부담을 줄여주는 CPU 오프로드(CPU offloads)입니다. 'High latency(높은 지연)'가 들어간 보기는 특징을 정반대로 쓴 함정이므로 즉시 제거하세요.",
+    "explanation_en": "InfiniBand is the premier interconnect technology used in modern AI data centers and clusters (such as DGX SuperPOD). Its defining characteristics are ultra-low latency, extremely high bandwidth, and the ability to offload network processing from the host CPU (via RDMA), ensuring that GPUs spend less time waiting for data. Any option containing 'high latency' states the opposite of a defining feature — eliminate it immediately."
+  },
+  {
+    "id": "q022",
+    "domain": "infra",
+    "type": "single",
+    "question": "An IT Professional is considering whether to implement an on-prem or cloud infrastructure. Which of the following is a key advantage of on-prem infrastructure?",
+    "question_ko": "한 IT 전문가가 온프레미스(On-premise) 인프라와 클라우드 인프라 중 무엇을 도입할지 검토하고 있습니다. 다음 중 온프레미스 인프라의 핵심 장점은 무엇입니까?",
+    "choices": [
+      "Lower upfront costs and capital expenditure",
+      "Scalability and flexibility",
+      "Ensure data security and sovereignty",
+      "Easy remote management"
+    ],
+    "choices_ko": [
+      "초기 비용 및 자본 지출(CAPEX) 절감",
+      "확장성 및 유연성",
+      "데이터 보안 및 주권 보장",
+      "용이한 원격 관리"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "온프레미스 인프라는 기업이 하드웨어, 데이터 저장소, 네트워크 구성을 직접 제어하고 통제할 수 있게 해줍니다. 이 직접적인 통제 덕분에 엄격한 데이터 보안 규정이나 국가별 데이터 규제(데이터 주권)를 완벽하게 준수할 수 있습니다. 반면 '낮은 초기 비용'과 '확장성/유연성'은 클라우드의 대표적인 장점이며, 온프레미스는 오히려 초기 구축 자본 지출(CAPEX)이 높게 발생한다는 점이 상호 대비 포인트입니다.",
+    "explanation_en": "On-premise infrastructure provides complete control over hardware, data storage, and network configurations. This physical oversight makes it much easier for enterprises to comply with strict data security, privacy policies, and localization laws (data sovereignty). Lower upfront costs and scalability/flexibility are core advantages of cloud infrastructure — on-premise actually requires much higher upfront capital expenditure (CAPEX)."
+  },
+  {
+    "id": "q023",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which feature of RDMA reduces CPU utilization and lowers latency?",
+    "question_ko": "CPU 사용률을 낮추고 지연 시간을 줄여주는 RDMA의 핵심 특징은 무엇입니까?",
+    "choices": [
+      "Increased memory buffer size.",
+      "Network adapters that include hardware offloading.",
+      "NVIDIA Magnum I/O software."
+    ],
+    "choices_ko": [
+      "메모리 버퍼 크기 증가",
+      "하드웨어 오프로드 기능을 포함한 네트워크 어댑터",
+      "NVIDIA Magnum I/O 소프트웨어"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RDMA는 하드웨어 오프로드(Hardware offloading) 기능이 내장된 전용 네트워크 어댑터를 사용하여 성능을 끌어올립니다. 어댑터 하드웨어가 통신 프로토콜을 직접 처리하여 서버 간 메모리 데이터를 바로 전송하므로, 호스트 운영체제와 CPU를 거치지 않고 우회(Bypass)합니다. 그 결과 CPU 부담이 줄고 지연 시간이 낮아집니다. 메모리 버퍼 크기나 특정 소프트웨어는 RDMA의 본질(하드웨어 오프로드 NIC)이 아닙니다.",
+    "explanation_en": "RDMA relies on specialized network adapters that support hardware offloading. These adapters process the network protocol stack directly in hardware, allowing data to transfer directly between the memories of different servers. This completely bypasses the host operating system and CPU, drastically reducing CPU utilization and lowering latency. Buffer sizes or particular software packages are not the essence of RDMA."
+  },
+  {
+    "id": "q024",
+    "domain": "infra",
+    "type": "single",
+    "question": "What is one key advantage that Cloud GPU Infrastructure has over On-Prem GPU infrastructure?",
+    "question_ko": "클라우드 GPU 인프라가 온프레미스(On-Prem) GPU 인프라에 비해 가지는 핵심 장점은 무엇입니까?",
+    "choices": [
+      "Lower cost barrier to entry.",
+      "Reduced cost of I/O traffic.",
+      "Greater flexibility for hardware orchestration."
+    ],
+    "choices_ko": [
+      "낮은 초기 비용 진입 장벽 (진입 비용 부담 완화)",
+      "데이터 입출력(I/O) 트래픽 비용 절감",
+      "하드웨어 오케스트레이션에 대한 더 높은 유연성"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "클라우드 GPU 인프라는 하드웨어를 직접 구매하는 대규모 초기 자본 지출(CAPEX) 대신, 필요한 만큼 빌려 쓰고 비용을 지불하는 운영 지출(OPEX) 모델을 따릅니다. 따라서 고성능 인프라를 구축할 자본이 부족한 기업도 대규모 자산 투자 없이 AI 프로젝트를 즉시 시작할 수 있어 '초기 비용 진입 장벽이 낮다'는 것이 핵심 장점입니다. CAPEX(온프렘) vs OPEX(클라우드) 구분이 이 유형의 풀이 열쇠입니다.",
+    "explanation_en": "Cloud GPU infrastructure operates on an Operational Expenditure (OPEX) model — users pay only for what they consume. This allows enterprises to access high-end NVIDIA GPUs immediately without the massive upfront Capital Expenditure (CAPEX) required to build a physical data center, significantly lowering the cost barrier to entry. The CAPEX (on-prem) vs. OPEX (cloud) distinction is the key to this question type."
+  },
+  {
+    "id": "q025",
+    "domain": "infra",
+    "type": "single",
+    "question": "When training a neural network, what is the most common pattern of storage access?",
+    "question_ko": "신경망을 학습(Training)할 때 가장 흔하게 발생하는 스토리지 액세스 패턴은 무엇입니까?",
+    "choices": [
+      "Random write",
+      "Sequential read",
+      "Sequential write"
+    ],
+    "choices_ko": [
+      "임의 쓰기 (Random write)",
+      "순차 읽기 (Sequential read)",
+      "순차 쓰기 (Sequential write)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "딥러닝 학습 과정은 압도적으로 읽기(Read) 중심의 워크로드입니다. 고성능 GPU가 연산을 멈추지 않도록 스토리지로부터 방대한 데이터셋(이미지, 텍스트, 영상 등)을 에포크(Epoch)마다 계속 밀어 넣어야 하므로, 데이터를 쭉 읽어오는 순차 읽기(Sequential read)가 가장 지배적인 패턴입니다. 쓰기(Write)는 학습 중간에 모델 가중치(체크포인트)를 저장할 때만 일시적으로 발생합니다. 스토리지 공급이 부족하면 GPU가 노는 'GPU Idle' 현상이 발생한다는 점도 함께 기억하세요.",
+    "explanation_en": "Deep learning training workloads are overwhelmingly read-heavy. To keep GPUs fully utilized and prevent 'GPU idle' states, massive datasets must be continuously streamed from storage into GPU memory epoch after epoch — making sequential reading the dominant pattern. Writing happens far less frequently, typically only when saving periodic model checkpoints."
+  },
+  {
+    "id": "q026",
+    "domain": "infra",
+    "type": "single",
+    "question": "How many distinct network fabrics are in an AI cluster?",
+    "question_ko": "AI 클러스터에는 몇 개의 독립된 네트워크 패브릭(Network Fabrics)이 존재합니까?",
+    "choices": [
+      "3",
+      "2",
+      "4",
+      "5"
+    ],
+    "choices_ko": [
+      "3",
+      "2",
+      "4",
+      "5"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "최신 엔터프라이즈 AI 클러스터는 성능 극대화와 병목 방지를 위해 일반적으로 4개의 독립된 네트워크 패브릭으로 구성됩니다. ① Scale-Up 패브릭: 노드 내부 GPU 간 초고속 연결(NVLink/NVSwitch), ② Scale-Out(연산) 패브릭: 노드 간 분산 학습용 초저지연망(InfiniBand 또는 RoCE/Spectrum-X), ③ 스토리지 패브릭: 연산 트래픽과 분리된 학습 데이터 공급 전용망, ④ 관리 네트워크: 오케스트레이션(K8s/Slurm)·사용자 접근·OOB 하드웨어 제어용 이더넷. 일부 자료는 3개로 묶기도 하지만, NVIDIA 레퍼런스 아키텍처 기준으로는 4개가 정답으로 인정됩니다.",
+    "explanation_en": "A modern enterprise AI cluster is typically divided into 4 distinct network fabrics to maximize performance and avoid bottlenecks: 1) Scale-Up fabric — GPU-to-GPU inside a node (NVLink/NVSwitch); 2) Scale-Out (compute) fabric — ultra-low-latency interconnect across nodes for distributed training (InfiniBand or RoCE/Spectrum-X); 3) Storage fabric — a dedicated network streaming datasets without interfering with compute traffic; 4) Management network — Ethernet for orchestration (Kubernetes/Slurm), user access, and out-of-band hardware control. Some simplified references group these into 3, but NVIDIA's reference architecture counts 4."
+  },
+  {
+    "id": "q027",
+    "domain": "infra",
+    "type": "single",
+    "question": "How many 1 Gb Ethernet in-band network connections are in a DGX H100 system?",
+    "question_ko": "DGX H100 시스템에는 몇 개의 1 Gb 이더넷 인밴드(In-band) 네트워크 연결이 포함되어 있습니까?",
+    "choices": [
+      "1",
+      "2",
+      "0"
+    ],
+    "choices_ko": [
+      "1개",
+      "2개",
+      "0개"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "DGX H100에서 스토리지 및 인밴드(In-band) 네트워크 통신은 고속 NVIDIA ConnectX-7 카드가 담당하며, 이 카드는 10GbE~400GbE(또는 InfiniBand)를 지원하므로 1GbE를 사용하지 않습니다. 시스템에 내장된 유일한 1GbE RJ45 포트는 오직 BMC를 통한 아웃오브밴드(OOB) 관리 전용입니다. 따라서 '인밴드' 1GbE 연결 수는 0개 — In-band와 Out-of-band의 차이를 식별하게 하는 까다로운 단골 문제입니다.",
+    "explanation_en": "On the DGX H100, in-band networking and storage traffic are handled by high-speed ConnectX-7 cards (10 GbE up to 400 GbE or InfiniBand), which do not use 1 GbE. The system's single 1 GbE RJ45 port is strictly dedicated to out-of-band (OOB) management via the BMC. Therefore the number of 1 GbE in-band connections is 0 — a classic trick question testing the in-band vs. out-of-band distinction."
+  },
+  {
+    "id": "q028",
+    "domain": "infra",
+    "type": "single",
+    "question": "How many Mellanox ConnectX-6 Single Port VPI cards are in a DGX A100 system?",
+    "question_ko": "DGX A100 시스템에는 몇 개의 Mellanox ConnectX-6 싱글 포트 VPI 카드가 포함되어 있습니까?",
+    "choices": [
+      "8",
+      "16",
+      "4"
+    ],
+    "choices_ko": [
+      "8개",
+      "16개",
+      "4개"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA DGX A100 시스템은 8개의 A100 GPU를 탑재하고 있으며, 고속 클러스터링(노드 간 분산 학습용 연산 네트워크)을 위해 8개의 Mellanox ConnectX-6 싱글 포트 VPI 카드를 장착합니다. GPU와 네트워크 카드가 1:1로 매칭되는 구조 덕분에 분산 학습 시 병목 없이 포트당 최대 200Gb/s의 전송 속도를 보장합니다. 'GPU:컴퓨트 NIC = 1:1' 구조를 기억하면 숫자를 따로 외울 필요가 없습니다.",
+    "explanation_en": "The NVIDIA DGX A100 features 8x A100 GPUs and 8 Mellanox ConnectX-6 Single Port VPI cards dedicated to the compute/scale-out network. This 1:1 ratio between GPUs and network cards ensures maximum InfiniBand/Ethernet throughput (up to 200 Gb/s per port) for distributed training. Remember the 'GPU : compute NIC = 1:1' structure and you never need to memorize the raw number."
+  },
+  {
+    "id": "q029",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which is the best PUE value for a data center?",
+    "question_ko": "데이터 센터에서 가장 우수한 PUE(전력 사용 효율성) 값은 무엇입니까?",
+    "choices": [
+      "PUE of 1.2",
+      "PUE of 3.5",
+      "PUE of 5.0",
+      "PUE of 2.0"
+    ],
+    "choices_ko": [
+      "PUE 1.2",
+      "PUE 3.5",
+      "PUE 5.0",
+      "PUE 2.0"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "PUE(Power Usage Effectiveness)는 데이터 센터의 에너지 효율을 평가하는 표준 지표로, 시설 전체가 사용하는 총 전력량을 순수 IT 장비(서버, 스토리지 등)가 소비하는 전력량으로 나눠 계산합니다. 이상적인 값은 1.0이며, 이는 냉각이나 전력 전송에서 낭비되는 전력이 전혀 없음을 의미합니다. 따라서 낮을수록 우수하므로 보기 중 1.2가 최선입니다. '높을수록 좋다'로 착각하게 만드는 것이 함정 포인트입니다.",
+    "explanation_en": "PUE (Power Usage Effectiveness) measures a data center's energy efficiency: total facility power divided by the power delivered to IT equipment. An ideal PUE is 1.0, meaning no energy is wasted on overhead like cooling or power distribution. The lower the value, the more efficient the facility — so 1.2 is the best among the options. The trap is assuming higher is better."
+  },
+  {
+    "id": "q030",
+    "domain": "ops",
+    "type": "single",
+    "question": "You have completed an analysis of resource utilization during training on a GPU cluster. Which visualization would be most effective in conveying the relationship between GPU memory usage and model training time?",
+    "question_ko": "NVIDIA GPU 클러스터에서 딥러닝 모델 학습 중 자원 사용률 분석을 완료했습니다. GPU 메모리 사용량과 모델 학습 시간 간의 관계를 전달하는 데 가장 효과적인 시각화 방법은 무엇입니까?",
+    "choices": [
+      "A scatter plot with GPU memory usage on one axis and training time on the other.",
+      "A bar chart comparing GPU memory usage across different training sessions.",
+      "A histogram showing the distribution of GPU memory usage values.",
+      "A line chart tracking GPU memory usage over sequential training sessions."
+    ],
+    "choices_ko": [
+      "한 축에 GPU 메모리 사용량, 다른 축에 학습 시간을 배치한 산점도(Scatter plot)",
+      "서로 다른 학습 세션에서의 GPU 메모리 사용량을 비교하는 막대 차트(Bar chart)",
+      "GPU 메모리 사용량 값의 분포를 보여주는 히스토그램(Histogram)",
+      "순차적 학습 세션에 걸친 GPU 메모리 사용량을 추적하는 꺾은선 차트(Line chart)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "산점도(Scatter plot)는 두 연속형 변수(GPU 메모리 사용량과 학습 시간) 간의 상관관계를 여러 데이터 포인트에 걸쳐 식별하는 데 가장 효과적인 시각화입니다. 메모리 사용량이 높을수록 학습 시간이 어떻게 변하는지, 클러스터나 이상값(outlier)이 있는지를 명확하게 보여줍니다. 막대 차트는 범주형 비교용, 히스토그램은 '단일 변수'의 분포용, 꺾은선 차트는 시간에 따른 하나의 지표 추적용이라 두 변수의 '관계'를 표현하지 못합니다.",
+    "explanation_en": "A scatter plot is the most effective visualization for identifying correlation between two continuous variables — GPU memory usage and training time — across many data points, revealing trends, clusters, and outliers. A bar chart suits categorical comparisons; a histogram shows the distribution of a single variable; a line chart tracks one metric over sequential time — none of them expresses the relationship between two independent continuous variables."
+  }
+]

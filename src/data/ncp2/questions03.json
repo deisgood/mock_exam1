@@ -1,0 +1,240 @@
+[
+  {
+    "id": "v021",
+    "domain": "d1",
+    "type": "single",
+    "question": "What information does the \"ibnodes\" command display?",
+    "question_ko": "\"ibnodes\" 명령은 어떤 정보를 표시하는가?",
+    "choices": [
+      "All host & server names",
+      "All hosts & switches",
+      "All server names",
+      "All channel adapters"
+    ],
+    "choices_ko": [
+      "모든 호스트와 서버 이름",
+      "모든 호스트와 스위치",
+      "모든 서버 이름",
+      "모든 채널 어댑터"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "ibnodes는 서브넷에서 발견된 InfiniBand 노드를 종류별로 나열합니다. 출력은 Ca(Channel Adapter, 즉 호스트 HCA)와 Switch 두 그룹으로 구성되므로 패브릭에 보이는 호스트와 스위치를 한 번에 확인할 수 있습니다.",
+    "explanation_en": "ibnodes lists the InfiniBand nodes discovered in the subnet, grouped as Ca (host channel adapters) and Switch. It therefore shows both the hosts and the switches visible in the fabric."
+  },
+  {
+    "id": "v022",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator is configuring node categories in BCM for a DGX BasePOD cluster. They need to group all NVIDIA DGX H200 nodes under a dedicated category for GPU-accelerated workloads. Which approach aligns with NVIDIA's recommended BCM practices?",
+    "question_ko": "관리자가 DGX BasePOD 클러스터의 BCM에서 노드 카테고리를 구성하고 있습니다. 모든 NVIDIA DGX H200 노드를 GPU 가속 워크로드 전용 카테고리로 묶어야 합니다. NVIDIA의 BCM 권장 사례에 부합하는 접근은?",
+    "choices": [
+      "Avoid categories and configure each DGX node individually via CLI.",
+      "Create a new \"dgx-h200\" category and assign all DGX H200 nodes to it.",
+      "Use the existing \"dgxnodes\" category without modification, as it is preconfigured for all DGX systems.",
+      "Assign nodes to the \"login\" category to simplify Slurm integration."
+    ],
+    "choices_ko": [
+      "카테고리를 쓰지 않고 각 DGX 노드를 CLI로 개별 설정한다.",
+      "새 \"dgx-h200\" 카테고리를 만들고 모든 DGX H200 노드를 여기에 할당한다.",
+      "기존 \"dgxnodes\" 카테고리를 수정 없이 사용한다. 모든 DGX 시스템에 맞게 사전 구성되어 있기 때문이다.",
+      "Slurm 통합을 단순화하기 위해 노드를 \"login\" 카테고리에 할당한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BCM의 카테고리는 같은 종류의 노드에 동일한 소프트웨어 이미지, 역할, 설정을 일괄 적용하기 위한 단위입니다. 모델별 전용 카테고리(dgx-h200)를 만들어 해당 노드를 배정하면 드라이버·펌웨어·워크로드 설정을 일관되게 관리하고 이후 증설 시에도 동일 구성을 재현할 수 있습니다.",
+    "explanation_en": "BCM categories exist to apply one software image, role set, and configuration consistently to similar nodes. Creating a model-specific category (dgx-h200) and assigning those nodes keeps driver, firmware, and workload settings uniform and reproducible as the cluster grows."
+  },
+  {
+    "id": "v023",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to change the RAID level of a DGX Station using the script included in the DGX software, with no data on the array. What are the options the administrator can choose?",
+    "question_ko": "시스템 관리자가 DGX 소프트웨어에 포함된 스크립트를 사용해 DGX Station의 RAID 레벨을 변경하려 합니다(어레이에 데이터 없음). 관리자가 선택할 수 있는 옵션은?",
+    "choices": [
+      "RAID 0 and RAID 5",
+      "RAID 1 and RAID 5",
+      "RAID 0 and RAID 1",
+      "RAID 10 and RAID 5"
+    ],
+    "choices_ko": [
+      "RAID 0과 RAID 5",
+      "RAID 1과 RAID 5",
+      "RAID 0과 RAID 1",
+      "RAID 10과 RAID 5"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX Station의 데이터 캐시 어레이 구성 스크립트는 RAID 0과 RAID 5를 지원합니다. RAID 0은 용량과 성능을 최대화하는 캐시용 구성이고, RAID 5는 패리티로 드라이브 1개 장애를 견디는 대신 용량과 쓰기 성능을 일부 희생합니다.",
+    "explanation_en": "The DGX Station RAID configuration script supports RAID 0 or RAID 5 for the data array. RAID 0 maximizes capacity and throughput for cache use, while RAID 5 tolerates a single drive failure at the cost of some capacity and write performance."
+  },
+  {
+    "id": "v024",
+    "domain": "d4",
+    "type": "single",
+    "question": "An AI training cluster with NVIDIA GPUs experiences prolonged data loading times during checkpoint reloading, causing GPUs to idle frequently. CPU utilization during data transfers remains high. Which solution most effectively optimizes storage-to-GPU throughput while reducing CPU overhead?",
+    "question_ko": "NVIDIA GPU 기반 AI 학습 클러스터에서 체크포인트를 다시 읽는 동안 데이터 로딩이 오래 걸려 GPU가 자주 유휴 상태가 됩니다. 전송 중 CPU 사용률은 계속 높습니다. 스토리지→GPU 처리량을 개선하면서 CPU 오버헤드를 줄이는 가장 효과적인 해법은?",
+    "choices": [
+      "Implement GPUDirect Storage to enable direct data transfers.",
+      "Migrate datasets to SATA SSDs with RAID 0 for higher sequential read speeds.",
+      "Increase batch sizes to reduce the frequency of storage access.",
+      "Add more GPUs to the cluster to parallelize data loading tasks."
+    ],
+    "choices_ko": [
+      "GPUDirect Storage를 도입해 직접 전송을 활성화한다.",
+      "순차 읽기 속도를 높이기 위해 데이터셋을 SATA SSD RAID 0으로 옮긴다.",
+      "스토리지 접근 빈도를 줄이기 위해 배치 크기를 늘린다.",
+      "데이터 로딩을 병렬화하기 위해 GPU를 더 추가한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "증상의 핵심은 '전송 중 CPU 사용률이 높다'는 점입니다. 이는 데이터가 스토리지→호스트 메모리→GPU로 두 번 복사되고 있음을 뜻합니다. GPUDirect Storage는 이 호스트 경유 단계를 없애 CPU 부담을 낮추고 체크포인트 로딩 대역폭을 끌어올립니다.",
+    "explanation_en": "The tell is high CPU usage during transfers, which indicates a double copy: storage → host memory → GPU. GPUDirect Storage removes the host staging step, cutting CPU overhead and raising checkpoint-reload bandwidth."
+  },
+  {
+    "id": "v025",
+    "domain": "d4",
+    "type": "single",
+    "question": "During multi-node HPL burn-in, GPUs show uneven utilization. Which configuration ensures balanced workload distribution?",
+    "question_ko": "멀티노드 HPL 번인 중 GPU 사용률이 고르지 않습니다. 균형 잡힌 워크로드 분배를 보장하는 구성은?",
+    "choices": [
+      "HPL_RUN_GEMM_TESTS to skip validation",
+      "Set --gpu-affinity and --cpu-affinity to align GPU and NUMA nodes",
+      "HPL_OOC_TILE_M to 8192 for larger blocks",
+      "Enable HPL_USE_NVSHMEM=1 for shared memory acceleration"
+    ],
+    "choices_ko": [
+      "검증을 건너뛰기 위한 HPL_RUN_GEMM_TESTS",
+      "GPU와 NUMA 노드를 정렬하도록 --gpu-affinity와 --cpu-affinity를 설정",
+      "더 큰 블록을 위한 HPL_OOC_TILE_M=8192",
+      "공유 메모리 가속을 위한 HPL_USE_NVSHMEM=1 활성화"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "GPU 사용률 불균형은 대개 프로세스가 엉뚱한 소켓의 CPU 코어에 묶여 크로스-NUMA 메모리 접근과 PCIe 경로 우회가 발생할 때 나타납니다. --gpu-affinity와 --cpu-affinity로 각 랭크를 해당 GPU와 같은 NUMA 노드에 고정하면 메모리 지역성이 확보되어 노드 내 작업이 고르게 진행됩니다.",
+    "explanation_en": "Uneven GPU utilization usually comes from ranks bound to CPU cores on the wrong socket, causing cross-NUMA memory traffic and indirect PCIe paths. Pinning each rank to the NUMA node local to its GPU with --gpu-affinity/--cpu-affinity restores locality and evens out progress across GPUs."
+  },
+  {
+    "id": "v026",
+    "domain": "d5",
+    "type": "single",
+    "question": "An engineer must ensure a BlueField-3 NIC firmware download matches the cluster's PSID. Which step is critical before installation?",
+    "question_ko": "엔지니어가 BlueField-3 NIC 펌웨어가 클러스터의 PSID와 일치하는지 확인해야 합니다. 설치 전 반드시 수행할 단계는?",
+    "choices": [
+      "Check that the DPU's BMC IP is reachable via ping.",
+      "Use mstflint -d <PCI_ID> query to validate the device's PSID.",
+      "Confirm the firmware file size matches the DPU's flash capacity.",
+      "Verify the SHA256 hash of the firmware matches NVIDIA's public ledger."
+    ],
+    "choices_ko": [
+      "DPU의 BMC IP에 ping이 되는지 확인한다.",
+      "mstflint -d <PCI_ID> query로 장치의 PSID를 확인한다.",
+      "펌웨어 파일 크기가 DPU 플래시 용량과 일치하는지 확인한다.",
+      "펌웨어의 SHA256 해시가 NVIDIA 공개 원장과 일치하는지 확인한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "PSID(Parameter Set ID)는 보드 제조사와 구성별로 부여되는 식별자로, 잘못된 PSID의 이미지를 플래싱하면 장치가 부팅 불능이 될 수 있습니다. `mstflint -d <PCI_ID> query`는 현재 장치의 PSID와 펌웨어 버전을 출력하므로, 이 값과 일치하는 펌웨어 패키지를 골라야 안전합니다.",
+    "explanation_en": "The PSID identifies the board vendor and configuration; flashing an image with the wrong PSID can brick the device. `mstflint -d <PCI_ID> query` prints the device's current PSID and firmware version so the matching package can be selected."
+  },
+  {
+    "id": "v027",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator needs to use DCGM-exporter to export GPU metrics to an external system to create interactive dashboards. Which system can DCGM-exporter feed without additional configuration?",
+    "question_ko": "시스템 관리자가 DCGM-exporter로 GPU 지표를 외부 시스템에 내보내 대화형 대시보드를 만들려 합니다. 추가 설정 없이 DCGM-exporter가 사용할 수 있는 시스템은?",
+    "choices": [
+      "DataDog",
+      "Prometheus",
+      "Nagios",
+      "Grafana"
+    ],
+    "choices_ko": [
+      "DataDog",
+      "Prometheus",
+      "Nagios",
+      "Grafana"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DCGM-exporter는 HTTP 엔드포인트(:9400/metrics)에 Prometheus 노출 형식으로 지표를 제공합니다. 따라서 Prometheus가 별도 변환 없이 바로 스크랩할 수 있고, 시각화는 그 데이터를 Grafana가 조회해 수행합니다.",
+    "explanation_en": "DCGM-exporter publishes metrics in Prometheus exposition format on an HTTP endpoint (:9400/metrics), so Prometheus can scrape it directly. Visualization then happens in Grafana by querying Prometheus."
+  },
+  {
+    "id": "v028",
+    "domain": "d2",
+    "type": "single",
+    "question": "A network engineer is tasked with configuring the management, storage, and compute networks for a new DGX BasePOD deployment. Which statement best describes the network segmentation required for optimal operation?",
+    "question_ko": "네트워크 엔지니어가 새 DGX BasePOD 배포의 관리·스토리지·컴퓨트 네트워크를 구성해야 합니다. 최적 운영을 위해 필요한 네트워크 분리를 가장 잘 설명한 것은?",
+    "choices": [
+      "A single VLAN for all types of network traffic.",
+      "Two networks: one for management and one for compute.",
+      "Four networks: compute, storage, out-of-band, and management."
+    ],
+    "choices_ko": [
+      "모든 트래픽에 단일 VLAN을 사용한다.",
+      "두 개의 네트워크: 관리용 하나와 컴퓨트용 하나.",
+      "네 개의 네트워크: 컴퓨트, 스토리지, 대역외(OOB), 관리."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "DGX BasePOD 레퍼런스 아키텍처는 컴퓨트(InfiniBand/이더넷 E-W), 스토리지, 대역내 관리, 대역외(BMC) 관리 네 가지 트래픽을 분리합니다. 분리하면 학습 트래픽이 관리 접근을 방해하지 않고, BMC가 호스트 OS와 독립적으로 살아 있어 장애 시에도 복구 경로가 확보됩니다.",
+    "explanation_en": "The DGX BasePOD reference architecture separates four traffic classes: compute (east-west), storage, in-band management, and out-of-band (BMC) management. Separation keeps training traffic from starving management access and preserves a recovery path via the BMC when the host OS is down."
+  },
+  {
+    "id": "v029",
+    "domain": "d2",
+    "type": "single",
+    "question": "As the infrastructure lead for an NVIDIA AI Factory deployment, you have just uploaded the latest supported firmware packages to your DGX system. Which sequence best guarantees that all relevant components are correctly running the updated firmware?",
+    "question_ko": "NVIDIA AI Factory 배포의 인프라 리드로서 DGX 시스템에 최신 지원 펌웨어 패키지를 막 업로드했습니다. 모든 관련 구성 요소가 갱신된 펌웨어로 정상 동작함을 가장 확실히 보장하는 순서는?",
+    "choices": [
+      "Execute a single AC power cycle after the update, then reset the software stack and verify status using diagnostic commands on each node.",
+      "Initiate a cold power cycle to activate component firmware, reset the BMC using the recommended command, and perform an AC power cycle so EROT and CPLD firmware is activated.",
+      "Perform a software-driven restart of the OS on every compute node, check firmware status with advanced tools, and reissue update commands if any firmware appears inactive.",
+      "Initiate a cold power cycle on all node trays, follow with a DGX reboot procedure, and use the management interface to finish activating CPLD firmware on the host."
+    ],
+    "choices_ko": [
+      "업데이트 후 AC 전원 사이클을 한 번 수행하고 소프트웨어 스택을 재설정한 뒤 각 노드에서 진단 명령으로 상태를 확인한다.",
+      "콜드 전원 사이클로 구성 요소 펌웨어를 활성화하고, 권장 명령으로 BMC를 리셋한 뒤, EROT와 CPLD 펌웨어 활성화를 위해 AC 전원 사이클을 수행한다.",
+      "모든 컴퓨트 노드에서 OS를 소프트웨어 재시작하고 고급 도구로 펌웨어 상태를 확인한 뒤 비활성으로 보이면 업데이트 명령을 다시 실행한다.",
+      "모든 노드 트레이에 콜드 전원 사이클을 수행하고 DGX 재부팅 절차를 따른 뒤 관리 인터페이스로 호스트의 CPLD 펌웨어 활성화를 마무리한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "펌웨어는 '적용'과 '활성화'가 분리되어 있습니다. 대부분의 구성 요소는 콜드 전원 사이클에서 새 이미지를 올리고, BMC는 별도 리셋이 필요하며, EROT와 CPLD처럼 상시 전원 도메인에 있는 장치는 AC 전원을 완전히 끊었다 넣는 AC power cycle에서만 활성화됩니다. 세 단계를 모두 거쳐야 전 구성 요소가 신규 펌웨어로 동작합니다.",
+    "explanation_en": "Applying firmware and activating it are separate steps. Most components pick up the new image on a cold power cycle, the BMC needs its own reset, and devices on the always-on power domain such as EROT and CPLD only activate after a full AC power cycle. All three steps are required for every component to run the new firmware."
+  },
+  {
+    "id": "v030",
+    "domain": "d1",
+    "type": "single",
+    "question": "You are training a deep neural network using NCCL across four GPUs in a single node. During early performance testing, you notice inconsistent scaling and longer-than-expected training times, even though all GPUs are being used. Which strategy would most effectively improve NCCL efficiency and collective operation performance?",
+    "question_ko": "단일 노드의 GPU 4개에서 NCCL로 심층 신경망을 학습하고 있습니다. 초기 성능 테스트에서 모든 GPU가 사용되는데도 확장성이 일정하지 않고 학습 시간이 예상보다 깁니다. NCCL 효율과 집합 통신 성능을 가장 효과적으로 개선하는 전략은?",
+    "choices": [
+      "Adjust the batch size so that each GPU receives an equalized portion of the batch, ensuring all GPUs process similar workloads and communication is evenly distributed.",
+      "Increase the communication frequency between GPUs allowing workloads to be unevenly split, so that synchronization is more frequent and model updates happen faster.",
+      "Disable automatic load balancing so that the framework can dynamically assign samples to any available GPU during each iteration.",
+      "Assign the largest possible workload to the first GPU to maximize its utilization, and allow the remaining GPUs to process smaller or variable batch sizes."
+    ],
+    "choices_ko": [
+      "각 GPU가 배치를 균등하게 나눠 받도록 배치 크기를 조정해 모든 GPU가 비슷한 작업량을 처리하고 통신도 고르게 분산되도록 한다.",
+      "GPU 간 통신 빈도를 높이고 작업량은 불균등하게 나눠 동기화를 더 자주 수행해 모델 갱신을 빠르게 한다.",
+      "자동 로드 밸런싱을 끄고 프레임워크가 매 반복마다 가용 GPU에 샘플을 동적으로 배정하게 한다.",
+      "첫 번째 GPU에 가장 큰 작업량을 할당해 사용률을 최대화하고 나머지 GPU는 더 작거나 가변적인 배치를 처리하게 한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "AllReduce 같은 집합 통신은 모든 랭크가 도달해야 완료되는 동기 연산입니다. 따라서 가장 느린 GPU(스트래글러)가 전체 속도를 결정합니다. GPU마다 배치를 균등 분할하면 계산 시간이 맞춰져 동기화 대기가 줄고 확장 효율이 올라갑니다.",
+    "explanation_en": "Collectives like AllReduce are synchronous: they complete only when every rank arrives, so the slowest GPU sets the pace. Splitting the batch evenly equalizes per-GPU compute time, shrinking synchronization waits and improving scaling efficiency."
+  }
+]

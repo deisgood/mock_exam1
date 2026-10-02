@@ -1,0 +1,244 @@
+[
+  {
+    "id": "v131",
+    "domain": "d4",
+    "type": "multiple",
+    "question": "During a 72-hour HPL burn-in test on a DGX H100 cluster, one node shows a 15% performance drop after 48 hours. What are the two most likely causes and diagnostic steps? (Choose two.)",
+    "question_ko": "DGX H100 클러스터에서 72시간 HPL 번인 테스트를 수행하던 중 한 노드가 48시간 경과 후 15% 성능 저하를 보입니다. 가장 가능성 높은 원인과 진단 단계 두 가지는? (2개 선택)",
+    "choices": [
+      "Thermal throttling due to cooling issues; check nvidia-smi dmon",
+      "Memory corruption; reboot the node and reduce the problem size (N)",
+      "Network packet loss; analyze ibdiagnet reports",
+      "MPI configuration error; rerun with --cpu-affinity adjustments"
+    ],
+    "choices_ko": [
+      "냉각 문제로 인한 열 스로틀링. nvidia-smi dmon으로 확인",
+      "메모리 손상. 노드를 재부팅하고 문제 크기(N)를 줄임",
+      "네트워크 패킷 손실. ibdiagnet 보고서 분석",
+      "MPI 구성 오류. --cpu-affinity를 조정해 재실행"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explanation": "48시간이 지나서야 나타난 저하는 '시간이 지나며 악화되는' 원인을 가리킵니다. 먼지 누적·팬 열화·실내 온도 상승으로 인한 열 스로틀링이 대표적이며 nvidia-smi dmon으로 온도·클럭·스로틀 사유를 시계열로 확인할 수 있습니다. 또 하나는 링크 열화로 인한 패킷 손실·재전송으로, ibdiagnet으로 심볼 오류와 링크 카운터를 분석해 확인합니다. 구성 오류라면 처음부터 느렸을 것입니다.",
+    "explanation_en": "A drop that appears only after 48 hours points to causes that worsen over time. Thermal throttling from dust build-up, fan degradation, or rising room temperature is the classic one — nvidia-smi dmon shows temperature, clocks, and throttle reasons over time. The other is link degradation causing loss and retransmission, checked with ibdiagnet for symbol errors and link counters. A configuration error would have been slow from the start."
+  },
+  {
+    "id": "v132",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator wants to configure MIG for seven slices on an H100 GPU in an NVIDIA HGX system. Which tool should be used?",
+    "question_ko": "시스템 관리자가 NVIDIA HGX 시스템의 H100 GPU에서 7개 슬라이스로 MIG를 구성하려 합니다. 어떤 도구를 사용해야 하는가?",
+    "choices": [
+      "mig-parted",
+      "nvlink-config",
+      "nvcc",
+      "nvidia-smi"
+    ],
+    "choices_ko": [
+      "mig-parted",
+      "nvlink-config",
+      "nvcc",
+      "nvidia-smi"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "mig-parted(nvidia-mig-parted)는 MIG 파티션 구성을 선언적 설정 파일로 정의해 여러 GPU와 노드에 일괄 적용하는 도구입니다. 7개 인스턴스 같은 특정 레이아웃을 재현 가능하게 적용할 수 있어 클러스터 운영에 적합합니다. nvidia-smi로도 인스턴스를 만들 수 있지만 수작업이며 대규모 적용에는 부적합합니다.",
+    "explanation_en": "mig-parted (nvidia-mig-parted) applies declarative MIG partition layouts from a config file across many GPUs and nodes, making a specific layout such as seven instances reproducible at cluster scale. nvidia-smi can create instances too, but manually and not at scale."
+  },
+  {
+    "id": "v133",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to verify NVLink isolation on a single node with 8 GPUs. Which NCCL test configuration stresses switch bisection bandwidth?",
+    "question_ko": "엔지니어가 GPU 8개를 가진 단일 노드에서 NVLink 격리를 검증해야 합니다. 스위치 이등분 대역폭에 부하를 주는 NCCL 테스트 구성은?",
+    "choices": [
+      "Use NCCL_TESTS_SPLIT=\"DIV 8\" with point-to-point tests",
+      "Use all_reduce_perf -b 8 -e 16G -f2 -g 8 with NCCL_TESTS_SPLIT=\"AND 0x1\"",
+      "Use all_reduce_perf -b 8 -e 16G -f2 -g 8 without splits",
+      "Use reduce_scatter_perf -b 8 -e 16G -f2 -g 4"
+    ],
+    "choices_ko": [
+      "점대점 테스트와 함께 NCCL_TESTS_SPLIT=\"DIV 8\" 사용",
+      "NCCL_TESTS_SPLIT=\"AND 0x1\"과 함께 all_reduce_perf -b 8 -e 16G -f2 -g 8 사용",
+      "split 없이 all_reduce_perf -b 8 -e 16G -f2 -g 8 사용",
+      "reduce_scatter_perf -b 8 -e 16G -f2 -g 4 사용"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "이등분 대역폭을 측정하려면 GPU를 두 그룹으로 나누고 그룹 간 통신이 반드시 스위치를 가로지르게 만들어야 합니다. 8개 GPU 전부를 참여시키면서 SPLIT으로 랭크를 두 집합으로 분리하면 NVSwitch를 가로지르는 경로에 집중적으로 부하가 걸려 격리와 대역폭을 함께 검증할 수 있습니다.",
+    "explanation_en": "Measuring bisection bandwidth requires splitting the GPUs into two groups so inter-group traffic must cross the switch. Keeping all 8 GPUs in the run while using SPLIT to separate ranks concentrates load on the paths crossing NVSwitch, validating both isolation and bandwidth."
+  },
+  {
+    "id": "v134",
+    "domain": "d3",
+    "type": "single",
+    "question": "A shared AI cluster contains H100, L40S, and A30 GPU nodes. Many users submit inference workloads without specifying hardware requirements, so high-end H100 resources are consumed by lightweight jobs. Which administrative policy would most effectively improve overall cluster utilization?",
+    "question_ko": "공유 AI 클러스터에 H100, L40S, A30 GPU 노드가 함께 있습니다. 많은 사용자가 하드웨어 요구사항을 지정하지 않고 추론 워크로드를 제출해 고가의 H100 자원이 가벼운 작업에 소모되고 있습니다. 전체 클러스터 활용도를 가장 효과적으로 개선하는 관리 정책은?",
+    "choices": [
+      "Configure Slurm partitions, constraints, or Quality of Service (QoS) policies based on workload requirements",
+      "Restrict every user to a single GPU regardless of workload",
+      "Disable scheduling on H100 nodes during business hours",
+      "Assign every job to the first available GPU regardless of model size"
+    ],
+    "choices_ko": [
+      "워크로드 요구사항에 따라 Slurm 파티션, 제약(constraints), QoS 정책을 구성한다",
+      "워크로드와 무관하게 모든 사용자를 GPU 1개로 제한한다",
+      "업무 시간 동안 H100 노드의 스케줄링을 비활성화한다",
+      "모델 크기와 무관하게 모든 작업을 가장 먼저 사용 가능한 GPU에 배정한다"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "스케줄러 정책으로 자원을 워크로드에 맞게 유도하는 것이 정석입니다. 추론용 파티션을 L40S/A30에 두고 H100 파티션은 대규모 학습 작업이나 특정 QoS에만 허용하면, 사용자가 요구사항을 명시하지 않아도 기본 배치가 합리적으로 이루어집니다. GRES와 constraints로 GPU 종류를 지정하게 할 수도 있습니다.",
+    "explanation_en": "The right lever is scheduler policy that steers work to appropriate hardware: put inference partitions on L40S/A30 and restrict H100 partitions to large training jobs or a specific QoS, so sensible placement happens even when users specify nothing. GRES and constraints can also make GPU type explicit."
+  },
+  {
+    "id": "v135",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator installs NVIDIA GPU drivers on a DGX H100 system with UEFI Secure Boot enabled. After reboot, the drivers fail to load. What is the first action to resolve this issue?",
+    "question_ko": "관리자가 UEFI Secure Boot가 활성화된 DGX H100 시스템에 NVIDIA GPU 드라이버를 설치했습니다. 재부팅 후 드라이버가 로드되지 않습니다. 이 문제를 해결하기 위한 첫 조치는?",
+    "choices": [
+      "Reinstall the drivers using apt-get install nvidia-driver-550 without rebooting.",
+      "Delete /etc/X11/xorg.conf to force driver reconfiguration.",
+      "Enroll the Machine Owner Key (MOK) during reboot and enter the recorded password.",
+      "Disable Secure Boot permanently in BIOS/UEFI settings."
+    ],
+    "choices_ko": [
+      "재부팅 없이 apt-get install nvidia-driver-550으로 드라이버를 재설치한다.",
+      "드라이버 재구성을 강제하기 위해 /etc/X11/xorg.conf를 삭제한다.",
+      "재부팅 중 Machine Owner Key(MOK)를 등록하고 기록해 둔 비밀번호를 입력한다.",
+      "BIOS/UEFI에서 Secure Boot를 영구 비활성화한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Secure Boot가 켜진 시스템은 서명되지 않았거나 신뢰되지 않은 커널 모듈의 로드를 차단합니다. 드라이버 설치 시 생성된 MOK를 재부팅 과정의 MOK Manager(파란 화면)에서 등록하고 설치 때 입력한 비밀번호를 넣으면 모듈이 신뢰되어 정상 로드됩니다. Secure Boot를 끄는 것은 보안 기능을 포기하는 마지막 수단입니다.",
+    "explanation_en": "With Secure Boot enabled, unsigned or untrusted kernel modules are blocked. Enrolling the MOK generated during driver installation through the MOK Manager screen at reboot, using the password set at install time, makes the modules trusted so they load. Disabling Secure Boot discards a security control and is a last resort."
+  },
+  {
+    "id": "v136",
+    "domain": "d4",
+    "type": "single",
+    "question": "One of the nodes in a cluster is not running as fast as the others and the system administrator needs to check the status of the GPUs on that system. What command should be used?",
+    "question_ko": "클러스터의 한 노드가 다른 노드보다 느리게 동작해 시스템 관리자가 해당 시스템의 GPU 상태를 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "iblinkinfo",
+      "lspci | grep NVIDIA",
+      "nvidia-smi",
+      "nvidia-gpu-status"
+    ],
+    "choices_ko": [
+      "iblinkinfo",
+      "lspci | grep NVIDIA",
+      "nvidia-smi",
+      "nvidia-gpu-status"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "nvidia-smi는 GPU별 사용률, 온도, 전력, 현재 클럭, 메모리, ECC 오류, 실행 중인 프로세스와 스로틀링 사유를 한 화면에 보여 줍니다. 노드가 느린 원인이 열 스로틀링인지, 전력 제한인지, 다른 프로세스 점유인지 가장 빠르게 판별할 수 있는 첫 명령입니다.",
+    "explanation_en": "nvidia-smi shows per-GPU utilization, temperature, power, current clocks, memory, ECC errors, running processes, and throttle reasons in one view — the fastest first command for deciding whether a slow node is throttling thermally, power-limited, or busy with another process."
+  },
+  {
+    "id": "v137",
+    "domain": "d5",
+    "type": "single",
+    "question": "An engineer needs to verify the current firmware versions of all components (ATF, BSP, NIC, UEFI) on a BlueField-3 DPU's BMC. Which Redfish API request provides this information?",
+    "question_ko": "엔지니어가 BlueField-3 DPU의 BMC에서 모든 구성 요소(ATF, BSP, NIC, UEFI)의 현재 펌웨어 버전을 확인해야 합니다. 이 정보를 제공하는 Redfish API 요청은?",
+    "choices": [
+      "mstflint -d <PCI_ID> query full",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareList",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory",
+      "mlxconfig -d <dev> q"
+    ],
+    "choices_ko": [
+      "mstflint -d <PCI_ID> query full",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareList",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory",
+      "mlxconfig -d <dev> q"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Redfish 표준에서 설치된 펌웨어 목록은 `/redfish/v1/UpdateService/FirmwareInventory` 컬렉션에 있습니다. 이 엔드포인트를 조회하면 ATF, BSP, NIC, UEFI 등 각 구성 요소의 항목과 버전을 확인할 수 있습니다. FirmwareList라는 엔드포인트는 표준에 없습니다.",
+    "explanation_en": "In the Redfish standard the installed firmware set lives in the `/redfish/v1/UpdateService/FirmwareInventory` collection; querying it lists each component — ATF, BSP, NIC, UEFI — with its version. There is no standard FirmwareList endpoint."
+  },
+  {
+    "id": "v138",
+    "domain": "d5",
+    "type": "multiple",
+    "question": "You must validate all physical cabling during the network bring-up phase of a new NVIDIA GPU cluster. Which two steps are essential to an effective cabling validation process? (Choose two.)",
+    "question_ko": "새 NVIDIA GPU 클러스터의 네트워크 브링업 단계에서 모든 물리 배선을 검증해야 합니다. 효과적인 배선 검증 과정에 필수적인 두 단계는? (2개 선택)",
+    "choices": [
+      "Compare every cable's physical connection to the planned topology diagram and validate correct ports and link paths.",
+      "Run the cable validation process incrementally during deployment (section by section) to catch and resolve errors as early as possible.",
+      "Focus on validating the highest bandwidth links first, deferring non-critical cable mislabelings until after initial workloads are deployed.",
+      "Begin validation by pinging each node's management interface and confirm cabling is correct when hosts respond."
+    ],
+    "choices_ko": [
+      "모든 케이블의 물리적 연결을 계획된 토폴로지 다이어그램과 대조해 올바른 포트와 링크 경로를 검증한다.",
+      "배포 중 구간별로 점진적으로 케이블 검증을 수행해 오류를 가능한 한 일찍 찾아 해결한다.",
+      "최고 대역폭 링크 검증에 집중하고, 중요하지 않은 케이블 라벨 오류는 초기 워크로드 배포 후로 미룬다.",
+      "각 노드의 관리 인터페이스에 ping을 보내 응답하면 배선이 올바른 것으로 확인한다."
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explanation": "케이블 검증의 목표는 '설계대로 꽂혔는가'입니다. 따라서 LLDP나 CVT로 발견한 실제 이웃 관계를 계획 토폴로지와 대조해야 하며, 이를 배포 구간별로 진행해야 잘못 꽂힌 케이블을 초기에 바로잡을 수 있습니다. 전부 설치한 뒤 한꺼번에 검증하면 재작업 범위가 커집니다.",
+    "explanation_en": "Cable validation asks whether the build matches the design, so discovered neighbor relationships (via LLDP or CVT) must be compared against the planned topology — and done section by section so miscabling is corrected early. Validating everything only at the end makes rework far more expensive."
+  },
+  {
+    "id": "v139",
+    "domain": "d2",
+    "type": "single",
+    "question": "An AI infrastructure team upgrades a training cluster from PCIe-only GPU servers to HGX systems with NVLink and NVSwitch. Single-GPU benchmark results are unchanged, but multi-GPU training jobs complete significantly faster. Which workload characteristic most directly benefits from the new architecture?",
+    "question_ko": "AI 인프라 팀이 PCIe 전용 GPU 서버에서 NVLink와 NVSwitch를 갖춘 HGX 시스템으로 학습 클러스터를 업그레이드했습니다. 단일 GPU 벤치마크 결과는 변하지 않았지만 다중 GPU 학습 작업은 훨씬 빨리 완료됩니다. 새 아키텍처의 이점을 가장 직접적으로 받는 워크로드 특성은?",
+    "choices": [
+      "Frequent peer-to-peer communication and collective operations among GPUs",
+      "Sequential CPU-intensive preprocessing before model execution",
+      "Local NVMe read performance for training datasets",
+      "Kubernetes control plane scheduling latency"
+    ],
+    "choices_ko": [
+      "GPU 간 잦은 피어 투 피어 통신과 집합 통신 연산",
+      "모델 실행 전의 순차적 CPU 집약 전처리",
+      "학습 데이터셋을 위한 로컬 NVMe 읽기 성능",
+      "쿠버네티스 컨트롤 플레인 스케줄링 지연"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "단일 GPU 성능이 그대로인데 다중 GPU 작업만 빨라졌다면 개선된 것은 연산이 아니라 GPU 간 통신입니다. NVLink/NVSwitch는 기울기 동기화, 텐서 교환, all-to-all 같은 집합 통신의 대역폭과 지연을 크게 개선하므로 통신 비중이 큰 워크로드가 직접적인 수혜를 받습니다.",
+    "explanation_en": "Unchanged single-GPU performance with faster multi-GPU jobs means the improvement is in inter-GPU communication, not compute. NVLink/NVSwitch greatly improve bandwidth and latency for gradient synchronization, tensor exchange, and all-to-all collectives, so communication-heavy workloads benefit directly."
+  },
+  {
+    "id": "v140",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator wants to enable vGPU virtualization on a DGX A100 system. What action should be taken first?",
+    "question_ko": "시스템 관리자가 DGX A100 시스템에서 vGPU 가상화를 활성화하려 합니다. 가장 먼저 수행해야 할 조치는?",
+    "choices": [
+      "Configure the Fabric Manager service in vGPU virtualization mode",
+      "Initialize the NVLinks",
+      "Bind NVSwitches and GPUs to nvidia.ko",
+      "Configure the setting in the BIOS of the DGX system"
+    ],
+    "choices_ko": [
+      "Fabric Manager 서비스를 vGPU 가상화 모드로 구성한다",
+      "NVLink를 초기화한다",
+      "NVSwitch와 GPU를 nvidia.ko에 바인딩한다",
+      "DGX 시스템의 BIOS에서 해당 설정을 구성한다"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "vGPU 가상화는 SR-IOV와 가상화 확장 기능에 의존하므로 플랫폼 단계에서 먼저 활성화되어야 합니다. DGX A100에서는 BIOS에서 관련 설정을 켠 뒤에야 드라이버 설치, NVSwitch/GPU 바인딩, Fabric Manager의 vGPU 모드 구성 같은 후속 단계가 의미를 갖습니다.",
+    "explanation_en": "vGPU virtualization depends on SR-IOV and platform virtualization extensions, which must be enabled at the platform level first. On DGX A100 the BIOS setting comes before driver installation, NVSwitch/GPU binding, and configuring Fabric Manager's vGPU mode."
+  }
+]

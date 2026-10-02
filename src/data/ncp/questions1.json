@@ -1,0 +1,242 @@
+[
+  {
+    "id": "n001",
+    "domain": "d1",
+    "type": "single",
+    "question": "What command is needed to measure BER (Bit Error Rate)?",
+    "question_ko": "BER(Bit Error Rate, 비트 오류율)을 측정하려면 어떤 명령이 필요한가?",
+    "choices": [
+      "mlxconfig -d <device> q",
+      "ethtool -S <device>",
+      "mlxlink -d <device> -p 1 -c",
+      "mstflint -d <device> q full"
+    ],
+    "choices_ko": [
+      "mlxconfig -d <device> q",
+      "ethtool -S <device>",
+      "mlxlink -d <device> -p 1 -c",
+      "mstflint -d <device> q full"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "BER 데이터를 출력하는 도구는 MFT 패키지의 mlxlink이며, 플래그는 -c(--show_counters, \"Show Physical Counters and BER Info\")입니다. Raw Physical BER과 Effective Physical BER을 모두 출력합니다. -d는 장치, -p는 포트를 지정합니다. 흔한 오해로 -e가 error/BER 카운터라고 생각하기 쉬우나 -e는 --show_eye로 Eye Opening Info(아이 그레이드)를 보여줄 뿐 BER 수치가 아닙니다. 장기 추이는 --show_ber_monitor, 수집은 -b/--ber_collect를 씁니다. 나머지 보기는 BER을 측정하지 못합니다. mlxconfig는 NV 펌웨어 설정 조회, ethtool -S는 Ethernet 드라이버 통계 덤프(InfiniBand 링크 BER에는 사용 불가), mstflint q는 펌웨어 이미지/버전 정보입니다. Raw BER은 FEC 이전, Effective BER은 FEC 이후 남은 오류이며, 악화되면 트랜시버 고장·오염된 광 커넥터·한계 품질 DAC 케이블을 의미하고 NCCL 집합 통신 성능을 해칩니다.",
+    "explanation_en": "The correct tool is mlxlink from the NVIDIA Firmware Tools (MFT) package. The flag that produces BER data is -c (long form --show_counters), described as \"Show Physical Counters and BER Info\"; it prints both Raw Physical BER and Effective Physical BER. -d selects the device and -p selects the port. A common error is to assume -e reports error/BER counters — it does not. -e is --show_eye, which displays Eye Opening Info, a signal-integrity view but not the BER readout. For long-term trending use --show_ber_monitor, and for collection use -b/--ber_collect. The other options do not measure BER: mlxconfig queries NV firmware configuration, ethtool -S dumps Ethernet driver statistics (unavailable for InfiniBand link BER), and mstflint q shows firmware image/version information. Raw BER reflects errors before FEC and Effective BER those remaining after FEC; degradation typically indicates a failing transceiver, dirty fiber connector, or marginal DAC cable, which harms NCCL collectives."
+  },
+  {
+    "id": "n002",
+    "domain": "d2",
+    "type": "single",
+    "question": "When updating the firmware on an NVLink switch transceiver, how can an engineer apply new firmware without interrupting the network?",
+    "question_ko": "NVLink 스위치 트랜시버의 펌웨어를 업데이트할 때, 엔지니어가 네트워크를 중단시키지 않고 새 펌웨어를 적용하려면 어떻게 해야 하는가?",
+    "choices": [
+      "mlxfwreset -d -lid 27 reset --yes to reset the transceiver",
+      "Physically disconnect and reconnect the transceiver.",
+      "flint -d -lid 27 --linkx --linkx_auto_update --activate",
+      "nv action reboot system to force immediate activation."
+    ],
+    "choices_ko": [
+      "트랜시버를 리셋하기 위해 mlxfwreset -d -lid 27 reset --yes 실행",
+      "트랜시버를 물리적으로 분리했다가 다시 연결한다.",
+      "flint -d -lid 27 --linkx --linkx_auto_update --activate",
+      "즉시 활성화를 강제하기 위해 nv action reboot system 실행"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NVIDIA LinkX 광 트랜시버와 액티브 구리 케이블은 호환성·성능 최적화를 위해 펌웨어 업데이트가 필요합니다. 운영 중인 DGX SuperPOD에서 NVLink 패브릭을 중단시키면 GPU 간 통신 장애로 학습 작업이 크래시됩니다. NVIDIA는 \"Live\"/\"Seamless\" 업데이트를 위해 MFT의 flint 유틸리티를 특정 플래그와 함께 사용합니다. --linkx는 스위치 ASIC이 아니라 트랜시버/케이블을 대상으로 지정하고, --linkx_auto_update는 절차를 자동화하며, --activate는 전체 재부팅이나 링크 플랩 없이 새 펌웨어를 모듈의 활성 메모리에 적용합니다. -lid(Logical Identifier)로 패브릭 전반의 특정 모듈을 중앙 관리 노드에서 지정할 수 있습니다. 이러한 in-service(무중단) 업데이트는 가동 시간이 수 주·수 개월로 측정되는 대규모 AI 클러스터에 필수적입니다.",
+    "explanation_en": "NVIDIA's LinkX optical transceivers and active copper cables often require firmware updates for compatibility and performance. In a production DGX SuperPOD, interrupting the NVLink fabric causes GPU-to-GPU communication failures and crashes training jobs. NVIDIA uses the flint utility (part of MFT) with specific flags for \"Live\" or \"Seamless\" updates. The --linkx flag targets the transceiver or cable rather than the switch ASIC. --linkx_auto_update automates the sequence, while --activate applies the new firmware to the module's active memory without a full reboot or a manual link flap. Using the -lid target, an administrator can address specific modules across the fabric from a central management node, keeping the high-bandwidth NVLink mesh stable."
+  },
+  {
+    "id": "n003",
+    "domain": "d4",
+    "type": "single",
+    "question": "An infrastructure engineer in an AI factory has successfully replaced a power supply unit on an NVIDIA DGX H100. After installation, both the IN and OUT LEDs on the new power supply illuminate solid green. Which NVSM CLI command should the engineer use to quickly verify the overall system status and ensure it is operating as expected?",
+    "question_ko": "AI 팩토리의 인프라 엔지니어가 NVIDIA DGX H100의 전원 공급 장치(PSU)를 성공적으로 교체했습니다. 설치 후 새 PSU의 IN 및 OUT LED가 모두 녹색으로 계속 켜져 있습니다. 시스템 전체 상태를 신속히 확인하고 예상대로 작동하는지 보장하려면 어떤 NVSM CLI 명령을 사용해야 하는가?",
+    "choices": [
+      "nvsm show power",
+      "nvsm show powermode",
+      "nvsm show health",
+      "nvsm show alerts"
+    ],
+    "choices_ko": [
+      "nvsm show power",
+      "nvsm show powermode",
+      "nvsm show health",
+      "nvsm show alerts"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NVSM(NVIDIA System Management)은 DGX 플랫폼의 상태를 모니터링하는 대표 CLI입니다. nvsm show power는 PSU의 소비 전력·전압 데이터를 제공하지만, 교체가 2차 문제를 일으키지 않았는지 또는 시스템이 \"Degraded\" 상태로 남아 있지 않은지를 가장 포괄적으로 확인하는 방법은 nvsm show health입니다. 이 명령은 GPU, NVLink 스위치, 스토리지, 팬, 전원 등 모든 서브시스템에 대해 전역 점검을 수행합니다. 교체가 성공적이고 완전한 이중화로 복귀했다면 \"Healthy\"를 반환합니다. DGX H100이 상당한 전력을 소모하는 환경에서는 6개 PSU가 물리적으로 녹색일 뿐 아니라 BMC가 논리적으로도 인식하도록 보장하는 것이 고부하 학습 중 예기치 않은 셧다운을 막는 데 중요합니다.",
+    "explanation_en": "NVSM is the definitive CLI utility for monitoring DGX platform health. While nvsm show power gives wattage and voltage data for the PSU, the most comprehensive way to ensure the replacement hasn't caused secondary issues or left the system \"Degraded\" is nvsm show health. This performs a global check across all subsystems: GPUs, NVLink switches, storage, fans, and power. If the PSU replacement succeeded and full redundancy is restored, it returns \"Healthy\". Ensuring all PSUs are not only physically green but logically acknowledged by the BMC is critical for preventing unexpected shutdowns during high-load training."
+  },
+  {
+    "id": "n004",
+    "domain": "d1",
+    "type": "single",
+    "question": "A leaf switch shows \"FW Version Mismatch\" alerts for transceivers after cluster expansion. Which tool validates transceiver firmware against expected versions?",
+    "question_ko": "클러스터 확장 후 리프(leaf) 스위치에서 트랜시버에 대한 \"FW Version Mismatch\" 경고가 표시됩니다. 트랜시버 펌웨어를 예상 버전과 대조하여 검증하는 도구는 무엇인가?",
+    "choices": [
+      "flint",
+      "iblinkinfo",
+      "mlxconfig",
+      "ethtool"
+    ],
+    "choices_ko": [
+      "flint",
+      "iblinkinfo",
+      "mlxconfig",
+      "ethtool"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "펌웨어 일관성은 안정적인 InfiniBand 패브릭 성능의 핵심입니다. 클러스터 확장 시 새 트랜시버나 케이블이 기존과 다른 펌웨어를 탑재해 도착하면 UFM 같은 관리 콘솔에서 \"FW Version Mismatch\" 경고가 발생합니다. flint(또는 mstflint)는 트랜시버 내부에 내장된 펌웨어 수준을 조회하는 데 적합한 유틸리티입니다. iblinkinfo는 링크 속도와 포트 상태를 제공하지만 버전 검증에 필요한 심층 하드웨어 수준 텔레메트리는 제공하지 않습니다. flint로 장치를 조회하고 현재 기록된(burn) 버전을 목표 이미지와 비교해 클러스터를 균일한 상태로 만들 수 있습니다. 패브릭 전반의 균일한 펌웨어는 Adaptive Routing과 Congestion Control이 예측 가능하게 동작하도록 보장합니다. 버전이 어긋나면 FEC나 링크 업 협상에서 일관되지 않은 동작이 발생해 NCCL 수준에서 진단하기 어려운 간헐적 성능 저하로 이어집니다.",
+    "explanation_en": "Firmware consistency is a pillar of stable InfiniBand fabric performance. When a cluster is expanded, new transceivers or cables may arrive with different firmware than the existing base, leading to \"FW Version Mismatch\" alerts in consoles like UFM. The flint tool (or mstflint) is the correct utility for querying the specific firmware levels embedded within the transceivers. While iblinkinfo provides link speeds and port states, it does not provide the deep hardware-level firmware telemetry required for version validation. flint lets the administrator query the device, compare the current burn version against the target image, and bring the cluster into a uniform state. Without version parity, inconsistent behavior in FEC or link-up negotiation can cause intermittent performance drops that are difficult to diagnose at the NCCL level."
+  },
+  {
+    "id": "n005",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to install a GPU/DPU in a server. The server has a free PCI-e slot, there are enough free PCI-e lanes, and there is enough room for the card. Which procedure should be followed?",
+    "question_ko": "시스템 관리자가 서버에 GPU/DPU를 설치해야 합니다. 서버에는 사용 가능한 PCI-e 슬롯이 있고, 충분한 여유 PCI-e 레인이 있으며, 카드를 장착할 공간도 충분합니다. 어떤 절차를 따라야 하는가?",
+    "choices": [
+      "Ensure the server has enough power. Verify compatibility of cables with server's platform. Make sure the server is down to remove cables safely. Do not wear an ESD bracelet.",
+      "Ensure the server has enough power. Make sure the server is down to remove cables safely. Wear an ESD bracelet.",
+      "Ensure the server has enough power. Make sure the server is up and running with attached cables. Wear an ESD bracelet.",
+      "Ensure the server has enough power. Verify compatibility of cables with server's platform. Make sure the server is down to remove cables safely. Wear an ESD bracelet."
+    ],
+    "choices_ko": [
+      "서버에 충분한 전력이 있는지 확인한다. 케이블이 서버 플랫폼과 호환되는지 검증한다. 케이블을 안전하게 제거하기 위해 서버가 꺼져 있는지 확인한다. ESD 밴드는 착용하지 않는다.",
+      "서버에 충분한 전력이 있는지 확인한다. 케이블을 안전하게 제거하기 위해 서버가 꺼져 있는지 확인한다. ESD 밴드를 착용한다.",
+      "서버에 충분한 전력이 있는지 확인한다. 서버가 케이블이 연결된 채로 켜져서 동작 중인지 확인한다. ESD 밴드를 착용한다.",
+      "서버에 충분한 전력이 있는지 확인한다. 케이블이 서버 플랫폼과 호환되는지 검증한다. 케이블을 안전하게 제거하기 위해 서버가 꺼져 있는지 확인한다. ESD 밴드를 착용한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "고성능 NVIDIA 부품의 물리적 설치에는 데이터센터 안전 및 하드웨어 보호 기준을 엄격히 준수해야 합니다. 정답 보기는 전력(Power), 호환성(Compatibility), 안전(Safety)이라는 세 요소를 모두 포함하는 유일한 절차입니다. 첫째, 고급 GPU는 개별적으로 300W~450W를 소비할 수 있으므로 과전류 셧다운을 막으려면 PDU와 내부 PSU 용량 확인이 필수입니다. 둘째, 케이블 호환성(12VHPWR, PCIe 8핀 배열 등) 검증은 전기적 손상을 피하는 데 중요합니다. 셋째, Cold Service(전원을 끄고 케이블 제거)는 핫플러그를 지원하지 않는 PCIe 부품의 단락 방지 표준입니다. 마지막으로 ESD 밴드 착용은 타협할 수 없는데, 정전기가 HBM이나 GPU 다이를 파괴할 수 있기 때문입니다. ESD 보호를 생략하거나 동작 중 설치를 수행하는 것은 하드웨어 조기 고장(infant mortality)의 주요 원인입니다.",
+    "explanation_en": "Physical installation of high-performance NVIDIA components requires strict adherence to data center safety and hardware preservation standards. The correct option is the only procedure covering three critical pillars: Power, Compatibility, and Safety. First, high-end GPUs can draw 300W-450W individually; verifying PDU and internal PSU capacity prevents over-current shutdowns. Second, verifying cable compatibility (12VHPWR or specific PCIe 8-pin layouts) avoids electrical damage. Third, \"Cold Service\" (powered down, cables removed) is the standard for non-hot-plug PCIe components to prevent short circuits. Finally, wearing an ESD bracelet is non-negotiable, as static charges can destroy sensitive HBM or the GPU die. Skipping ESD protection or installing while the system is running are leading causes of hardware infant mortality."
+  },
+  {
+    "id": "n006",
+    "domain": "d1",
+    "type": "single",
+    "question": "What command sequence is used to identify the exact name of the server that runs as the master SM in a multi-node fabric?",
+    "question_ko": "다중 노드 패브릭에서 master SM으로 동작하는 서버의 정확한 이름을 식별하는 데 사용되는 명령 순서는 무엇인가?",
+    "choices": [
+      "sminfo, then smpquery ND",
+      "ibstat, then sminfo",
+      "ibnetdiscover, then ibsim",
+      "sminfo, then smpquery NI"
+    ],
+    "choices_ko": [
+      "sminfo 실행 후 smpquery ND",
+      "ibstat 실행 후 sminfo",
+      "ibnetdiscover 실행 후 ibsim",
+      "sminfo 실행 후 smpquery NI"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "InfiniBand 패브릭에서 Subnet Manager(SM)는 토폴로지를 탐색하고 LID를 할당하며 라우팅 테이블을 계산하는 네트워크의 \"두뇌\"입니다. 다중 노드 패브릭에는 보통 하나의 Master SM과 여러 Standby SM이 있습니다. 마스터를 식별하려면 먼저 sminfo로 현재 Master SM의 LID를 얻습니다. 그 다음 숫자 LID를 물리적 서버 이름에 매핑해야 하며, 해당 LID를 대상으로 smpquery ND(Node Description)를 실행합니다. Master SM 서버의 로그는 스윕·트랩·토폴로지 변경의 결정적 기록을 제공하므로 이 순서가 중요합니다. smpquery NI(Node Info)는 GUID와 device ID 같은 하드웨어 수준 정보를 주지만, 복잡한 데이터센터에서 신속한 식별에 필요한 사람이 읽을 수 있는 서버 이름(Node Description)은 반환하지 않습니다.",
+    "explanation_en": "In an InfiniBand fabric, the Subnet Manager is the \"brain\" of the network, discovering topology, assigning LIDs, and calculating routing tables. There is typically one Master SM and several Standby SMs. To identify the master, sminfo is used first; it returns the LID of the current Master SM. Once the LID is obtained, the engineer must map that numerical LID to a physical server name, so smpquery ND (Node Description) is executed against that LID. This sequence is vital for troubleshooting fabric-wide issues, as logs on the Master SM provide the definitive record of sweeps, traps, and topology changes. Using smpquery NI (Node Info) would give hardware details like GUID and device ID, but not the human-readable server name in the Node Description."
+  },
+  {
+    "id": "n007",
+    "domain": "d3",
+    "type": "single",
+    "question": "You are following the official steps to install the NVIDIA Container Toolkit using a package manager on Ubuntu. After importing the NVIDIA package repository and GPG key, what is the next action?",
+    "question_ko": "Ubuntu에서 패키지 관리자를 사용하여 NVIDIA Container Toolkit을 설치하는 공식 절차를 따르고 있습니다. NVIDIA 패키지 저장소와 GPG 키를 가져온 후, 다음 작업은 무엇인가?",
+    "choices": [
+      "Reboot the host system to apply the repository changes and proceed.",
+      "Install the nvidia-container-toolkit package using your package manager.",
+      "Format the disk to clear any existing NVIDIA-related dependencies first.",
+      "Download the CUDA toolkit installer from NVIDIA's official website."
+    ],
+    "choices_ko": [
+      "저장소 변경 사항을 적용하기 위해 호스트 시스템을 재부팅한 후 진행한다.",
+      "패키지 관리자를 사용하여 nvidia-container-toolkit 패키지를 설치한다.",
+      "기존 NVIDIA 관련 의존성을 먼저 제거하기 위해 디스크를 포맷한다.",
+      "NVIDIA 공식 웹사이트에서 CUDA toolkit 설치 프로그램을 다운로드한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVIDIA Container Toolkit(이전 nvidia-docker2)은 Docker·Podman·Containerd가 호스트 GPU를 인식하고 활용하게 해주는 필수 미들웨어입니다. Debian 계열의 표준 설치 워크플로는 저장소 구성, 패키지 설치, 런타임 구성의 세 단계입니다. GPG 키가 추가되고 .list 파일이 /etc/apt/sources.list.d/에 배치되면 apt-get update로 인덱스를 갱신한 뒤, 곧바로 sudo apt-get install -y nvidia-container-toolkit으로 툴킷을 설치해야 합니다. 이 단계에서는 아직 커널 모듈이 수정되지 않았으므로 재부팅은 불필요합니다. CUDA Toolkit 다운로드는 별도 단계이며, 특히 Container Toolkit은 호스트에 드라이버만 있어도 컨테이너가 CUDA 애플리케이션을 실행하게 해주므로 호스트의 CUDA toolkit이 아니라 드라이버가 주된 사전 요구 사항입니다.",
+    "explanation_en": "The NVIDIA Container Toolkit is the essential middleware that allows Docker, Podman, or Containerd to see and use the host's GPU hardware. The standard workflow on Debian-based systems has three phases: repository configuration, package installation, and runtime configuration. Once the GPG key is added and the .list file is placed in /etc/apt/sources.list.d/, the package index must be refreshed via apt-get update. Immediately following this, the administrator installs the toolkit with sudo apt-get install -y nvidia-container-toolkit. Rebooting is unnecessary at this stage because no kernel modules have been modified. Downloading the CUDA Toolkit is a separate step; the Container Toolkit lets containers run CUDA applications even if the host only has the NVIDIA driver installed, making the driver the primary prerequisite."
+  },
+  {
+    "id": "n008",
+    "domain": "d1",
+    "type": "single",
+    "question": "What information does the 'ibnodes' command display?",
+    "question_ko": "'ibnodes' 명령은 어떤 정보를 표시하는가?",
+    "choices": [
+      "All hosts & switches",
+      "All host & server names",
+      "All server names",
+      "All channel adapters"
+    ],
+    "choices_ko": [
+      "모든 호스트 및 스위치",
+      "모든 호스트 및 서버 이름",
+      "모든 서버 이름",
+      "모든 채널 어댑터"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "ibnodes는 상위 수준 토폴로지 매핑에 사용되는 infiniband-diags 모음의 스크립트입니다. 실행하면 InfiniBand 서브넷을 스캔해 패브릭에 연결된 모든 활성 노드를 유형별로 분류한 목록을 제공합니다. 구체적으로 서버(호스트)에 있는 모든 HCA(Host Channel Adapter)와 모든 InfiniBand 스위치를 표시합니다. bring-up이나 확장 이후 패브릭 검증의 필수 첫 단계인데, 예상한 수의 노드와 스위치가 성공적으로 합류했는지 빠르게 확인할 수 있기 때문입니다. 모든 포트 간 연결에 대해 장황한 출력을 제공하는 ibnetdiscover와 달리 ibnodes는 장치의 정체성과 유형에 초점을 맞춥니다. 서버의 HCA가 목록에서 누락되어 있다면 스위치 간 케이블링 데이터를 뒤지는 대신 물리 링크나 로컬 HCA 드라이버 상태를 조사해야 함을 알 수 있습니다.",
+    "explanation_en": "The ibnodes utility is a specialized script within the infiniband-diags suite used for high-level topology mapping. It scans the InfiniBand subnet and provides a concise list of every active node connected to the fabric, categorized by type. Specifically, it displays all Host Channel Adapters (HCAs/CA) found in the servers and all InfiniBand switches. This command is an essential first step in fabric validation after a bring-up or expansion because it lets an engineer quickly verify whether the expected number of nodes and switches have joined the fabric. Unlike ibnetdiscover, which provides verbose output of every port-to-port connection, ibnodes focuses on the identity and type of the devices."
+  },
+  {
+    "id": "n009",
+    "domain": "d1",
+    "type": "single",
+    "question": "During cluster validation, the Cable Validation Tool (CVT) reports \"Underperforming (BER)\" for an InfiniBand link. Which BER thresholds indicate a critical signal quality issue requiring cable replacement?",
+    "question_ko": "클러스터 검증 중에 Cable Validation Tool(CVT)이 어떤 InfiniBand 링크에 대해 \"Underperforming (BER)\"을 보고합니다. 케이블 교체가 필요한 심각한 신호 품질 문제를 나타내는 BER 임계값은 무엇인가?",
+    "choices": [
+      "Rx power variance > 3dB between lanes",
+      "Effective BER > 0 during the first 125 minutes of link operation",
+      "Raw BER > 1e-6 or Effective BER > 1.5E-254 for <6hr measurements",
+      "Temperature > 85°C on transceiver module"
+    ],
+    "choices_ko": [
+      "레인 간 Rx 전력 편차 > 3dB",
+      "링크 동작 첫 125분 동안 Effective BER > 0",
+      "6시간 미만 측정에서 Raw BER > 1e-6 또는 Effective BER > 1.5E-254",
+      "트랜시버 모듈 온도 > 85°C"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NVIDIA UFM Cable Validation Tool(CVT)은 문서화된 BER 기준 집합으로 링크를 \"Underperforming\"으로 분류합니다. 측정 구간이 6시간 미만이면 Effective BER은 1.5E-254 이하, 6시간 이상이면 1E-15 이하여야 하고, 링크 업 후 첫 125분 동안 Effective BER 오류가 0건이어야 하며, Raw BER은 1E-6 이하여야 합니다. 정답 보기가 이 기준 집합에 해당하며, 올바른 Raw BER 임계값은 1E-6입니다(여러 유통 덤프에 나오는 1e-12는 잘못된 수치). 1.5E-254라는 값은 FEC 이후 오류가 관측되지 않았을 때 mlxlink가 출력하는 하한 표기(15E-255)에서 유래합니다. Raw BER은 FEC 이전 오류라 1E-6 정도도 FEC가 정정하므로 허용되지만, Effective BER은 FEC를 통과해 살아남은 오류이므로 사실상 0이어야 하며 살아남은 오류는 심볼 오류와 재전송을 유발해 all_reduce 같은 집합 통신에 치명적입니다. \"첫 125분 Effective BER > 0\"도 실제 CVT 기준 중 하나이지만 문항이 요구하는 임계값 집합이 아니라 그중 한 요소일 뿐입니다. Rx 전력 편차와 모듈 온도는 원인이거나 상태 지표일 뿐 BER 임계값이 아닙니다.",
+    "explanation_en": "NVIDIA's UFM Cable Validation Tool classifies a link as \"Underperforming\" using a documented set of BER criteria: Effective BER at or below 1.5E-254 for windows shorter than 6 hours, at or below 1E-15 for 6 hours or longer, zero Effective BER errors during the first 125 minutes after link-up, and Raw BER at or below 1E-6. The correct option matches this set; note the correct Raw BER threshold is 1E-6 — not 1e-12, which appears in many circulating dumps and is wrong. The odd-looking 1.5E-254 figure comes from the lower-bound value mlxlink reports (15E-255) when no post-FEC errors have been observed. Raw BER counts errors before FEC, so a value such as 1E-6 is tolerable because FEC corrects it; Effective BER counts what survives FEC and must be essentially zero. The \"first 125 minutes\" option does describe a real CVT criterion, but it is only one element rather than the threshold set the question asks for. Rx power variance and module temperature are causes or health indicators, not BER thresholds."
+  },
+  {
+    "id": "n010",
+    "domain": "d1",
+    "type": "single",
+    "question": "A 24-hour HPL burn-in fails with \"illegal value\" errors during the first iteration. Which initial troubleshooting step resolves this without compromising burn-in validity?",
+    "question_ko": "24시간 HPL 번인(burn-in) 테스트가 첫 번째 반복에서 \"illegal value\" 오류로 실패합니다. 번인의 유효성을 훼손하지 않으면서 이 문제를 해결하는 초기 트러블슈팅 단계는 무엇인가?",
+    "choices": [
+      "Switch from FP64 to FP32 precision.",
+      "Disable GPU affinity.",
+      "Reduce test duration to 12 hours.",
+      "Verify the matrix size is divisible by block size."
+    ],
+    "choices_ko": [
+      "FP64에서 FP32 정밀도로 전환한다.",
+      "GPU affinity를 비활성화한다.",
+      "테스트 시간을 12시간으로 줄인다.",
+      "행렬 크기가 블록 크기로 나누어떨어지는지 확인한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "HPL(High-Performance Linpack)은 AI 클러스터의 연산 안정성과 열적 내구성을 스트레스 테스트하는 표준 벤치마크로, 대규모 밀집 선형 방정식 시스템을 풀며 수학적 구성이 매우 민감합니다. HPL.dat 파일은 문제 크기(N)와 블록 크기(NB)를 정의합니다. HPL 알고리즘의 근본 요구 사항은 작업 부하가 MPI 프로세스와 GPU 스레드 전반에 균등하게 분산되어야 한다는 것입니다. 전체 행렬 크기 N이 블록 크기 NB의 정확한 배수가 아니거나 그리드 차원(P x Q)이 하드웨어 토폴로지와 맞지 않으면 솔버는 실행 시작 시점에 \"illegal value\" 오류나 \"residual too large\" 실패를 겪을 수 있습니다. 이는 하드웨어 결함이 아니라 구성 오류입니다. 정밀도를 낮추면 테스트가 무효화되는데 HPL은 표준 번인으로 인정받으려면 FP64로 실행되어야 하기 때문입니다. N이 NB로 나누어떨어지는지 확인하면 수학적 무결성을 보장하면서도 하드웨어를 이론적 성능 한계까지 밀어붙일 수 있습니다.",
+    "explanation_en": "HPL is the standard benchmark for stress-testing the computational stability and thermal endurance of an AI cluster. It solves a massive dense system of linear equations, and its mathematical configuration is highly sensitive. The HPL.dat file defines the Problem Size (N) and the Block Size (NB). A fundamental requirement of the HPL algorithm is that the workload be distributed evenly across MPI processes and GPU threads. If the total matrix size N is not an exact multiple of NB, or if the grid dimensions (P x Q) do not align with the hardware topology, the solver may encounter an \"illegal value\" error or a \"residual too large\" failure at the very beginning. This is a configuration error, not a hardware fault. Reducing the precision would invalidate the test, as HPL must run in FP64 to be considered a standard burn-in."
+  }
+]

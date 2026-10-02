@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v151",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator installed a new NVIDIA device. The system has booted but the device is not recognized by the OS. What is likely missing?",
+    "question_ko": "시스템 관리자가 새 NVIDIA 장치를 설치했습니다. 시스템은 부팅되었지만 운영체제가 장치를 인식하지 못합니다. 무엇이 빠졌을 가능성이 높은가?",
+    "choices": [
+      "cache drives",
+      "CPU driver",
+      "scheduler",
+      "OFED driver"
+    ],
+    "choices_ko": [
+      "캐시 드라이브",
+      "CPU 드라이버",
+      "스케줄러",
+      "OFED 드라이버"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "하드웨어가 물리적으로 꽂혔는데 OS가 인식하지 못하면 해당 장치의 커널 드라이버가 없는 것입니다. NVIDIA 스택에서 네트워크·가속 장치(ConnectX, BlueField 등)는 MLNX_OFED/DOCA 드라이버 패키지가 있어야 인식·사용할 수 있습니다. 참고: 덤프 원문은 이 문항을 GPU 설치 상황으로 서술했는데, 엄밀히 GPU 인식에는 NVIDIA GPU 드라이버가 필요합니다. 어느 쪽이든 원문이 묻는 핵심은 '드라이버 부재'이며 보기 중 드라이버는 OFED뿐입니다.",
+    "explanation_en": "If hardware is physically present but the OS does not see it, the kernel driver for that device is missing. In the NVIDIA stack, networking and acceleration devices (ConnectX, BlueField) require the MLNX_OFED/DOCA driver package. Note: the original dump framed this as a GPU install, where strictly the NVIDIA GPU driver is what is needed — either way the point is a missing driver, and OFED is the only driver among the options."
+  },
+  {
+    "id": "v152",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are expanding a DGX-based deep learning cluster to train on large, high-resolution images that cannot fit into local cache. Multiple nodes will access this data concurrently and require high performance. Which storage and networking solution best meets these requirements?",
+    "question_ko": "로컬 캐시에 담을 수 없는 대용량 고해상도 이미지로 학습하기 위해 DGX 기반 딥러닝 클러스터를 확장하고 있습니다. 여러 노드가 이 데이터에 동시에 접근하며 높은 성능이 필요합니다. 요구를 가장 잘 충족하는 스토리지·네트워킹 솔루션은?",
+    "choices": [
+      "Implement a standard NFS server on a 10GbE network since the cluster can access the export.",
+      "Increase the SSD RAID-0 local cache size in each node so it absorbs most training data, making network storage less important.",
+      "Use general-purpose object storage for all training data as it is optimized for deep learning at any scale.",
+      "Deploy a high-performance parallel filesystem over InfiniBand or 40/100GbE, ensuring at least 3GB/s per node and scalable aggregate bandwidth."
+    ],
+    "choices_ko": [
+      "클러스터가 export에 접근할 수 있으므로 10GbE 네트워크에 표준 NFS 서버를 구축한다.",
+      "각 노드의 SSD RAID-0 로컬 캐시 크기를 늘려 대부분의 학습 데이터를 수용하게 해 네트워크 스토리지의 중요성을 낮춘다.",
+      "범용 오브젝트 스토리지를 모든 학습 데이터에 사용한다. 어떤 규모에서도 딥러닝에 최적화되어 있기 때문이다.",
+      "InfiniBand 또는 40/100GbE 위에 고성능 병렬 파일 시스템을 배포하고, 노드당 최소 3GB/s와 확장 가능한 총 대역폭을 확보한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "데이터셋이 로컬 캐시에 들어가지 않고 다수 노드가 동시에 읽어야 한다면, 메타데이터와 데이터를 여러 서버에 분산하는 병렬 파일 시스템이 정답입니다. 고속 패브릭 위에서 노드당 수 GB/s를 보장해야 GPU가 굶지 않으며, 노드를 늘려도 총 대역폭이 함께 늘어납니다. 단일 NFS 서버와 10GbE는 즉시 병목이 됩니다.",
+    "explanation_en": "When the dataset does not fit locally and many nodes read concurrently, a parallel filesystem that distributes metadata and data across servers is the answer. On a fast fabric it sustains several GB/s per node so GPUs stay fed, and aggregate bandwidth scales as nodes are added. A single NFS server on 10GbE becomes an immediate bottleneck."
+  },
+  {
+    "id": "v153",
+    "domain": "d2",
+    "type": "single",
+    "question": "What is the best practice for configuring memory in an NVIDIA-certified server to optimize performance?",
+    "question_ko": "NVIDIA 인증 서버에서 성능을 최적화하기 위한 메모리 구성 모범 사례는?",
+    "choices": [
+      "Populate all memory channels evenly with identical DIMMs",
+      "Leave half of the available memory channels unpopulated",
+      "Populate an odd number of DIMMs per CPU socket",
+      "Use different DIMM sizes across memory channels"
+    ],
+    "choices_ko": [
+      "모든 메모리 채널을 동일한 DIMM으로 고르게 채운다",
+      "가용 메모리 채널의 절반을 비워 둔다",
+      "CPU 소켓당 홀수 개의 DIMM을 장착한다",
+      "메모리 채널마다 서로 다른 용량의 DIMM을 사용한다"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "현대 서버 CPU의 메모리 대역폭은 채널 수에 비례합니다. 모든 채널을 동일 규격 DIMM으로 균등하게 채우면 인터리빙이 최대로 동작해 전 대역폭을 얻고, NUMA 노드 간 균형도 유지됩니다. 채널을 비우거나 용량을 섞으면 일부 영역이 저성능 모드로 떨어질 수 있습니다.",
+    "explanation_en": "Memory bandwidth on modern server CPUs scales with populated channels. Filling every channel evenly with identical DIMMs maximizes interleaving for full bandwidth and keeps NUMA nodes balanced. Leaving channels empty or mixing capacities can drop parts of the range into a lower-performance mode."
+  },
+  {
+    "id": "v154",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator needs to configure a BlueField DPU and enable RShim on the baseboard management controller (BMC). Which command should be executed?",
+    "question_ko": "시스템 관리자가 BlueField DPU를 구성하고 BMC에서 RShim을 활성화해야 합니다. 어떤 명령을 실행해야 하는가?",
+    "choices": [
+      "systemctl enable bmc-rshim.service",
+      "ipmitool raw 0x32 0x6a 1",
+      "systemctl restart rshim",
+      "scp <path_to_bfb> root@<bmc_ip>:/dev/rshim0/boot"
+    ],
+    "choices_ko": [
+      "systemctl enable bmc-rshim.service",
+      "ipmitool raw 0x32 0x6a 1",
+      "systemctl restart rshim",
+      "scp <path_to_bfb> root@<bmc_ip>:/dev/rshim0/boot"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RShim 인터페이스는 호스트 또는 BMC 중 한 쪽만 소유할 수 있습니다. BMC 쪽에서 RShim을 활성화하려면 IPMI raw 명령으로 해당 기능을 켜야 하며, 그 뒤에야 BMC를 통해 DPU 콘솔 접근과 BFB 이미지 푸시가 가능합니다.",
+    "explanation_en": "Only one owner — host or BMC — can hold the RShim interface at a time. Enabling it on the BMC side requires the IPMI raw command; only afterwards can the BMC provide DPU console access and BFB image push."
+  },
+  {
+    "id": "v155",
+    "domain": "d3",
+    "type": "single",
+    "question": "The system administrator is tasked with updating GPU drivers and needs to check the driver version that is currently running. Which command should be used?",
+    "question_ko": "시스템 관리자가 GPU 드라이버를 갱신하기에 앞서 현재 실행 중인 드라이버 버전을 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "nvidia-smi --query gpu driver --format=csv",
+      "nvidia-smi --query-gpu=driver_version --format=csv",
+      "nvidia-smi get gpu driver version --format=csv",
+      "nvidia-smi gpu-driver-version --format=csv"
+    ],
+    "choices_ko": [
+      "nvidia-smi --query gpu driver --format=csv",
+      "nvidia-smi --query-gpu=driver_version --format=csv",
+      "nvidia-smi get gpu driver version --format=csv",
+      "nvidia-smi gpu-driver-version --format=csv"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "nvidia-smi의 질의 문법은 `--query-gpu=<속성>`과 `--format=csv`를 함께 쓰는 형태입니다. driver_version 속성을 질의하면 현재 로드된 드라이버 버전만 간결하게 출력되므로 스크립트에서 파싱하기에도 적합합니다.",
+    "explanation_en": "nvidia-smi's query syntax pairs `--query-gpu=<property>` with `--format=csv`. Querying driver_version prints just the currently loaded driver version, which is also convenient to parse in scripts."
+  },
+  {
+    "id": "v156",
+    "domain": "d1",
+    "type": "single",
+    "question": "You are preparing a GPU cluster for distributed AI training. Before running workloads, you need to validate the cluster's hardware. Which of the following steps is the most effective?",
+    "question_ko": "분산 AI 학습을 위해 GPU 클러스터를 준비하고 있습니다. 워크로드를 실행하기 전에 클러스터 하드웨어를 검증해야 합니다. 가장 효과적인 단계는?",
+    "choices": [
+      "Confirm that all nodes boot successfully into the operating system without errors.",
+      "Use NCCL tests to validate GPU-to-CPU communication and run node health checks.",
+      "Verify CPU performance across all nodes, as it indicates overall system stability.",
+      "Run single-node benchmarks to confirm GPU performance on individual nodes."
+    ],
+    "choices_ko": [
+      "모든 노드가 오류 없이 운영체제로 부팅되는지 확인한다.",
+      "NCCL 테스트로 GPU-CPU 통신을 검증하고 노드 상태 점검을 수행한다.",
+      "CPU 성능을 전 노드에서 검증한다. 이것이 전체 시스템 안정성을 나타내기 때문이다.",
+      "단일 노드 벤치마크를 실행해 개별 노드의 GPU 성능을 확인한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "하드웨어 검증은 '노드 단위 건전성'을 먼저 확정한 뒤 노드 간 통신으로 넘어갑니다. 개별 노드의 GPU 성능 기준선을 잡아 두지 않으면, 이후 다중 노드 테스트에서 성능이 낮게 나와도 원인이 GPU인지 패브릭인지 구분할 수 없습니다. 한편 NCCL을 'GPU-CPU 통신 검증' 도구로 서술한 선택지는 함정입니다. NCCL은 GPU 간 집합 통신 라이브러리입니다.",
+    "explanation_en": "Hardware validation establishes per-node health first, then moves to inter-node communication. Without a single-node GPU baseline, a slow multi-node result cannot be attributed to the GPUs or the fabric. Beware the distractor describing NCCL as validating GPU-to-CPU communication — NCCL is a GPU-to-GPU collective library."
+  },
+  {
+    "id": "v157",
+    "domain": "d5",
+    "type": "single",
+    "question": "Which type of NVIDIA LinkX cable is identified by a teal color code?",
+    "question_ko": "NVIDIA LinkX 케이블 중 청록색(teal) 색상 코드로 식별되는 종류는?",
+    "choices": [
+      "Copper cables with active circuitry (ACCs)",
+      "Optical cables with active circuitry (AOCs)",
+      "Optical cables with passive circuitry (POCs)",
+      "Copper cables with direct attachment (DACs)"
+    ],
+    "choices_ko": [
+      "능동 회로를 가진 구리 케이블(ACC)",
+      "능동 회로를 가진 광 케이블(AOC)",
+      "수동 회로를 가진 광 케이블(POC)",
+      "직접 연결 구리 케이블(DAC)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVIDIA LinkX 제품군은 색상으로 케이블 종류를 구분하며 청록색은 AOC(Active Optical Cable)를 나타냅니다. AOC는 양 끝단에 광 트랜시버 회로를 내장해 수 미터에서 수십 미터까지 연결할 수 있어 랙 간 연결에 사용됩니다.",
+    "explanation_en": "NVIDIA's LinkX family uses color coding to distinguish cable types, and teal denotes AOCs (active optical cables). AOCs embed optical transceiver circuitry in both ends, reaching from several to tens of meters, which suits inter-rack links."
+  },
+  {
+    "id": "v158",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator has upgraded the firmware of a DPU. What will be the state of the firmware immediately after the upgrade?",
+    "question_ko": "시스템 관리자가 DPU의 펌웨어를 업그레이드했습니다. 업그레이드 직후 펌웨어의 상태는?",
+    "choices": [
+      "The firmware is deleted from the DPU.",
+      "The firmware is installed and already running on the DPU.",
+      "The firmware is copied to the DPU but not installed.",
+      "The firmware is installed and waiting on a reset/reboot to become active."
+    ],
+    "choices_ko": [
+      "펌웨어가 DPU에서 삭제된다.",
+      "펌웨어가 설치되어 이미 동작 중이다.",
+      "펌웨어가 DPU에 복사되었지만 설치되지는 않았다.",
+      "펌웨어가 설치되었고 리셋/재부팅을 기다리는 상태로 활성화 대기 중이다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "펌웨어 플래싱은 새 이미지를 플래시에 기록하는 것까지이며, 장치는 여전히 기존 이미지로 동작합니다. mlxfwreset이나 콜드 부팅으로 장치를 리셋해야 새 이미지가 로드되어 활성화됩니다. `mstflint query`로 보면 현재 버전과 다음 부팅 버전이 다르게 표시됩니다.",
+    "explanation_en": "Flashing writes the new image into flash, but the device keeps running the previous one. A device reset (mlxfwreset) or cold boot loads and activates the new image. `mstflint query` will show the running version differing from the one pending on next boot."
+  },
+  {
+    "id": "v159",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator boots a DGX A100 system and needs to check NVSwitch and NVLink initialization. What happens to the NVLink connections during initialization?",
+    "question_ko": "시스템 관리자가 DGX A100 시스템을 부팅하고 NVSwitch와 NVLink 초기화를 확인하려 합니다. 초기화 과정에서 NVLink 연결에는 어떤 일이 일어나는가?",
+    "choices": [
+      "The system supports ALI, so NVLinks are trained at the GPU and NVSwitch hardware levels without Fabric Manager.",
+      "NVLink connections are trained at the GPU and NVSwitch hardware levels without Fabric Manager.",
+      "The NVLink connections are enabled once the NVIDIA kernel driver is loaded, and peer-to-peer capability is then available.",
+      "The NVLink connections are enabled after the NVIDIA kernel driver is loaded and Fabric Manager configures these connections."
+    ],
+    "choices_ko": [
+      "시스템이 ALI를 지원하므로 Fabric Manager 없이 GPU와 NVSwitch 하드웨어 수준에서 NVLink가 학습된다.",
+      "Fabric Manager 없이 GPU와 NVSwitch 하드웨어 수준에서 NVLink 연결이 학습된다.",
+      "NVIDIA 커널 드라이버가 로드되면 NVLink 연결이 활성화되고 곧바로 피어 투 피어가 가능해진다.",
+      "NVIDIA 커널 드라이버가 로드된 뒤 Fabric Manager가 이 연결들을 구성해야 NVLink가 활성화된다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "DGX A100은 NVSwitch 기반 시스템이므로 드라이버 로드만으로는 GPU 간 경로가 완성되지 않습니다. Fabric Manager가 NVSwitch 포트를 설정하고 라우팅을 구성해야 NVLink 피어 투 피어가 가능해지며, FM이 준비되기 전에 CUDA 작업을 시작하면 cudaErrorSystemNotReady가 반환됩니다.",
+    "explanation_en": "DGX A100 is an NVSwitch-based system, so loading the driver alone does not complete the GPU-to-GPU paths. Fabric Manager must configure the NVSwitch ports and routing before NVLink peer-to-peer works; starting CUDA work before FM is ready returns cudaErrorSystemNotReady."
+  },
+  {
+    "id": "v160",
+    "domain": "d3",
+    "type": "single",
+    "question": "A Slurm-managed AI cluster contains both H100 and L40 GPU nodes. Inference jobs requiring only modest GPU resources are repeatedly scheduled onto H100 nodes, delaying large distributed training jobs. Which scheduling strategy would best improve overall cluster efficiency?",
+    "question_ko": "Slurm으로 관리되는 AI 클러스터에 H100과 L40 GPU 노드가 함께 있습니다. 적은 GPU 자원만 필요한 추론 작업이 반복적으로 H100 노드에 배치되어 대규모 분산 학습 작업이 지연되고 있습니다. 전체 클러스터 효율을 가장 잘 개선하는 스케줄링 전략은?",
+    "choices": [
+      "Disable scheduling on H100 nodes.",
+      "Define partitions or resource constraints so workloads are matched to appropriate GPU types.",
+      "Configure every node with identical GPU memory.",
+      "Allow Slurm to randomly assign GPUs without resource awareness."
+    ],
+    "choices_ko": [
+      "H100 노드의 스케줄링을 비활성화한다.",
+      "워크로드가 적합한 GPU 유형에 배치되도록 파티션이나 자원 제약을 정의한다.",
+      "모든 노드를 동일한 GPU 메모리로 구성한다.",
+      "Slurm이 자원 인식 없이 GPU를 무작위로 배정하게 한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Slurm의 파티션과 GRES/constraints는 작업을 적합한 하드웨어로 유도하는 표준 수단입니다. 추론은 L40 파티션으로, 대규모 학습은 H100 파티션으로 나누면 비싼 가속기가 가벼운 작업에 점유되는 일이 사라지고 대기 중인 학습 작업이 제때 실행됩니다.",
+    "explanation_en": "Slurm partitions with GRES and constraints are the standard way to steer jobs to suitable hardware. Routing inference to an L40 partition and reserving H100 partitions for large training stops premium accelerators from being consumed by light jobs and lets queued training run on time."
+  }
+]

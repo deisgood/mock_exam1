@@ -1,0 +1,554 @@
+[
+  {
+    "id": "q061",
+    "domain": "essential",
+    "type": "single",
+    "question": "What is CUDA?",
+    "question_ko": "CUDA란 무엇입니까?",
+    "choices": [
+      "NVIDIA's deep learning libraries.",
+      "NVIDIA's parallel programming toolkit.",
+      "NVIDIA's containerization SDK."
+    ],
+    "choices_ko": [
+      "NVIDIA의 딥러닝 라이브러리",
+      "NVIDIA의 병렬 프로그래밍 툴킷",
+      "NVIDIA의 컨테이너화 SDK"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "CUDA(Compute Unified Device Architecture)는 NVIDIA가 개발한 병렬 컴퓨팅 플랫폼이자 프로그래밍 모델입니다. 개발자가 GPU 자원으로 범용 연산(GPGPU)을 수행하도록 지원하는 소프트웨어 개발 툴킷 역할을 하며, 대규모 병렬 처리를 통해 AI 학습·추론, 데이터 과학, 과학 시뮬레이션 워크로드를 획기적으로 가속합니다. 딥러닝 라이브러리(cuDNN)나 컨테이너 도구와는 층위가 다른, 모든 GPU 소프트웨어의 '기반 계층'입니다.",
+    "explanation_en": "CUDA (Compute Unified Device Architecture) is NVIDIA's parallel computing platform and programming model. It functions as a software development toolkit that lets developers use NVIDIA GPUs for general-purpose computing (GPGPU), enabling massive parallel speedups for AI, data science, and scientific simulation. It is the foundational layer beneath deep learning libraries (cuDNN) and container tooling — a different level of the stack."
+  },
+  {
+    "id": "q062",
+    "domain": "essential",
+    "type": "single",
+    "question": "A warehousing company wants to bring automation to its warehouses with robots that can learn on the go regarding new or re-assigned stocking. Which NVIDIA platform is appropriate for this use case?",
+    "question_ko": "한 창고 업체가 창고에 자동화를 도입하여 효율성을 높이고자 합니다. 로봇은 새로 할당되거나 재할당된 적재 작업에 대해 현장에서(on the go) 학습할 수 있어야 합니다. 이 고객의 사용 사례에 적합한 NVIDIA 플랫폼은 무엇입니까?",
+    "choices": [
+      "NVIDIA Isaac",
+      "NVIDIA Merlin",
+      "NVIDIA Riva"
+    ],
+    "choices_ko": [
+      "NVIDIA Isaac",
+      "NVIDIA Merlin",
+      "NVIDIA Riva"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA Isaac은 로보틱스 전용 AI 플랫폼으로, 시뮬레이션(Isaac Sim), 로봇 학습, 실시간 추론을 제공하여 '현장에서 학습(learn on the go)'하며 새 적재 작업에 적응해야 하는 창고 로봇에 정확히 부합합니다. Merlin은 추천 시스템용, Riva는 대화형 AI(음성 인식·합성)용이라 로보틱스와 무관합니다. 도메인 매핑: Isaac=로봇, Merlin=추천, Riva=음성, Metropolis=영상분석, Clara=헬스케어, DRIVE=자율주행.",
+    "explanation_en": "NVIDIA Isaac is the robotics-focused AI platform providing simulation (Isaac Sim), robot learning, and real-time inference — a precise fit for warehouse robots that must learn on the go and adapt to re-assigned stocking tasks. Merlin targets recommender systems and Riva targets conversational AI (speech recognition/synthesis), so neither fits robotics. Domain mapping: Isaac=robots, Merlin=recommendations, Riva=speech, Metropolis=video analytics, Clara=healthcare, DRIVE=autonomous driving."
+  },
+  {
+    "id": "q063",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which library removes the need for developers to optimize their applications for specific machines?",
+    "question_ko": "어떤 라이브러리가 개발자로 하여금 특정 머신에 맞춰 애플리케이션을 최적화할 필요가 없도록 해줍니까?",
+    "choices": [
+      "RoCE",
+      "MIG",
+      "NCCL"
+    ],
+    "choices_ko": [
+      "RoCE",
+      "MIG",
+      "NCCL"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NCCL(NVIDIA Collective Communications Library)은 다중 GPU/노드 통신(all-reduce, broadcast 등)에 최적화된 라이브러리로, 하드웨어 토폴로지와 네트워크 구성을 '자동으로 감지'해 최적 통신 경로를 선택하므로 개발자가 머신마다 코드를 튜닝할 필요가 없습니다. 풀이 팁 — 카테고리 구분: 질문이 '라이브러리'를 묻는데 RoCE는 네트워크 '프로토콜', MIG는 GPU 분할 '기능'이므로 층위만 봐도 걸러집니다. 관계 정리: NCCL은 '무엇으로 통신할지 골라주는 지휘자', NVLink/NVSwitch(노드 안)와 InfiniBand/RoCE(노드 간)는 '실제 도로'입니다.",
+    "explanation_en": "NCCL (NVIDIA Collective Communications Library) provides optimized primitives for multi-GPU and multi-node communication (all-reduce, broadcast, etc.). It automatically detects the hardware topology and network configuration, so developers don't have to tune their code for each machine. Category check is the shortcut: the question asks for a 'library', but RoCE is a network protocol and MIG is a GPU partitioning feature — only NCCL qualifies. Think of NCCL as the 'conductor' choosing how to communicate, while NVLink/NVSwitch (intra-node) and InfiniBand/RoCE (inter-node) are the actual 'roads'."
+  },
+  {
+    "id": "q064",
+    "domain": "essential",
+    "type": "single",
+    "question": "What factor has led to the rapid increase and adoption of AI?",
+    "question_ko": "AI의 급속한 성장과 도입을 이끈 요인은 무엇입니까?",
+    "choices": [
+      "The efficient use of large amounts of data to train models.",
+      "The adoption of software libraries for portability.",
+      "Standard software integration between CPUs and GPUs."
+    ],
+    "choices_ko": [
+      "대규모 데이터를 효율적으로 활용하여 모델을 학습시키는 것",
+      "이식성을 위한 소프트웨어 라이브러리의 채택",
+      "CPU와 GPU 간의 표준 소프트웨어 통합"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "현대 AI(특히 딥러닝)의 급속한 성장은 대규모 데이터셋을 효율적으로 활용하고 GPU 병렬 컴퓨팅과 결합하여 점점 더 크고 정확한 모델을 학습시킬 수 있게 된 것이 핵심 원동력입니다. 소프트웨어 라이브러리의 이식성이나 CPU-GPU 표준 통합은 보조적 요인일 뿐, NVIDIA 공식 자료가 제시하는 1차 동력은 아닙니다.",
+    "explanation_en": "The rapid growth of modern AI has been driven primarily by the ability to efficiently leverage massive datasets, combined with GPU-accelerated parallel computing, to train increasingly large and accurate models. Library portability and standard CPU-GPU integration are supporting factors, not the primary driver cited in NVIDIA's official materials."
+  },
+  {
+    "id": "q065",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which NVIDIA product is used for Data preparation in an AI workflow?",
+    "question_ko": "AI 워크플로우에서 데이터 준비(Data Preparation)에 사용되는 NVIDIA 제품은 무엇입니까?",
+    "choices": [
+      "DLSS",
+      "RAPIDS",
+      "DOCA"
+    ],
+    "choices_ko": [
+      "DLSS",
+      "RAPIDS",
+      "DOCA"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVIDIA RAPIDS는 GPU 가속으로 데이터 준비·정제·변환 등 데이터 사이언스 워크플로우를 빠르게 처리하는 오픈소스 라이브러리 모음입니다(예: GPU 가속 데이터프레임 cuDF). DLSS는 게임의 실시간 이미지 업스케일링 기술, DOCA는 BlueField DPU 개발 SDK로 데이터 준비와 무관합니다. AI 워크플로우 단계 매핑을 외워두면 이런 유형이 다 풀립니다: ① 데이터 준비=RAPIDS/DALI ② 학습=CUDA/cuDNN ③ 최적화=TensorRT ④ 서빙=Triton ⑤ 인프라 계층=DOCA/GPUDirect/NCCL.",
+    "explanation_en": "NVIDIA RAPIDS is the open-source suite of GPU-accelerated libraries for data science workflows including data preparation, cleaning, and transformation (e.g., cuDF for GPU dataframes). DLSS is a gaming graphics upscaling technology and DOCA is the SDK for BlueField DPUs — neither relates to data preparation. Workflow stage mapping solves this type: 1) data prep=RAPIDS/DALI, 2) training=CUDA/cuDNN, 3) optimization=TensorRT, 4) serving=Triton, 5) infrastructure layer=DOCA/GPUDirect/NCCL."
+  },
+  {
+    "id": "q066",
+    "domain": "essential",
+    "type": "single",
+    "question": "An AI system is deployed to detect when people enter a restricted area using multiple IP cameras. Which AI use case is being exercised?",
+    "question_ko": "여러 대의 IP 카메라를 사용하여 사람이 제한구역에 진입하는 것을 감지하는 AI 시스템이 배포되었습니다. 어떤 AI 사용 사례가 적용되고 있습니까?",
+    "choices": [
+      "Video Surveillance",
+      "Intelligent Video Analytics",
+      "Signal Processing"
+    ],
+    "choices_ko": [
+      "비디오 감시(Video Surveillance)",
+      "지능형 비디오 분석(Intelligent Video Analytics)",
+      "신호 처리(Signal Processing)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "지능형 비디오 분석(IVA, Intelligent Video Analytics)은 AI/딥러닝으로 영상 스트림을 '자동 분석'하여 특정 이벤트나 객체(예: 제한구역 진입자)를 감지하는 것으로, NVIDIA Metropolis 플랫폼과 연관된 공식 사용 사례 카테고리입니다. '비디오 감시(Surveillance)'는 영상을 촬영·모니터링하는 일반 인프라를 가리킬 뿐 AI 기반 감지 작업이 아니고, '신호 처리'는 오디오·레이더 등 원시 신호 처리를 의미하므로 오답입니다. 구분 포인트: '감지(detect)한다' = 지능형 분석.",
+    "explanation_en": "Intelligent Video Analytics (IVA) is the use of AI/deep learning to automatically analyze video streams and detect specific events or objects — such as a person entering a restricted zone — and is the NVIDIA-defined use case category associated with the Metropolis platform. 'Video surveillance' describes the general capture/monitoring infrastructure rather than the AI-driven detection task, and 'signal processing' deals with raw signals like audio or radar. The keyword 'detect' signals intelligent analytics."
+  },
+  {
+    "id": "q067",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which of the following is a high-level specification related to cooling requirements within a data center?",
+    "question_ko": "다음 중 데이터센터 내 냉각 요구사항과 관련된 상위 수준(high-level)의 사양은 무엇입니까?",
+    "choices": [
+      "Utilizing a centralized air conditioning system to cool the entire data center.",
+      "Maintaining a constant humidity level of 2% throughout the facility.",
+      "Implementing a hot aisle/cold aisle layout to optimize airflow and cooling efficiency."
+    ],
+    "choices_ko": [
+      "데이터센터 전체를 냉각하기 위해 중앙집중식 에어컨 시스템을 사용하는 것",
+      "시설 전체에 걸쳐 습도를 2%로 일정하게 유지하는 것",
+      "핫 아일/콜드 아일(Hot aisle/Cold aisle) 레이아웃을 구현하여 공기 흐름과 냉각 효율을 최적화하는 것"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "핫 아일/콜드 아일(Hot aisle/Cold aisle) 배치는 서버 랙을 교대로 배열해 차가운 흡기와 뜨거운 배기를 물리적으로 분리함으로써 공기 흐름과 냉각 효율을 최적화하는 표준 데이터센터 설계 원칙입니다. 두 공기가 섞이지 않으니 같은 냉각 용량으로 훨씬 효율적입니다. '중앙집중식 에어컨 하나'는 대규모 AI 데이터센터에 부적합한 단순화이고, '습도 2%'는 비현실적으로 낮은 함정 수치입니다(정상 목표는 약 40~60%).",
+    "explanation_en": "Hot aisle/cold aisle containment is a standard data center design principle: racks are arranged in alternating rows so cold intake air and hot exhaust air are physically separated, optimizing airflow and cooling efficiency — the same cooling capacity goes much further when the two air streams never mix. A single centralized AC system is an oversimplification unsuited to modern AI data centers, and 2% humidity is an unrealistically low distractor (typical targets are 40–60%)."
+  },
+  {
+    "id": "q068",
+    "domain": "infra",
+    "type": "single",
+    "question": "What are the most common modes of communication in clusters?",
+    "question_ko": "클러스터에서 가장 일반적인 통신 방식은 무엇입니까?",
+    "choices": [
+      "Linux and POSIX.",
+      "MPI and PVM.",
+      "CUDA and DOCA."
+    ],
+    "choices_ko": [
+      "Linux와 POSIX",
+      "MPI와 PVM",
+      "CUDA와 DOCA"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "MPI(Message Passing Interface)와 PVM(Parallel Virtual Machine)은 컴퓨팅 클러스터의 노드 간 메시지를 주고받는 데 쓰이는 전통적·업계 표준 통신 프로토콜/라이브러리로, 분산 시스템 전반의 조율된 병렬 처리를 가능하게 합니다. Linux/POSIX는 운영체제 표준·API이고, CUDA/DOCA는 각각 GPU 프로그래밍·DPU 개발 플랫폼이므로 '클러스터 통신 방식'이라는 질문 조건에 맞지 않습니다.",
+    "explanation_en": "MPI (Message Passing Interface) and PVM (Parallel Virtual Machine) are the classic, industry-standard communication protocols/libraries for passing messages between nodes in a computing cluster, enabling coordinated parallel processing. Linux and POSIX are operating system standards/APIs, and CUDA and DOCA are GPU programming and DPU development platforms respectively — none of them are cluster communication modes."
+  },
+  {
+    "id": "q069",
+    "domain": "infra",
+    "type": "single",
+    "question": "What is a key feature of the GPUDirect protocol for transfers between GPUs and other PCIe devices?",
+    "question_ko": "GPU와 다른 PCIe 장치 간 전송을 위한 GPUDirect 프로토콜의 핵심 기능은 무엇입니까?",
+    "choices": [
+      "It uses RDMA to eliminate CPU bottlenecks.",
+      "It uses virtual IP addresses to create private communication channels.",
+      "It uses the host's kernel."
+    ],
+    "choices_ko": [
+      "CPU 병목을 제거하기 위해 RDMA를 사용한다.",
+      "개인 통신 채널을 만들기 위해 가상 IP 주소를 사용한다.",
+      "호스트의 커널을 사용한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "GPUDirect RDMA는 GPUDirect 프로토콜의 핵심 기능으로, 네트워크 어댑터 등 PCIe 장치가 CPU를 거치지 않고 GPU 메모리에 직접 접근하게 하여 데이터 전송의 CPU 병목을 제거합니다. '가상 IP 주소로 통신 채널 생성'은 RDMA의 작동 방식이 아니며, '호스트 커널을 사용한다'는 보기는 GPUDirect의 목적(커널/CPU 우회)과 정반대라 오답입니다.",
+    "explanation_en": "GPUDirect RDMA is the core feature of the GPUDirect protocol: it lets network adapters and other PCIe devices access GPU memory directly, bypassing the CPU and eliminating CPU-related bottlenecks in data transfers. Virtual IP addressing has nothing to do with how RDMA works, and the option about using the host's kernel is the exact opposite of GPUDirect's purpose, which is to bypass kernel/CPU involvement."
+  },
+  {
+    "id": "q070",
+    "domain": "infra",
+    "type": "single",
+    "question": "In data center deployments, what are the three most important constraints to consider?",
+    "question_ko": "데이터센터 배포 시 고려해야 할 가장 중요한 세 가지 제약 요소는 무엇입니까?",
+    "choices": [
+      "Bandwidth, latency, and redundancy.",
+      "Budget, location, and security.",
+      "Physical space, power, and cooling."
+    ],
+    "choices_ko": [
+      "대역폭, 지연시간, 이중화(redundancy)",
+      "예산, 위치, 보안",
+      "물리적 공간, 전력, 냉각"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "물리적 공간, 전력, 냉각은 데이터센터가 실제로 수용·운영할 수 있는 서버/GPU 수를 결정하는 근본적인 물리 제약입니다(예: 랙이 공간보다 전력·냉각 한계에 먼저 걸리는 경우가 흔함). 대역폭·지연·이중화는 중요한 '네트워크 설계' 고려사항이고, 예산·위치·보안은 '비즈니스/운영' 요소라서 NVIDIA가 강조하는 최상위 물리적 배포 제약 3종이 아닙니다.",
+    "explanation_en": "Physical space, power, and cooling are the three fundamental physical constraints determining how many servers/GPUs a data center can house and operate — a rack often hits its power or cooling limit before its space limit, or vice versa. Bandwidth/latency/redundancy are networking design considerations, and budget/location/security are business factors, not the top-level physical constraints NVIDIA's curriculum emphasizes."
+  },
+  {
+    "id": "q071",
+    "domain": "infra",
+    "type": "single",
+    "question": "What is used in a DPU to enhance storage performance?",
+    "question_ko": "DPU에서 스토리지 성능을 향상시키기 위해 사용되는 것은 무엇입니까?",
+    "choices": [
+      "DPUDirect",
+      "STGEDirect",
+      "GPUDirect"
+    ],
+    "choices_ko": [
+      "DPUDirect",
+      "STGEDirect",
+      "GPUDirect"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "정답은 GPUDirect(Storage)입니다. GPU 메모리와 스토리지 간 직접 데이터 경로를 만들어 CPU를 우회하고 시스템 메모리 트래픽을 줄이는 실존 NVIDIA 기술이며, DPU는 그 경로에서 RDMA/NVMe-oF 같은 저수준 프로토콜 처리를 하드웨어로 가속하는 발판 역할을 합니다. 'DPUDirect'와 'STGEDirect'는 실존하지 않는 조어 함정입니다. 팁: NVIDIA의 '~Direct' 기술은 GPUDirect 계열(RDMA=네트워크, Storage=스토리지, P2P=GPU 간)뿐이며 셋 다 원리는 'CPU 우회 직접 접근'으로 동일합니다.",
+    "explanation_en": "The answer is GPUDirect (Storage): it creates a direct data path between GPU memory and storage, bypassing the CPU and reducing system memory traffic — a real, documented NVIDIA technology that the DPU accelerates by offloading the underlying RDMA/NVMe-oF protocol processing. 'DPUDirect' and 'STGEDirect' are invented, plausible-sounding distractors. Tip: NVIDIA's only '~Direct' family is GPUDirect (RDMA=network, Storage=NVMe, P2P=GPU-to-GPU), and all share one principle — direct access that bypasses the CPU."
+  },
+  {
+    "id": "q072",
+    "domain": "infra",
+    "type": "single",
+    "question": "What technology allows the lowest networking latency for AI training in a data center?",
+    "question_ko": "데이터센터에서 AI 학습을 위해 가장 낮은 네트워킹 지연시간을 제공하는 기술은 무엇입니까?",
+    "choices": [
+      "Ethernet",
+      "Fibre Channel",
+      "InfiniBand"
+    ],
+    "choices_ko": [
+      "Ethernet",
+      "Fibre Channel",
+      "InfiniBand"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "InfiniBand는 초저지연·고대역폭 통신을 위해 태생부터 설계된 기술로, RDMA로 CPU 개입을 우회하며 DGX SuperPOD 같은 대규모 학습 클러스터의 표준입니다. 비유로 정리하면 — Ethernet은 중간 집하장(CPU)을 거치는 일반 택배, RoCE는 그 도로 위에 직통 배송(RDMA)을 얹은 것, InfiniBand는 처음부터 직통 전용 도로라 가장 빠릅니다. Fibre Channel은 스토리지(SAN) 전용 통로라서 애초에 GPU 간 통신 경주의 참가자가 아닙니다.",
+    "explanation_en": "InfiniBand is purpose-built for ultra-low-latency, high-bandwidth communication, using RDMA to bypass the CPU — the standard for large-scale AI training clusters like DGX SuperPOD. Analogy: Ethernet is regular parcel post routed through sorting hubs (the CPU); RoCE adds direct drone delivery (RDMA) on the same roads; InfiniBand is a dedicated express road built for direct delivery from day one — the fastest. Fibre Channel is a storage (SAN) corridor and isn't even in this race."
+  },
+  {
+    "id": "q073",
+    "domain": "infra",
+    "type": "single",
+    "question": "A data center administrator must deploy infrastructure to support training of a large NLP model with a billion parameters, and they need the fastest method to train the model. What should the administrator recommend?",
+    "question_ko": "데이터센터 관리자가 10억 개의 파라미터를 가진 대규모 자연어 처리 모델의 학습을 지원할 인프라를 배포하라는 요청을 받았으며, 모델을 가장 빠르게 학습시킬 방법이 필요합니다. 관리자는 무엇을 추천해야 합니까?",
+    "choices": [
+      "Single server with 4-8 NVIDIA GPUs.",
+      "Two Node NVIDIA DGX Cluster.",
+      "NVIDIA DGX SuperPOD."
+    ],
+    "choices_ko": [
+      "4~8개의 NVIDIA GPU를 탑재한 단일 서버",
+      "2노드 NVIDIA DGX 클러스터",
+      "NVIDIA DGX SuperPOD"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NVIDIA DGX SuperPOD는 수백~수천 개의 GPU를 고속 InfiniBand 네트워킹·병렬 스토리지와 결합한 사전 검증된 대규모 AI 인프라로, 수십억~수조 파라미터 LLM을 최고 속도로 학습시키기 위해 설계되었습니다. 핵심은 GPU 수가 아니라 '많은 GPU + InfiniBand 저지연 연결'의 조합 — GPU만 많고 연결이 느리면 all-reduce 병목이 그대로 재현됩니다. 4~8 GPU 단일 서버나 2노드 클러스터는 10억 파라미터급 '최고 속도' 요구에 규모가 못 미칩니다. 팁: 'fastest', 'billion-parameter' 키워드 = SuperPOD.",
+    "explanation_en": "NVIDIA DGX SuperPOD is a massively scaled, pre-validated AI infrastructure combining hundreds to thousands of GPUs with high-speed InfiniBand networking and parallel storage — purpose-built to train billion-to-trillion-parameter models at maximum speed. The key is the combination of many GPUs AND low-latency InfiniBand: lots of GPUs on a slow network just reproduces the all-reduce bottleneck. A single 4–8 GPU server or a two-node cluster falls far short of the required scale. Tip: keywords 'fastest' and 'billion-parameter' point to SuperPOD."
+  },
+  {
+    "id": "q074",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which NVIDIA platform is designed for Edge deployments?",
+    "question_ko": "엣지(Edge) 배포를 위해 설계된 NVIDIA 플랫폼은 무엇입니까?",
+    "choices": [
+      "Jetson",
+      "RTX",
+      "DGX"
+    ],
+    "choices_ko": [
+      "Jetson",
+      "RTX",
+      "DGX"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA Jetson은 엣지 배포 전용 임베디드 AI 컴퓨팅 모듈군으로, 소형·저전력 디바이스로 로봇, 스마트 카메라, 드론, 산업 시스템에 데이터센터 왕복 없이 현장에서 AI 추론을 제공합니다. 물리적 위치로 3개를 구분하세요: Jetson=현장(로봇/카메라, 초소형·저전력), RTX=책상 위(워크스테이션/게이밍), DGX=데이터센터(대규모 학습). 참고로 Isaac(로봇 소프트웨어) + Jetson(하드웨어) 조합이 완성된 로봇 엣지 AI 시스템입니다.",
+    "explanation_en": "NVIDIA Jetson is the family of embedded AI computing modules purpose-built for edge deployments — compact, power-efficient devices bringing AI inference directly to robots, smart cameras, drones, and industrial systems without a round trip to the data center. Map by physical location: Jetson=in the field (tiny, low power), RTX=on the desk (workstations/gaming), DGX=in the data center (large-scale training). Note: Isaac (software) + Jetson (hardware) = a complete robotics edge AI system."
+  },
+  {
+    "id": "q075",
+    "domain": "infra",
+    "type": "single",
+    "question": "The BlueField-3 DPU mission is best defined by what three features?",
+    "question_ko": "BlueField-3 DPU의 미션을 가장 잘 정의하는 세 가지 특징은 무엇입니까?",
+    "choices": [
+      "offload, accelerate, converge",
+      "offload, accelerate, isolate",
+      "offload, isolate, virtualize"
+    ],
+    "choices_ko": [
+      "offload(오프로드), accelerate(가속), converge(수렴)",
+      "offload(오프로드), accelerate(가속), isolate(격리)",
+      "offload(오프로드), isolate(격리), virtualize(가상화)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVIDIA의 공식 BlueField DPU 미션은 세 동사로 표현됩니다: offload(네트워킹·스토리지·보안 작업을 CPU에서 덜어내고), accelerate(하드웨어 가속 엔진으로 더 빠르게 처리하며), isolate(호스트와 분리된 안전한 공간에서 실행해 제로 트러스트 보안 지원). 문장으로 이으면 'CPU 일을 덜어내서, 더 빠르게, 분리된 공간에서 실행한다' — DPU의 존재 이유 그 자체입니다. converge나 virtualize가 끼어든 보기는 공식 3대 미션이 아닙니다.",
+    "explanation_en": "NVIDIA's official BlueField DPU mission is expressed with three verbs: offload (move networking, storage, and security tasks off the CPU), accelerate (speed them up with hardware engines), and isolate (run infrastructure services in a secure domain separate from the host, supporting zero-trust). As one sentence: 'take work off the CPU, run it faster, in a separate secure place' — the very reason DPUs exist. 'Converge' and 'virtualize' are not part of this standard three-part mission."
+  },
+  {
+    "id": "q076",
+    "domain": "infra",
+    "type": "single",
+    "question": "Which network provides the optimal performance for multi-node AI training workloads?",
+    "question_ko": "다중 노드(Multi-Node) AI 학습 워크로드에 최적의 성능을 제공하는 네트워크는 무엇입니까?",
+    "choices": [
+      "Software Defined Network (SDN)",
+      "Fibre Channel",
+      "InfiniBand"
+    ],
+    "choices_ko": [
+      "소프트웨어 정의 네트워크(SDN)",
+      "Fibre Channel",
+      "InfiniBand"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "InfiniBand는 다중 노드 AI 학습에서 가장 높은 대역폭과 가장 낮은 지연시간을 제공하며, RDMA로 CPU를 우회하면서 노드 간 GPU-to-GPU 직접 통신을 가능하게 하는 대규모 학습 클러스터(DGX SuperPOD)의 표준 인터커넥트입니다. SDN은 특정 고성능 패브릭 기술이 아니라 네트워크 '관리/제어 방식'이고, Fibre Channel은 스토리지 영역 네트워크(SAN) 프로토콜이라 컴퓨트 간 저지연 통신용이 아닙니다.",
+    "explanation_en": "InfiniBand delivers the highest bandwidth and lowest latency for multi-node AI training, using RDMA for direct GPU-to-GPU communication across nodes while bypassing the CPU — the standard interconnect for clusters like DGX SuperPOD. SDN is a network management/control approach rather than a fabric technology, and Fibre Channel is a storage-area-network protocol not designed for compute-to-compute communication."
+  },
+  {
+    "id": "q077",
+    "domain": "infra",
+    "type": "single",
+    "question": "What is an advantage of on-premise GPU resources?",
+    "question_ko": "온프레미스(On-premise) GPU 자원의 장점은 무엇입니까?",
+    "choices": [
+      "Data sovereignty.",
+      "Flexible operating costs.",
+      "Access to unlimited compute."
+    ],
+    "choices_ko": [
+      "데이터 주권(Data Sovereignty)",
+      "유연한 운영 비용",
+      "무제한 컴퓨팅 자원 접근"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "데이터 주권(자사의 물리적 인프라와 법적 관할권 내에 데이터를 유지하는 것)은 온프레미스 배포의 핵심 장점으로, 데이터의 위치·보안·규정 준수에 대한 완전한 통제권을 줍니다. 논리 전개: 하드웨어를 '내가 소유'하니 데이터가 내 건물 안에만 있음 → 데이터 주권 확보. 반대로 '유연한 운영 비용'(종량제)과 '무제한 컴퓨팅'(탄력 확장)은 클라우드의 특징입니다 — 온프렘은 미리 산 하드웨어에 용량이 고정(CAPEX 기반)되기 때문입니다.",
+    "explanation_en": "Data sovereignty — keeping data within your own physical infrastructure and legal jurisdiction — is the key advantage of on-premise deployment, giving full control over data location, security, and compliance. The logic: you own the hardware → the data stays in your building → sovereignty. Flexible operating costs (pay-as-you-go) and access to virtually unlimited compute are cloud characteristics, since on-prem capacity is fixed by the hardware you bought (CAPEX-bound)."
+  },
+  {
+    "id": "q078",
+    "domain": "infra",
+    "type": "single",
+    "question": "In a data center, what is the key purpose of a UPS (Uninterruptible Power Supply)?",
+    "question_ko": "데이터센터에서 UPS(무정전 전원 공급장치)의 핵심 목적은 무엇입니까?",
+    "choices": [
+      "To provide backup power in case of a power outage.",
+      "To cool the data center and maintain optimal temperature.",
+      "To regulate the voltage of incoming power to prevent damage to equipment."
+    ],
+    "choices_ko": [
+      "정전 시 백업 전원을 공급하는 것",
+      "데이터센터를 냉각하여 최적의 온도를 유지하는 것",
+      "유입되는 전력의 전압을 조절하여 장비 손상을 방지하는 것"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "UPS의 핵심 목적은 주 전원이 차단되는 순간 즉시 백업 전력을 공급하여, 시스템이 계속 작동하거나 안전하게 종료될 시간을 확보하는 것입니다 — 정전 시 데이터 손실과 하드웨어 손상을 막고, 발전기가 기동될 때까지의 공백을 메웁니다. '무정전(Uninterruptible)'이라는 이름 자체가 답입니다. 냉각은 HVAC/CRAC 시스템의 역할이고, 전압 조절은 일부 UPS의 부가 기능일 뿐 핵심 목적이 아닙니다.",
+    "explanation_en": "A UPS's primary function is to supply backup power the instant the main power source fails, giving systems time to keep running or shut down gracefully — preventing data loss and hardware damage, and bridging the gap until generators spin up. The name 'Uninterruptible' is itself the answer. Cooling is handled by HVAC/CRAC systems, and voltage regulation is at most a secondary feature of some UPS units, not the core purpose."
+  },
+  {
+    "id": "q079",
+    "domain": "infra",
+    "type": "single",
+    "question": "What is an important consideration to ensure that proper airflow is provided through a data center rack?",
+    "question_ko": "데이터센터 랙을 통한 적절한 공기 흐름을 보장하기 위한 중요한 고려사항은 무엇입니까?",
+    "choices": [
+      "Cabinet doors should be left open at all times.",
+      "Blanking panels are installed wherever possible.",
+      "All systems should include dual-rotor fans and copper heatsinks."
+    ],
+    "choices_ko": [
+      "캐비닛 문을 항상 열어두어야 한다",
+      "가능한 한 블랭킹 패널(Blanking Panel)을 설치한다",
+      "모든 시스템에 듀얼 로터 팬과 구리 방열판을 포함해야 한다"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "블랭킹 패널은 서버 랙의 비어 있는 슬롯을 채워, 뜨거운 배기가 차가운 흡기 쪽으로 재순환되는 것을 막아 랙 전체에 일관된 공기 흐름을 보장하는 표준 모범 사례입니다. 빈 슬롯이 있으면 콜드 아일 공기가 랙을 관통하지 않고 그대로 핫 아일로 새서 '콜드→랙 내부→핫'의 정상 경로가 무너집니다. '캐비닛 문 상시 개방'은 오히려 핫/콜드 아일 설계를 망치는 반대 행동이고, 특정 팬·방열판 사양은 랙 수준의 공기 흐름 관리 원칙이 아닙니다.",
+    "explanation_en": "Blanking panels fill empty rack slots to prevent hot exhaust air from recirculating back to the cold intake side, keeping airflow through the rack consistent and directed — a standard data center best practice. With open slots, cold-aisle air leaks straight through to the hot aisle and the normal 'cold → through equipment → hot' path breaks down. Leaving cabinet doors open actually destroys the hot/cold aisle design, and specific fan/heatsink hardware is not a rack-level airflow principle."
+  },
+  {
+    "id": "q080",
+    "domain": "infra",
+    "type": "single",
+    "question": "What allows the CPU to be bypassed when using Ethernet?",
+    "question_ko": "Ethernet 사용 시 CPU를 우회할 수 있게 해주는 것은 무엇입니까?",
+    "choices": [
+      "DALI",
+      "RoCE",
+      "Jumbo packets"
+    ],
+    "choices_ko": [
+      "DALI",
+      "RoCE",
+      "Jumbo packets(점보 패킷)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RoCE(RDMA over Converged Ethernet)는 표준 Ethernet 위에서 RDMA를 구현하여, CPU를 거치지 않고 시스템 간 메모리끼리 데이터를 직접 전송함으로써 지연시간과 CPU 부하를 줄입니다. DALI는 딥러닝 학습용 데이터 로딩 라이브러리로 네트워킹과 무관하고, 점보 패킷은 Ethernet 프레임 크기를 키워 오버헤드를 줄일 뿐 CPU를 '우회'하지는 못합니다.",
+    "explanation_en": "RoCE (RDMA over Converged Ethernet) enables Remote Direct Memory Access over standard Ethernet, transferring data directly between systems' memories without involving the CPU — cutting latency and CPU overhead. DALI is NVIDIA's data-loading library for training pipelines (unrelated to networking), and jumbo packets merely enlarge Ethernet frames to reduce per-packet overhead — they do not bypass the CPU."
+  },
+  {
+    "id": "q081",
+    "domain": "infra",
+    "type": "single",
+    "question": "In an AI-driven autonomous vehicle system composed of GPUs, CPUs, and DPUs, which best explains how these components interact to optimize real-time object detection?",
+    "question_ko": "복잡한 AI 기반 자율주행 차량 시스템에서 컴퓨팅 인프라는 다수의 GPU, CPU, DPU로 구성됩니다. 실시간 객체 탐지 중 이 구성요소들이 성능을 최적화하기 위해 어떻게 상호작용하는지 가장 잘 설명하는 것은 무엇입니까?",
+    "choices": [
+      "The GPU handles object detection algorithms, the CPU manages the vehicle's control systems, and the DPU accelerates data movement and preprocessing tasks.",
+      "The CPU handles object detection algorithms, the GPU manages the vehicle's control systems, and the DPU stores training data.",
+      "The DPU runs the detection model, the GPU handles networking and security, and the CPU preprocesses camera images."
+    ],
+    "choices_ko": [
+      "GPU는 객체 탐지 알고리즘을 처리하고, CPU는 차량의 제어 시스템을 관리하며, DPU는 데이터 이동 및 전처리 작업을 가속화한다.",
+      "CPU가 객체 탐지 알고리즘을 처리하고, GPU가 차량 제어 시스템을 관리하며, DPU는 학습 데이터를 저장한다.",
+      "DPU가 탐지 모델을 실행하고, GPU가 네트워킹과 보안을 담당하며, CPU가 카메라 이미지를 전처리한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "GPU는 YOLO/SSD 같은 딥러닝 기반 객체 탐지처럼 고도로 병렬화된 워크로드에 최적이고, CPU는 순차 처리에 강해 조향·제동 등 실시간 차량 제어와 전체 조율에 적합하며, DPU는 데이터가 GPU에 도달하기 전에 데이터 이동·네트워킹·보안·전처리(스케일링, 정규화)를 오프로드하는 하드웨어 가속기 역할을 합니다. 각 칩이 아키텍처적으로 최적화된 워크로드에 집중하는 이 3분업 구조가 정답이며, 역할이 서로 뒤바뀐 보기들(CPU가 탐지, DPU가 모델 실행 등)은 오답입니다.",
+    "explanation_en": "GPUs are best suited for highly parallel workloads like deep-learning object detection (e.g., YOLO, SSD); CPUs are optimized for serial processing, making them ideal for real-time vehicle dynamics and overall control; and DPUs act as hardware accelerators that offload data movement, networking, security, and preprocessing (scaling/normalization) before data reaches the GPU. Each component focuses on the workload type its architecture is optimized for — options that swap these roles (CPU doing detection, DPU running the model, etc.) are wrong."
+  },
+  {
+    "id": "q082",
+    "domain": "infra",
+    "type": "single",
+    "question": "How does NVSwitch contribute to accelerating network performance in an AI environment?",
+    "question_ko": "NVSwitch는 AI 환경에서 네트워크 성능 가속화에 어떻게 기여합니까?",
+    "choices": [
+      "NVSwitch reduces latency by enabling direct communication between GPUs without going through the CPU.",
+      "NVSwitch amplifies the bandwidth of traditional Ethernet networks to speed up AI data processing.",
+      "NVSwitch enhances signal strength for better wireless connectivity in AI applications.",
+      "NVSwitch increases the storage capacity of AI systems by directly connecting to SSDs."
+    ],
+    "choices_ko": [
+      "NVSwitch는 CPU를 거치지 않고 GPU 간 직접 통신을 가능하게 하여 네트워크 지연시간을 줄인다.",
+      "NVSwitch는 기존 Ethernet 네트워크의 대역폭을 증폭시켜 AI 데이터 처리 속도를 높인다.",
+      "NVSwitch는 AI 애플리케이션에서 더 나은 무선 연결을 위해 신호 강도를 향상시킨다.",
+      "NVSwitch는 솔리드 스테이트 드라이브(SSD)에 직접 연결하여 AI 시스템의 저장 용량을 늘린다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVSwitch는 서버(DGX) 내부의 모든 GPU가 CPU나 PCIe 버스를 거치지 않고 전체 NVLink 대역폭으로 서로 직접 통신하게 하는 고속 인터커넥트 패브릭입니다. 어떤 GPU 쌍이든 중앙 스위치를 통해 동일한 최고 속도로 연결되는 것이 'all-to-all' 통신의 의미입니다. 기억법 — '박스 안'(GPU↔GPU)=NVSwitch, '박스 사이'(서버↔서버)=InfiniBand. Ethernet 증폭·무선 신호·SSD 연결은 전혀 무관한 영역의 함정 보기입니다.",
+    "explanation_en": "NVSwitch is NVIDIA's high-speed interconnect fabric enabling all GPUs within a server (e.g., DGX systems) to communicate directly with each other at full NVLink bandwidth, without routing through the CPU or PCIe bus — dramatically cutting latency and enabling all-to-all GPU communication. Memory aid: inside the box (GPU↔GPU) = NVSwitch; between boxes (server↔server) = InfiniBand. Ethernet amplification, wireless signals, and SSD connectivity are unrelated domains."
+  },
+  {
+    "id": "q083",
+    "domain": "essential",
+    "type": "single",
+    "question": "Which data format is best for efficient and accurate AI model training?",
+    "question_ko": "효율적이고 정확한 AI 모델 학습에 가장 적합한 데이터 형식은 무엇입니까?",
+    "choices": [
+      "Mixed precision (FP8/FP16/TF32/FP32)",
+      "Brain Floating-point format (BF16)",
+      "Double-precision floating point (FP64)"
+    ],
+    "choices_ko": [
+      "혼합 정밀도(Mixed Precision, FP8/FP16/TF32/FP32)",
+      "Brain Floating-point 형식(BF16)",
+      "배정밀도 부동소수점(FP64)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "혼합 정밀도 학습은 대부분의 연산에 저정밀 형식(FP8/FP16/TF32)을 써서 텐서 코어 가속으로 속도·메모리를 확보하고, 수치 안정성이 필요한 부분은 FP32를 유지해 정확도를 지킵니다. 형식별 단독 사용의 문제: FP16만=작은 그래디언트 소실로 불안정, FP32만=느리고 메모리 과다, FP64만=딥러닝에 불필요하게 느림 → 혼합이 둘 다 챙기는 유일한 답. 팁: 지문에 'efficient AND accurate'처럼 두 조건이 함께 걸리면 한쪽만 극대화한 보기가 아닌 '균형 잡는 보기'가 정답 신호입니다.",
+    "explanation_en": "Mixed precision training runs the bulk of computation in lower-precision formats (FP8/FP16/TF32) to exploit Tensor Core speed and reduce memory, while retaining FP32 where numerical stability matters. Single-format problems: FP16-only loses small gradients, FP32-only is slow and memory-hungry, FP64-only is needlessly expensive for deep learning — only the mix secures both speed and accuracy. Tip: when a question demands two qualities at once ('efficient AND accurate'), the balanced option is usually the answer."
+  },
+  {
+    "id": "q084",
+    "domain": "infra",
+    "type": "single",
+    "question": "What are some of the key benefits of investing in GPUs from a cloud service provider?",
+    "question_ko": "클라우드 서비스 제공업체로부터 GPU에 투자하는 것의 핵심 이점은 무엇입니까?",
+    "choices": [
+      "Low financial barrier to entry and ability to rapidly scale up or down.",
+      "Higher performance GPUs than on-premise.",
+      "Full stack control of the environment and choice of networking."
+    ],
+    "choices_ko": [
+      "낮은 초기 진입 비용과 신속하게 확장/축소할 수 있는 능력",
+      "온프레미스보다 더 높은 성능의 GPU",
+      "환경에 대한 풀스택 제어 및 네트워킹 선택권"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "클라우드 GPU는 낮은 초기 진입 비용(대규모 CAPEX 불필요, 종량제)과 수요에 따른 신속한 확장/축소(탄력성)가 핵심 장점입니다. '온프렘보다 고성능 GPU' 보기는 틀렸습니다 — 클라우드도 동일한 하드웨어(H100, A100)를 제공할 뿐 더 우수하지 않습니다. '풀스택 제어와 네트워킹 선택권'은 오히려 온프레미스의 장점입니다 — 클라우드는 인프라 수준 제어를 추상화하고 제한하기 때문입니다.",
+    "explanation_en": "Cloud GPUs offer a low financial barrier to entry (no large upfront CAPEX, pay-as-you-go) and elastic scalability up or down on demand — the defining advantages of the cloud consumption model. The 'higher performance than on-prem' claim is wrong: clouds offer the same GPU hardware (H100, A100), not faster ones. Full-stack control and choice of networking is actually an on-premise advantage, since clouds abstract away and limit infrastructure-level control."
+  },
+  {
+    "id": "q085",
+    "domain": "infra",
+    "type": "single",
+    "question": "How many out-of-band network management connections are in a DGX H100 system?",
+    "question_ko": "DGX H100 시스템에는 몇 개의 대역외(Out-of-band) 네트워크 관리 연결이 있습니까?",
+    "choices": [
+      "1",
+      "4",
+      "2"
+    ],
+    "choices_ko": [
+      "1개",
+      "4개",
+      "2개"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX H100은 BMC(Baseboard Management Controller)를 통해 제공되는 단일 아웃오브밴드(OOB) 관리 연결을 갖습니다 — 원격 모니터링·제어·펌웨어/콘솔 접근(Redfish, IPMI, SNMP, KVM)용 전용 1GbE RJ45 포트 1개이며, 인밴드 관리·컴퓨트 네트워킹과는 별개입니다. NVIDIA 공식 DGX BasePOD 레퍼런스 아키텍처가 이 단일 BMC/OOB 포트 설계를 명시합니다. (커뮤니티에서는 2개로 세는 의견도 있으나 공식 문서 기준 1개가 신뢰할 수 있는 정답입니다.)",
+    "explanation_en": "The DGX H100 has a single out-of-band (OOB) management connection, provided through the BMC: one dedicated 1GbE RJ45 port for remote monitoring, control, and firmware/console access (Redfish, IPMI, SNMP, KVM) — separate from in-band management and compute networking. NVIDIA's official DGX BasePOD reference architecture confirms the single BMC/OOB port design (community votes are split with 2, but the official document says one)."
+  }
+]

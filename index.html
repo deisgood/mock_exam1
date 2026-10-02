@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NVIDIA 자격증 모의 시험장 — NCA-AIIO · NCP-AII</title>
+    <script>
+      // 첫 페인트 전에 테마/글자 크기 적용 (깜빡임 방지)
+      document.documentElement.dataset.theme =
+        localStorage.getItem('nca-theme') ||
+        (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      var fs = Number(localStorage.getItem('nca-fontsize'))
+      if (fs >= 10 && fs <= 20) document.documentElement.style.setProperty('--qfs', fs + 'px')
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,234 @@
+[
+  {
+    "id": "n061",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator needs to configure a BlueField DPU and enable RShim on the baseboard management controller (BMC). Which command should be executed?",
+    "question_ko": "시스템 관리자가 BlueField DPU를 구성하고 baseboard management controller(BMC)에서 RShim을 활성화해야 합니다. 어떤 명령을 실행해야 하는가?",
+    "choices": [
+      "ipmitool raw 0x32 0x6a 1",
+      "systemctl restart rshim",
+      "systemctl enable bmc-rshim.service",
+      "scp <path_to_bfb> root@<bmc_ip>:/dev/rshim0/boot"
+    ],
+    "choices_ko": [
+      "ipmitool raw 0x32 0x6a 1",
+      "systemctl restart rshim",
+      "systemctl enable bmc-rshim.service",
+      "scp <path_to_bfb> root@<bmc_ip>:/dev/rshim0/boot"
+    ],
+    "answer": [0],
+    "explanation": "BlueField DPU 아키텍처에서 RShim 인터페이스는 DPU와 호스트 또는 BMC 사이의 필수 통신 채널을 제공하며 초기 프로비저닝, 콘솔 접근, 펌웨어 로딩에 사용됩니다. DPU는 보통 호스트 PCIe 버스로 관리되지만 일부 구성에서는 서버 BMC를 통해 out-of-band로 관리해야 합니다. 이 기능을 활성화하려면 내부 USB-to-BMC 브리지를 통한 RShim 기능을 토글하기 위해 특정 저수준 명령을 BMC로 전송해야 합니다. ipmitool raw 0x32 0x6a 1은 NVIDIA DGX 및 인증 시스템에서 BMC-to-DPU RShim 경로를 활성화하는 raw IPMI 16진 코드입니다. 활성화되면 BMC가 DPU를 USB 장치로 인식할 수 있게 되어, 호스트 CPU가 꺼져 있거나 응답하지 않아도 관리자가 BFB 이미지를 /dev/rshim0/boot로 푸시할 수 있습니다. systemctl 계열 명령들은 드라이버가 이미 로드되고 하드웨어 경로가 활성화되어 있다고 가정하는 호스트 측 서비스 명령인 반면, raw IPMI 명령은 하드웨어 경로 자체를 여는 데 필요합니다. BFB를 scp로 보내는 것은 경로가 열린 뒤의 다음 단계입니다.",
+    "explanation_en": "In NVIDIA BlueField DPU architectures, the RShim interface provides a vital communication channel between the DPU and the host or BMC, typically used for early-stage provisioning, console access, and firmware loading. While the DPU is usually managed via the host's PCIe bus, certain data center configurations require out-of-band management via the server's BMC. To enable this capability, a specific low-level command must be sent to the BMC to toggle the RShim functionality over the internal USB-to-BMC bridge. The command ipmitool raw 0x32 0x6a 1 is the verified raw IPMI hex code used in NVIDIA DGX and certified systems to enable the BMC-to-DPU RShim path. Once enabled, the BMC can see the DPU as a USB device, allowing the administrator to push a BlueField Boot (BFB) image to /dev/rshim0/boot even if the host CPU is powered off. The systemctl options are host-side service commands that assume the driver is already loaded and the hardware path is active, whereas the raw IPMI command is required to enable the hardware path itself."
+  },
+  {
+    "id": "n062",
+    "domain": "d1",
+    "type": "single",
+    "question": "During a 48-hour NeMo question-answering model burn-in test, GPU memory errors occur when processing large datasets. Which configuration strategy prevents Out-of-Memory (OOM) errors while maintaining processing efficiency?",
+    "question_ko": "48시간 동안의 NeMo 질의응답 모델 번인 테스트 중, 대용량 데이터셋을 처리할 때 GPU 메모리 오류가 발생합니다. 처리 효율성을 유지하면서 Out-of-Memory(OOM) 오류를 방지하는 구성 전략은 무엇인가?",
+    "choices": [
+      "Set blocksize=\"1GB\" for data loading and enable RMM asynchronous allocation.",
+      "Switch from FP16 to FP32 precision for numerical stability.",
+      "Disable add_filename for Parquet files to reduce metadata.",
+      "Increase files_per_partition to 1000 for larger batch processing."
+    ],
+    "choices_ko": [
+      "데이터 로딩을 위해 blocksize=\"1GB\"를 설정하고 RMM 비동기 할당을 활성화한다.",
+      "수치적 안정성을 위해 FP16에서 FP32 정밀도로 전환한다.",
+      "메타데이터를 줄이기 위해 Parquet 파일에 대해 add_filename을 비활성화한다.",
+      "더 큰 배치 처리를 위해 files_per_partition을 1000으로 늘린다."
+    ],
+    "answer": [0],
+    "explanation": "NeMo와 LLM 학습 워크로드는 HBM에 극도로 부담을 줍니다. OOM 오류는 전체 데이터셋이 커서라기보다 메모리 단편화나 데이터 셔플링·배치 로딩 중 할당량의 갑작스러운 급증이 가용 GPU 메모리를 초과해 발생하는 경우가 많습니다. 이를 완화하기 위해 엔지니어는 비동기 할당자를 제공하는 RMM(RAPIDS Memory Manager)을 활용합니다. RMM 비동기 할당을 켜면 시스템이 메모리 풀을 사전 할당하고 표준 CUDA 할당자보다 효율적으로 관리해 지속적 할당·해제 오버헤드가 줄어듭니다. 또한 데이터 로딩에 특정 blocksize(예: 1GB)를 설정하면 수집 파이프라인이 관리 가능하고 결정론적인 청크 단위로 데이터를 읽어, 거대한 파일 전체를 한 번에 메모리로 로드하려는 시도를 막습니다. FP32로 전환하면 메모리 사용량이 오히려 두 배가 되어 OOM 가능성이 높아지고, files_per_partition을 1000으로 늘리는 것도 파티션당 메모리 요구를 키웁니다. add_filename 비활성화는 메타데이터 수준의 미미한 절감이라 근본 해결이 아닙니다.",
+    "explanation_en": "NeMo and large language model training workloads are extremely demanding on HBM. Out-of-Memory errors often occur not because the total dataset is too large, but because memory fragmentation or sudden spikes in allocation during data shuffling or batch loading exceed available GPU memory. To mitigate this during intensive burn-in tests, engineers use the RMM (RAPIDS Memory Manager) library, which provides an asynchronous allocator. Enabling RMM asynchronous allocation lets the system pre-allocate a memory pool and manage it more efficiently than the standard CUDA allocator, reducing the overhead of constant allocations and deallocations. Furthermore, setting a specific blocksize (e.g., 1GB) for data loading ensures the ingestion pipeline reads data in manageable, deterministic chunks, preventing attempts to load massive files entirely into memory at once. Switching to FP32 would double the memory footprint and increase OOM likelihood, and raising files_per_partition to 1000 increases per-partition memory demand. Disabling add_filename saves only trivial metadata."
+  },
+  {
+    "id": "n063",
+    "domain": "d2",
+    "type": "single",
+    "question": "A customer is designing an AI Factory for enterprise-scale deployments and wants to ensure redundancy and load balancing for the management and storage networks. Which feature should be implemented on the Ethernet switches?",
+    "question_ko": "한 고객이 엔터프라이즈 규모 배포를 위한 AI Factory를 설계하고 있으며, 관리 네트워크와 스토리지 네트워크의 이중화 및 로드 밸런싱을 보장하고자 합니다. Ethernet 스위치에서 어떤 기능을 구현해야 하는가?",
+    "choices": [
+      "Implement redundant switches with spanning tree protocol.",
+      "MLAG for bonded interfaces across redundant switches.",
+      "Use only one switch for all management and storage traffic.",
+      "Disable VLANs and use unmanaged switches."
+    ],
+    "choices_ko": [
+      "spanning tree protocol을 사용한 이중화 스위치를 구현한다.",
+      "이중화 스위치 전반에 걸친 본딩 인터페이스를 위한 MLAG.",
+      "모든 관리 및 스토리지 트래픽에 스위치 하나만 사용한다.",
+      "VLAN을 비활성화하고 비관리형(unmanaged) 스위치를 사용한다."
+    ],
+    "answer": [1],
+    "explanation": "AI Factory의 North-South 및 관리·스토리지 Ethernet 패브릭에서는 고가용성이 가장 중요합니다. 자체 라우팅 로직을 쓰는 InfiniBand 컴퓨트 패브릭과 달리 Ethernet 측은 표준 데이터센터 프로토콜에 의존합니다. 진정한 하드웨어 이중화와 가용 대역폭 배증(로드 밸런싱)을 위해 NVIDIA는 MLAG(Multi-Chassis Link Aggregation)를 권장합니다. MLAG는 두 물리 스위치가 DGX 노드에게 하나의 논리 단위로 보이게 합니다. DGX는 두 Ethernet NIC를 본딩(802.3ad LACP)하고 각 스위치에 케이블을 하나씩 연결합니다. 이 구성은 한 스위치에 장애가 나도 Spanning Tree Protocol과 관련된 느린 수렴 없이 트래픽이 다른 링크로 매끄럽게 유지되게 하며, 무거운 스토리지 트래픽에 두 링크의 합산 대역폭을 활용하게 합니다. STP는 이중화는 되지만 한쪽 경로를 차단해 대역폭을 절반만 쓰고 수렴이 느립니다. 단일 스위치나 비관리형 하드웨어는 단일 장애 지점을 만들고 트래픽 격리(VLAN)도 불가능합니다.",
+    "explanation_en": "For the North-South and management/storage Ethernet fabrics in an AI Factory, high availability is paramount. Unlike the InfiniBand compute fabric, which uses its own routing logic, the Ethernet side relies on standard data center protocols. To provide true hardware redundancy and double the available bandwidth, NVIDIA recommends MLAG (Multi-Chassis Link Aggregation). MLAG allows two physical switches to appear as a single logical unit to the DGX nodes. The DGX can then bond its two Ethernet NICs (in an 802.3ad LACP bond) and connect one cable to each switch. If one switch fails, traffic seamlessly stays on the other link without the slow convergence times associated with Spanning Tree Protocol, and the cluster can use the combined bandwidth of both links for heavy storage traffic. STP provides redundancy but blocks one path, halving usable bandwidth with slow convergence. Using a single switch or unmanaged hardware creates single points of failure and lacks the traffic isolation (VLANs) required for secure AI infrastructure."
+  },
+  {
+    "id": "n064",
+    "domain": "d4",
+    "type": "single",
+    "question": "During multi-node HPL burn-in, GPUs show uneven utilization. Which configuration ensures balanced workload distribution?",
+    "question_ko": "다중 노드 HPL 번인 중, GPU들이 불균등한 사용률을 보입니다. 어떤 구성이 균형 잡힌 워크로드 분산을 보장하는가?",
+    "choices": [
+      "Enable HPL_USE_NVSHMEM=1 for shared memory acceleration",
+      "HPL_RUN_GEMM_TESTS to skip validation",
+      "Set --gpu-affinity and --cpu-affinity to align GPU and NUMA nodes",
+      "HPL_OOC_TILE_M to 8192 for larger blocks"
+    ],
+    "choices_ko": [
+      "공유 메모리 가속을 위해 HPL_USE_NVSHMEM=1을 활성화한다",
+      "검증을 건너뛰기 위해 HPL_RUN_GEMM_TESTS를 사용한다",
+      "GPU와 NUMA 노드를 정렬하기 위해 --gpu-affinity와 --cpu-affinity를 설정한다",
+      "더 큰 블록을 위해 HPL_OOC_TILE_M을 8192로 설정한다"
+    ],
+    "answer": [2],
+    "explanation": "다중 노드 클러스터의 불균등한 GPU 사용률은 PCIe/NUMA 불균형의 전형적 증상입니다. DGX H100에서는 각 GPU 그룹이 특정 CPU 소켓 및 특정 고속 NIC와 물리적으로 가깝게 배치됩니다. 워크로드가 엄격한 어피니티 없이 실행되면 Socket 0에 연결된 CPU 코어의 MPI 랭크가 Socket 1에 연결된 GPU를 제어하려 할 수 있습니다. 이는 데이터가 프로세서 간 링크(UPI/xGMI)를 통과하도록 강제하는데, 이 경로는 직접 PCIe 경로보다 지연이 훨씬 높고 대역폭이 낮습니다. 이 병목으로 일부 GPU가 다른 GPU보다 데이터를 오래 기다리게 되어 불균등 사용률이 나타납니다. 해결책은 어피니티를 강제하는 것입니다. --gpu-affinity와 --cpu-affinity를 설정하면 각 GPU가 자신의 로컬 NUMA 노드 CPU 코어에 의해 관리되어 지연이 최소화되고 모든 GPU가 동일 속도로 데이터를 받습니다. 검증을 건너뛰는 보기는 번인을 무효화하고, NVSHMEM이나 타일 크기 조정은 NUMA 정렬 문제를 해결하지 못합니다.",
+    "explanation_en": "Uneven GPU utilization in a multi-node cluster is a classic symptom of PCIe/NUMA imbalance. In a DGX H100, each set of GPUs is physically closer to a specific CPU socket and a specific set of high-speed NICs. If the workload is launched without strict affinity, an MPI rank running on a CPU core attached to Socket 0 might attempt to control a GPU attached to Socket 1. This forces data to cross the inter-processor links (UPI/xGMI), which have significantly higher latency and lower bandwidth than a direct PCIe path. This bottlenecking causes some GPUs to wait for data longer than others, producing the uneven utilization observed. The solution is to enforce affinity: setting --gpu-affinity and --cpu-affinity ensures each GPU is managed by a CPU core on its local NUMA node, minimizing latency so every GPU receives data at the same rate. Skipping validation would invalidate the burn-in, and neither NVSHMEM nor tile-size tuning addresses NUMA misalignment."
+  },
+  {
+    "id": "n065",
+    "domain": "d3",
+    "type": "single",
+    "question": "After initial setup and health checks, the DGX H100 system administrator wants to verify that containers can access GPUs before running production workloads. Which method is recommended for this validation?",
+    "question_ko": "초기 설정 및 상태 점검 후, DGX H100 시스템 관리자는 프로덕션 워크로드를 실행하기 전에 컨테이너가 GPU에 접근할 수 있는지 확인하려고 합니다. 이 검증에 권장되는 방법은 무엇인가?",
+    "choices": [
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 systemctl",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 ls -la",
+      "sudo docker run --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi"
+    ],
+    "choices_ko": [
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 systemctl",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 ls -la",
+      "sudo docker run --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi"
+    ],
+    "answer": [3],
+    "explanation": "NVIDIA 가속 컨테이너 환경의 결정적 스모크 테스트는 NGC에서 받은 컨테이너 내부에서 nvidia-smi를 실행하는 것입니다. 정답 보기는 필요한 세 요소를 모두 포함하는 유일한 명령입니다. 첫째 --gpus all은 NVIDIA Container Toolkit이 호스트의 GPU 디바이스 노드와 드라이버 라이브러리를 컨테이너에 매핑하는 데 필요하며, 이것이 없으면 컨테이너는 어떤 GPU도 인식하지 못합니다. 둘째 nvcr.io/nvidia/cuda 공식 이미지를 쓰면 컨테이너가 호스트 드라이버와 통신하는 데 필요한 사용자 공간 라이브러리를 갖춥니다. 셋째 nvidia-smi가 드라이버와 하드웨어를 직접 조회합니다. GPU 테이블이 출력되면 물리 하드웨어와 커널 드라이버부터 컨테이너 런타임과 툴킷까지 전체 스택이 올바르게 작동함을 입증합니다. ls -la나 systemctl은 컨테이너가 실행된다는 것만 보여줄 뿐 GPU 접근성이나 드라이버 통신을 전혀 검증하지 못하고, --gpus 플래그가 빠진 보기는 GPU를 주입하지 않습니다.",
+    "explanation_en": "The definitive smoke test for an NVIDIA-accelerated container environment is running nvidia-smi from within a container pulled from NGC. The correct option is the only command including all three necessary components. First, --gpus all is required by the NVIDIA Container Toolkit to map the host's GPU device nodes and driver libraries into the container; without it the container will not see any GPUs. Second, using an official CUDA base image from NGC ensures the container has the user-space libraries needed to communicate with the host NVIDIA driver. Third, nvidia-smi specifically queries the driver and hardware. If it successfully prints the GPU table, it proves the entire stack — from physical hardware and kernel driver to container runtime and toolkit — is functioning correctly. Running ls -la or systemctl only tests that the container can run, verifying nothing about GPU accessibility, and the option missing the --gpus flag injects no GPUs at all."
+  },
+  {
+    "id": "n066",
+    "domain": "d2",
+    "type": "single",
+    "question": "A cluster administrator is preparing to update the firmware on a DGX H100 system, including the GPU tray (baseboard). What is the correct sequence of steps to perform a safe and successful firmware upgrade?",
+    "question_ko": "클러스터 관리자가 GPU 트레이(베이스보드)를 포함하여 DGX H100 시스템의 펌웨어를 업데이트하려고 준비하고 있습니다. 안전하고 성공적인 펌웨어 업그레이드를 수행하기 위한 올바른 단계 순서는 무엇인가?",
+    "choices": [
+      "Update the BMC and skip the GPU tray and motherboard tray updates if the system appears healthy.",
+      "Perform a cold reset, stop all GPU activity, update and reboot the BMC, update motherboard and tray components, and verify completion.",
+      "Update the GPU tray first, then the motherboard tray, and reboot the BMC after all updates are complete.",
+      "Stop all GPU activity, update and reboot the BMC, update motherboard and tray components, perform a cold reset, and verify completion."
+    ],
+    "choices_ko": [
+      "BMC를 업데이트하고, 시스템이 정상으로 보이면 GPU 트레이 및 마더보드 트레이 업데이트는 건너뛴다.",
+      "cold reset을 수행하고, 모든 GPU 활동을 중지하고, BMC를 업데이트 후 재부팅하고, 마더보드 및 트레이 구성 요소를 업데이트하고, 완료를 검증한다.",
+      "GPU 트레이를 먼저 업데이트한 다음 마더보드 트레이를 업데이트하고, 모든 업데이트가 완료된 후 BMC를 재부팅한다.",
+      "모든 GPU 활동을 중지하고, BMC를 업데이트 후 재부팅하고, 마더보드 및 트레이 구성 요소를 업데이트하고, cold reset을 수행한 후 완료를 검증한다."
+    ],
+    "answer": [3],
+    "explanation": "DGX H100 펌웨어 업데이트는 하드웨어 손상을 방지하기 위해 신중한 조율이 필요한 다단계 프로세스입니다. 첫 번째이자 가장 중요한 단계는 플래싱 중 충돌을 피하기 위해 실행 중인 워크로드가 없도록 모든 GPU 활동을 중지하는 것입니다. 표준 절차는 BMC를 업데이트하고 재부팅하는 것으로 시작하는데, BMC가 다른 모든 트레이의 전원 시퀀싱과 통신을 관리하므로 최신 관리 로직이 활성화되어 있는 것이 후속 단계의 전제 조건이기 때문입니다. BMC가 온라인으로 돌아오면 마더보드 및 GPU 트레이 업데이트를 진행합니다. 그러나 이 업데이트들은 플래시 메모리에 스테이징되며 하드웨어가 cold reset을 거치기 전까지 적용되지 않는 경우가 많습니다. 이 전원 사이클이 여러 CPLD와 실리콘 root-of-trust 모듈이 새 펌웨어 이미지로 부팅되도록 강제합니다. 마지막으로 nvsm show health나 BMC 대시보드로 모든 구성 요소가 목표 버전과 Healthy 상태를 보고하는지 검증합니다. cold reset을 맨 앞에 두는 보기는 순서가 어긋나고, BMC를 마지막에 재부팅하거나 트레이 업데이트를 생략하는 보기는 펌웨어 상태 불일치를 남깁니다.",
+    "explanation_en": "Updating firmware on a DGX H100 is a multi-stage process requiring careful orchestration to prevent hardware corruption. The first and most critical step is ensuring no workloads are running (stopping all GPU activity) to avoid conflicts during flashing. The standard NVIDIA procedure begins with updating and rebooting the BMC, because the BMC manages power sequencing and communication for all other trays; having the latest management logic active is a prerequisite for subsequent steps. Once the BMC is back online, the administrator proceeds with motherboard and GPU tray updates. However, these updates are staged in flash memory and often do not take effect until the hardware undergoes a cold reset, which forces the various CPLDs and silicon root-of-trust modules to boot from the newly written images. Finally, verification via nvsm show health or the BMC dashboard confirms all components report target versions and a Healthy status. Placing the cold reset first is out of order, and rebooting the BMC last or skipping tray updates leaves mismatched firmware states."
+  },
+  {
+    "id": "n067",
+    "domain": "d2",
+    "type": "single",
+    "question": "A network engineer is tasked with configuring the management, storage, and compute networks for a new DGX BasePOD deployment. Which statement best describes the network segmentation required for optimal operation?",
+    "question_ko": "네트워크 엔지니어가 새로운 DGX BasePOD 배포를 위한 관리, 스토리지, 컴퓨트 네트워크를 구성하는 업무를 맡았습니다. 최적의 운영에 필요한 네트워크 세분화(segmentation)를 가장 잘 설명하는 것은 무엇인가?",
+    "choices": [
+      "A single VLAN for all types of network traffic.",
+      "Two networks: one for management and one for compute.",
+      "Four networks: compute, storage, out-of-band, and management.",
+      "Three networks: compute, storage, and management, with BMC traffic carried on the management network."
+    ],
+    "choices_ko": [
+      "모든 유형의 네트워크 트래픽에 대해 단일 VLAN.",
+      "두 개의 네트워크: 관리용 하나, 컴퓨트용 하나.",
+      "네 개의 네트워크: 컴퓨트, 스토리지, out-of-band, 관리.",
+      "세 개의 네트워크: 컴퓨트, 스토리지, 관리. BMC 트래픽은 관리 네트워크에서 함께 처리한다."
+    ],
+    "answer": [2],
+    "explanation": "DGX BasePOD 및 SuperPOD 레퍼런스 아키텍처는 성능·보안·관리 용이성을 위해 엄격한 네트워크 세분화를 요구합니다. 컴퓨트 네트워크는 일반적으로 InfiniBand(또는 Spectrum-X Ethernet)이며 GPU 간 집합 통신(NCCL)에만 전용됩니다. 스토리지 네트워크는 데이터 수집과 모델 체크포인팅을 위한 고대역폭 패브릭으로 종종 GPUDirect Storage를 활용합니다. 관리 네트워크(인밴드)는 표준 클러스터 관리, SSH, PXE 프로비저닝, 소프트웨어 오케스트레이션에 사용됩니다. Out-of-Band(OOB) 네트워크는 BMC 포트에 연결된 물리적으로 격리된 망으로, OS가 다운된 상태에서도 저수준 모니터링·전원 제어·원격 콘솔을 제공합니다. 단일 VLAN은 스토리지와 관리 트래픽이 고빈도 컴퓨트 패킷과 경쟁해 심각한 혼잡을 유발합니다. BMC를 관리망에 합치는 3망 구성은 OOB의 존재 이유인 장애 격리를 없애 버립니다. 4망 모델은 스토리지 패브릭에 스톰이 나도 관리자가 관리망이나 OOB로 시스템에 접근할 수 있도록 보장합니다.",
+    "explanation_en": "DGX BasePOD and SuperPOD reference architectures mandate strict network segmentation for performance, security, and manageability. The compute network is typically InfiniBand (or high-speed Spectrum-X Ethernet), dedicated solely to GPU-to-GPU collective communications. The storage network is a high-bandwidth fabric specifically for data ingestion and model checkpointing, often utilizing GPUDirect Storage. The management network (in-band) is used for cluster administration, SSH, PXE provisioning, and software orchestration. The out-of-band (OOB) network is a physically isolated network connected to the BMC ports for low-level monitoring, power control, and remote console access even when the OS is down. A single VLAN would cause massive congestion during training as storage and management traffic compete with compute packets. Folding BMC traffic into the management network removes the fault isolation that is the entire reason OOB exists. The four-network model ensures that a storm in the storage fabric does not prevent an administrator from reaching the system."
+  },
+  {
+    "id": "n068",
+    "domain": "d1",
+    "type": "single",
+    "question": "An InfiniBand administrator needs to run performance benchmarks on new devices added to the fabric. What tool should be used to check the latency?",
+    "question_ko": "InfiniBand 관리자가 패브릭에 추가된 새 장치에 대해 성능 벤치마크를 실행해야 합니다. 지연 시간(latency)을 확인하는 데 어떤 도구를 사용해야 하는가?",
+    "choices": ["tcpdump", "ib_write_lat", "ibdiagnet", "perfmon"],
+    "choices_ko": ["tcpdump", "ib_write_lat", "ibdiagnet", "perfmon"],
+    "answer": [1],
+    "explanation": "InfiniBand 패브릭은 높은 대역폭으로 알려져 있지만 AI 워크로드에서의 결정적 특징은 마이크로초 이하의 초저지연입니다. 새 노드나 스위치가 추가되면 관리자는 지점 간 지연이 하드웨어 사양을 충족하는지 검증해야 합니다. ib_write_lat은 이 목적으로 사용되는 perftest 스위트의 표준 마이크로 벤치마크로, 두 노드 사이에서 RDMA Write 작업을 완료하는 데 걸리는 시간을 측정합니다. 이 도구는 표준 TCP/IP 스택의 CPU 오버헤드를 우회해 InfiniBand Verbs 계층 위에서 직접 동작하기 때문에 정확합니다. 패킷 캡처용 tcpdump나 패브릭 전체 탐색·오류 보고용 ibdiagnet과 달리 ib_write_lat은 링크 응답성에 대한 나노초 수준 측정값을 제공합니다. 같은 perftest 계열의 ib_write_bw는 대역폭을 봅니다. AI 클러스터에서는 지연이 조금만 증가해도 분산 학습에서 straggler 효과를 유발해 모든 GPU가 가장 느린 링크의 동기화를 기다리게 됩니다.",
+    "explanation_en": "While the InfiniBand fabric is known for high bandwidth, its defining characteristic for AI workloads is ultra-low, sub-microsecond latency. When new nodes or switches are added, administrators must verify that point-to-point latency meets hardware specifications. The ib_write_lat utility is the standard micro-benchmark from the perftest suite used for this purpose. It measures the time to complete an RDMA Write operation between two nodes. This tool is accurate because it operates directly over the InfiniBand Verbs layer, bypassing the CPU overhead of the standard TCP/IP stack. Unlike tcpdump, which is used for packet capture, or ibdiagnet, which is used for fabric-wide discovery and error reporting, ib_write_lat provides a granular, nanosecond-level measurement of link responsiveness; its sibling ib_write_bw measures bandwidth. In an AI cluster, even a small increase in latency can cause a straggler effect in distributed training."
+  },
+  {
+    "id": "n069",
+    "domain": "d1",
+    "type": "single",
+    "question": "ClusterKit's NCCL bandwidth test shows 350 GB/s on a 400G InfiniBand fabric. How should this result be interpreted?",
+    "question_ko": "ClusterKit의 NCCL 대역폭 테스트가 400G InfiniBand 패브릭에서 350 GB/s를 보여줍니다. 이 결과를 어떻게 해석해야 하는가?",
+    "choices": [
+      "Optimal performance, indicating healthy fabric and GPUDirect RDMA.",
+      "Suboptimal performance; requires FEC tuning to reach 380+ GB/s.",
+      "Critical failure; expected is >390 GB/s for HDR InfiniBand.",
+      "Inconclusive; rerun with --stress=cpu to validate."
+    ],
+    "choices_ko": [
+      "최적의 성능이며, 건강한 패브릭과 GPUDirect RDMA를 나타낸다.",
+      "최적 이하의 성능이며, 380+ GB/s에 도달하려면 FEC 튜닝이 필요하다.",
+      "심각한 장애이며, HDR InfiniBand의 기대치는 >390 GB/s이다.",
+      "결론을 내릴 수 없으며, 검증을 위해 --stress=cpu로 재실행해야 한다."
+    ],
+    "answer": [0],
+    "explanation": "NCCL 결과 해석에는 이론적 링크 속도와 실효 버스 대역폭의 차이를 이해해야 합니다. 400G(NDR) InfiniBand 링크의 이론적 단방향 용량은 약 50 GB/s입니다. 각 GPU가 자체 400G HCA에 매핑되는 8-GPU DGX에서 총 이론 대역폭은 약 400 GB/s입니다. 그러나 NCCL 벤치마크는 all_reduce 같은 집합 연산의 수학적 오버헤드를 반영한 Bus Bandwidth를 보고합니다. 350 GB/s는 일반적으로 최적으로 간주되며 건강하고 잘 구성된 패브릭을 대표합니다. 이는 시스템이 호스트 메모리를 우회하기 위해 GPUDirect RDMA를 효과적으로 활용하고 있으며 스위치가 심각한 혼잡이나 패킷 손실 없이 트래픽을 라우팅하고 있음을 나타냅니다. 390 GB/s 초과를 기대하는 것은 프로토콜 헤더와 알고리즘 오버헤드를 감안하면 비현실적이고, 그 보기는 400G를 HDR이라 잘못 부르기도 합니다(HDR은 200G, NDR이 400G). FEC 튜닝은 신호 품질 문제 대응이지 정상 대역폭을 끌어올리는 수단이 아니며, CPU 스트레스 재실행은 패브릭 상태에 대한 통찰을 주지 못합니다.",
+    "explanation_en": "Interpreting NCCL results requires understanding the difference between theoretical link rate and effective bus bandwidth. A 400G (NDR) InfiniBand link has a theoretical unidirectional capacity of about 50 GB/s. In an 8-GPU DGX system where each GPU maps to its own 400G HCA, the aggregate theoretical bandwidth is about 400 GB/s. However, NCCL benchmarks report bus bandwidth, which accounts for the mathematical overhead of collective operations like all_reduce. Achieving 350 GB/s is widely considered optimal and representative of a healthy, well-configured fabric. It indicates the system is effectively utilizing GPUDirect RDMA to bypass host memory and that switches are routing traffic without significant congestion or packet drops. Expecting >390 GB/s is unrealistic once protocol headers and algorithmic overhead are subtracted, and that option also mislabels 400G as HDR (HDR is 200G; NDR is 400G). FEC tuning addresses signal quality problems rather than raising healthy bandwidth, and rerunning with CPU stress provides no insight into fabric health."
+  },
+  {
+    "id": "n070",
+    "domain": "d1",
+    "type": "single",
+    "question": "On a 4-node cluster with 8 GPUs per node, an engineer runs mpirun -np 32 ./all_reduce_perf -b 8 -e 16G -f 2 -g 1. Which NCCL_TESTS_SPLIT setting isolates inter-node fabric performance from intra-node NVLink?",
+    "question_ko": "노드당 GPU 8개인 4노드 클러스터에서 엔지니어가 mpirun -np 32 ./all_reduce_perf -b 8 -e 16G -f 2 -g 1을 실행합니다. 노드 내(intra-node) NVLink로부터 노드 간(inter-node) 패브릭 성능을 격리하는 NCCL_TESTS_SPLIT 설정은 무엇인가?",
+    "choices": [
+      "NCCL_TESTS_SPLIT=\"OR 0x7\"",
+      "NCCL_TESTS_SPLIT=\"AND 0x1\"",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\"",
+      "No split; report the aggregate busbw"
+    ],
+    "choices_ko": [
+      "NCCL_TESTS_SPLIT=\"OR 0x7\"",
+      "NCCL_TESTS_SPLIT=\"AND 0x1\"",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\"",
+      "split 없이 집계 busbw를 보고한다"
+    ],
+    "answer": [2],
+    "explanation": "NCCL_TESTS_SPLIT은 각 MPI 프로세스에 rank로부터 유도한 color를 부여한 뒤 그 color로 커뮤니케이터를 분할합니다. 노드당 GPU 8개로 배치된 32개 rank에서 AND 0x7(= MOD 8)은 color = rank & 7을 주므로 {c, c+8, c+16, c+24} 형태의 8개 그룹이 만들어집니다. 즉 모든 그룹이 노드당 정확히 GPU 1개를 갖습니다. 같은 그룹 구성원이 노드를 공유하지 않으므로 NVLink는 전혀 사용되지 않고 모든 데이터가 노드 간 패브릭을 통과합니다. 이것이 nccl-tests README가 네트워크만 분리해 측정할 때 제시하는 구성입니다. OR 0x7(= DIV 8)은 color = rank | 7이 되어 rank 0~7, 8~15, 16~23, 24~31이 각각 하나로 뭉쳐 노드당 1개씩 총 4개 그룹이 되므로, 목적과 정반대인 순수 노드 내부 NVLink 측정이 됩니다. AND 0x1(= MOD 2)은 16개 rank짜리 그룹 두 개를 만드는데 각 그룹이 여전히 모든 노드에 GPU 4개씩 걸쳐 있어 두 계층이 섞입니다. split 없이 실행하면 종단간 수치로는 유용하지만 성능 저하 원인이 패브릭인지 NVLink인지 귀속시킬 수 없습니다. 모든 split 구성에서 보고 대역폭은 그룹당 값이므로 총량 비교 시 그룹 수를 곱해야 합니다.",
+    "explanation_en": "NCCL_TESTS_SPLIT assigns each MPI process a color derived from its rank, then splits the communicator on that color. With 32 ranks laid out as 8 GPUs per node, AND 0x7 (equivalent to MOD 8) gives color = rank & 7, producing eight concurrent groups of the form {c, c+8, c+16, c+24} — exactly one GPU per node in every group. No two members of a group share a node, so NVLink is never used and every byte traverses the inter-node fabric. This is the configuration the nccl-tests README documents for measuring the network in isolation. OR 0x7 (equivalent to DIV 8) yields color = rank | 7, collapsing ranks 0-7, 8-15, 16-23, and 24-31 into four groups — one per node — which is the exact opposite: a purely intra-node NVLink measurement. AND 0x1 (MOD 2) creates two groups of 16 ranks each, and every group still contains four GPUs on each node, so both layers remain blended. Running unsplit measures the two layers combined, useful as an end-to-end figure but unable to attribute a shortfall to the fabric versus NVLink. Note that reported bandwidth is per group, so comparing totals requires multiplying by the number of groups."
+  },
+  {
+    "id": "n071",
+    "domain": "d2",
+    "type": "single",
+    "question": "A systems administrator is preparing a new DGX server for deployment. What is the most secure approach to configuring the BMC port during initial setup?",
+    "question_ko": "시스템 관리자가 배포를 위해 새로운 DGX 서버를 준비하고 있습니다. 초기 설정 중 BMC 포트를 구성하는 가장 안전한 접근 방식은 무엇인가?",
+    "choices": [
+      "Enable remote access to the BMC over the internet using the default admin credentials for initial troubleshooting.",
+      "Connect the BMC port directly to the production network and retain default admin credentials for convenience.",
+      "Leave the BMC port disconnected until after the operating system is fully configured and in production.",
+      "Connect the BMC port to a dedicated and firewalled network and change the default admin credentials."
+    ],
+    "choices_ko": [
+      "초기 문제 해결을 위해 기본 admin 자격 증명을 사용하여 인터넷을 통한 BMC 원격 접근을 활성화한다.",
+      "편의를 위해 BMC 포트를 프로덕션 네트워크에 직접 연결하고 기본 admin 자격 증명을 그대로 유지한다.",
+      "운영 체제가 완전히 구성되어 프로덕션에 투입될 때까지 BMC 포트를 연결하지 않은 상태로 둔다.",
+      "BMC 포트를 전용의 방화벽으로 보호된 네트워크에 연결하고 기본 admin 자격 증명을 변경한다."
+    ],
+    "answer": [3],
+    "explanation": "BMC는 펌웨어 플래싱, 전원 사이클, 시리얼 콘솔 접근을 포함해 DGX 시스템에 대한 완전한 제어를 가능하게 하는 강력한 도구이며, 그만큼 보안 위협의 고가치 표적입니다. 안전한 접근 방식은 두 계층으로 구성됩니다. 네트워크 격리 측면에서 BMC 포트는 공용 인터넷이나 일반 프로덕션 네트워크에조차 노출되어서는 안 되고, 방화벽으로 보호되며 승인된 관리자만 접근하는 전용 Out-of-Band 네트워크에 위치해야 합니다. 자격 증명 관리 측면에서 공장 기본값은 최초 접근 시 즉시 변경해야 하며, DGX first-boot 마법사가 강력하고 고유한 비밀번호 생성을 요구하고 이것이 BMC로 동기화됩니다. 포트를 연결하지 않은 채 두는 보기는 현대 데이터센터 운영에서 실행 불가능한데, BMC가 원격 모니터링과 headless 배포에 필요하기 때문입니다. 정답 보기는 네트워크 격리와 크리덴셜 변경 두 층위를 모두 포함하는 유일한 선택지이며, 한쪽만 있는 보기는 모두 오답으로 배치됩니다.",
+    "explanation_en": "The BMC is a powerful tool allowing total control over the DGX system, including flashing firmware, cycling power, and accessing the serial console, which makes it a high-value target for security threats. The secure approach involves two critical layers. For network isolation, the BMC port should never be exposed to the public internet or even the general production network; it must reside on a dedicated out-of-band network that is firewalled and accessible only to authorized administrators. For credential management, factory defaults must be changed immediately upon first access — the DGX first-boot wizard prompts the administrator to create a strong, unique password, which is then synchronized to the BMC. Leaving the port disconnected is unfeasible for modern data center operations, as the BMC is required for remote monitoring and headless deployment. The correct option is the only one covering both layers; options containing just one are placed as distractors."
+  }
+]

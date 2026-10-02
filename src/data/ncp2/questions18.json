@@ -1,0 +1,267 @@
+[
+  {
+    "id": "v171",
+    "domain": "d2",
+    "type": "single",
+    "question": "A company deploys an LLM training cluster with multiple NVIDIA HGX servers. GPUs within each server communicate efficiently, but gradient synchronization across servers introduces significantly higher latency than expected. Which component is primarily responsible for optimizing GPU-to-GPU communication between different servers?",
+    "question_ko": "한 기업이 여러 NVIDIA HGX 서버로 LLM 학습 클러스터를 배포했습니다. 각 서버 내부의 GPU 간 통신은 효율적이지만, 서버를 넘나드는 기울기 동기화에서 예상보다 훨씬 큰 지연이 발생합니다. 서로 다른 서버 간 GPU 통신 최적화를 주로 담당하는 구성 요소는?",
+    "choices": [
+      "NVIDIA NVSwitch",
+      "NVIDIA InfiniBand fabric",
+      "PCIe Gen5 switch",
+      "NVIDIA MIG"
+    ],
+    "choices_ko": [
+      "NVIDIA NVSwitch",
+      "NVIDIA InfiniBand 패브릭",
+      "PCIe Gen5 스위치",
+      "NVIDIA MIG"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVSwitch와 PCIe는 서버 내부에서만 동작합니다. 서버 경계를 넘는 GPU 간 통신은 InfiniBand(또는 RoCE) 패브릭이 담당하며, GPUDirect RDMA로 GPU 메모리와 NIC이 직접 데이터를 주고받습니다. 노드 내부는 빠른데 노드 간만 느리다면 이 패브릭 구성과 HCA 배치를 살펴야 합니다.",
+    "explanation_en": "NVSwitch and PCIe stop at the server boundary. Communication between servers rides the InfiniBand (or RoCE) fabric, with GPUDirect RDMA moving data directly between GPU memory and the NIC. When intra-node is fast but inter-node is slow, that fabric and the HCA placement are what to examine."
+  },
+  {
+    "id": "v172",
+    "domain": "d2",
+    "type": "single",
+    "question": "Your company plans to expand its AI capabilities significantly over the next five years. To future-proof the storage infrastructure so it can scale in both capacity and performance, which strategy best ensures adaptability to future AI demands?",
+    "question_ko": "귀사는 향후 5년간 AI 역량을 크게 확장할 계획입니다. 용량과 성능 양쪽으로 확장 가능하도록 스토리지 인프라를 미래에 대비시키려면 어떤 전략이 가장 적합한가?",
+    "choices": [
+      "Implement an on-premises block storage system with periodic hardware upgrades.",
+      "Implement a single-tier cloud storage solution to leverage cloud scalability.",
+      "Use a hybrid cloud model combining scalable cloud resources with on-premises infrastructure.",
+      "Deploy an all-flash array and remove data tiering to reduce latency."
+    ],
+    "choices_ko": [
+      "주기적인 하드웨어 업그레이드를 동반한 온프레미스 블록 스토리지 시스템을 구축한다.",
+      "클라우드 확장성을 활용하기 위해 단일 계층 클라우드 스토리지 솔루션을 도입한다.",
+      "확장 가능한 클라우드 자원과 온프레미스 인프라를 결합한 하이브리드 클라우드 모델을 사용한다.",
+      "올플래시 어레이를 배포하고 데이터 티어링을 제거해 지연을 줄인다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "하이브리드 모델은 예측 가능한 고성능 학습 워크로드는 온프레미스에서 처리하고, 수요가 급증하거나 장기 보관이 필요한 부분은 클라우드로 흡수합니다. 그 결과 초기 투자 규모를 과도하게 잡지 않으면서도 용량과 성능을 필요에 따라 늘릴 수 있어 장기 적응성이 가장 높습니다.",
+    "explanation_en": "A hybrid model keeps predictable, high-performance training on premises while absorbing demand spikes and long-term retention in the cloud. That avoids over-provisioning up front while still allowing capacity and performance to grow as needed, which gives the best long-term adaptability."
+  },
+  {
+    "id": "v173",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator installed the NVIDIA Container Toolkit and ran `sudo nvidia-ctk runtime configure --runtime=docker`. What step should be taken next to finish the installation?",
+    "question_ko": "시스템 관리자가 NVIDIA Container Toolkit을 설치하고 `sudo nvidia-ctk runtime configure --runtime=docker`를 실행했습니다. 설치를 마무리하려면 다음에 무엇을 해야 하는가?",
+    "choices": [
+      "sudo systemctl restart docker",
+      "apt-get remove nvidia-container-toolkit",
+      "dpkg -i doca-host-repo-ubuntu<version>_amd64.deb",
+      "apt-get install cuda-drivers"
+    ],
+    "choices_ko": [
+      "sudo systemctl restart docker",
+      "apt-get remove nvidia-container-toolkit",
+      "dpkg -i doca-host-repo-ubuntu<version>_amd64.deb",
+      "apt-get install cuda-drivers"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "nvidia-ctk는 /etc/docker/daemon.json에 NVIDIA 런타임을 등록하는 작업만 수행합니다. Docker 데몬은 시작 시 이 설정을 읽으므로, 재시작해야 변경이 적용되어 `--gpus` 플래그가 동작합니다.",
+    "explanation_en": "nvidia-ctk only writes the NVIDIA runtime into /etc/docker/daemon.json. The Docker daemon reads that file at startup, so it must be restarted for the change to take effect and for `--gpus` to work."
+  },
+  {
+    "id": "v174",
+    "domain": "d3",
+    "type": "multiple",
+    "question": "You are installing the operating system as part of the initial setup for a new NVIDIA Base Command Manager (BCM) cluster. Which two actions are essential for a successful OS installation on the cluster's head node? (Choose two.)",
+    "question_ko": "새 NVIDIA Base Command Manager(BCM) 클러스터의 초기 구축 과정에서 운영체제를 설치하고 있습니다. 헤드 노드의 OS 설치를 성공적으로 수행하기 위해 필수적인 두 가지는? (2개 선택)",
+    "choices": [
+      "Start the head node OS installation with the system BIOS set to legacy boot mode instead of UEFI.",
+      "Configure network switches for PXE boot to all compute nodes before installing the OS on the head node.",
+      "Set the desired time zone and configure NTP synchronization during the OS installation wizard.",
+      "Download the latest BCM ISO and verify its integrity using the provided checksum, then start the installation."
+    ],
+    "choices_ko": [
+      "헤드 노드 OS 설치를 UEFI 대신 레거시 부팅 모드로 설정한 BIOS에서 시작한다.",
+      "헤드 노드에 OS를 설치하기 전에 모든 컴퓨트 노드에 대한 PXE 부팅을 스위치에 구성한다.",
+      "OS 설치 마법사에서 원하는 시간대를 설정하고 NTP 동기화를 구성한다.",
+      "최신 BCM ISO를 내려받아 제공된 체크섬으로 무결성을 검증한 뒤 설치를 시작한다."
+    ],
+    "answer": [
+      2,
+      3
+    ],
+    "explanation": "설치 매체는 체크섬으로 무결성을 검증해야 손상된 ISO로 인한 설치 실패나 미묘한 오류를 피할 수 있습니다. 또한 시간대와 NTP는 설치 중에 설정해야 합니다. 클러스터의 인증(Kerberos/LDAP), 인증서, 로그 상관 분석, 스케줄러 회계가 모두 정확한 시각에 의존하기 때문입니다.",
+    "explanation_en": "Installation media must be checksum-verified to avoid failures or subtle corruption from a bad ISO. Time zone and NTP belong in the install wizard because cluster authentication (Kerberos/LDAP), certificates, log correlation, and scheduler accounting all depend on accurate time."
+  },
+  {
+    "id": "v175",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to reboot a server in an NVIDIA BasePOD but is unable to SSH. However, they can log into the BMC. Which network makes it possible to power the server back up?",
+    "question_ko": "시스템 관리자가 NVIDIA BasePOD의 서버를 재부팅해야 하는데 SSH가 되지 않습니다. 다만 BMC에는 로그인할 수 있습니다. 서버 전원을 다시 올릴 수 있게 해 주는 네트워크는?",
+    "choices": [
+      "In-band management network",
+      "Out-of-band management network",
+      "Compute network",
+      "Storage network"
+    ],
+    "choices_ko": [
+      "대역내 관리 네트워크",
+      "대역외 관리 네트워크",
+      "컴퓨트 네트워크",
+      "스토리지 네트워크"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BMC는 대역외 관리 네트워크에 연결되어 호스트 OS와 독립적으로 동작합니다. 따라서 OS가 멈춰 SSH가 불가능해도 BMC를 통해 전원 제어, 콘솔 접근, 부팅 순서 변경 같은 복구 작업을 수행할 수 있습니다. 이것이 OOB 네트워크를 별도로 구축하는 이유입니다.",
+    "explanation_en": "The BMC sits on the out-of-band management network and runs independently of the host OS, so even when the OS is hung and SSH fails, the BMC still allows power control, console access, and boot-order changes. That is precisely why a separate OOB network is built."
+  },
+  {
+    "id": "v176",
+    "domain": "d2",
+    "type": "single",
+    "question": "An enterprise is designing a new AI training environment expected to expand from 32 GPUs to more than 1,000 GPUs within two years, while minimizing future architectural changes. Which infrastructure design strategy best supports these objectives?",
+    "question_ko": "한 기업이 2년 내에 GPU 32개에서 1,000개 이상으로 확장될 것으로 예상되는 새 AI 학습 환경을 설계하면서 향후 아키텍처 변경을 최소화하려 합니다. 이 목표를 가장 잘 지원하는 인프라 설계 전략은?",
+    "choices": [
+      "Build the environment around a scalable high-speed fabric with modular expansion capabilities.",
+      "Maximize the number of GPUs in a single server to eliminate networking requirements.",
+      "Deploy standard office Ethernet switches because bandwidth can be increased later through software updates.",
+      "Connect every server directly to every other server using dedicated cables."
+    ],
+    "choices_ko": [
+      "모듈식 확장이 가능한 확장형 고속 패브릭을 중심으로 환경을 구축한다.",
+      "네트워킹 요구를 없애기 위해 단일 서버의 GPU 수를 최대화한다.",
+      "대역폭은 나중에 소프트웨어 업데이트로 늘릴 수 있으므로 일반 사무용 이더넷 스위치를 배포한다.",
+      "모든 서버를 전용 케이블로 서로 직접 연결한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "1,000 GPU 규모로 가려면 확장 단위가 정해진 패브릭 설계가 필요합니다. rail-optimized fat-tree처럼 리프·스파인 단을 추가해 확장하는 구조를 처음부터 채택하면, 나중에 배선과 토폴로지를 갈아엎지 않고 포드를 늘리는 방식으로 성장할 수 있습니다.",
+    "explanation_en": "Reaching 1,000 GPUs requires a fabric whose growth unit is defined in advance. Choosing a structure like a rail-optimized fat-tree — expanded by adding leaf and spine tiers — from the start lets the cluster grow by adding pods rather than re-cabling and redesigning the topology later."
+  },
+  {
+    "id": "v177",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to replace a failing GPU. Which command should be used to check the PCIe slot capabilities?",
+    "question_ko": "시스템 관리자가 고장 난 GPU를 교체하려 합니다. PCIe 슬롯 성능(폭·속도)을 확인하려면 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "lspci",
+      "netstat -tulpn",
+      "nvidia-smi",
+      "dmesg"
+    ],
+    "choices_ko": [
+      "lspci",
+      "netstat -tulpn",
+      "nvidia-smi",
+      "dmesg"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`lspci -vv`는 각 장치의 LnkCap(슬롯이 지원하는 최대 폭·속도)과 LnkSta(현재 협상된 폭·속도)를 보여 줍니다. 교체 전에 슬롯이 x16 Gen4/Gen5를 지원하는지, 현재 링크가 기대대로 맺혔는지 확인하는 데 쓰입니다.",
+    "explanation_en": "`lspci -vv` shows each device's LnkCap (maximum width and speed the slot supports) and LnkSta (currently negotiated width and speed), which is how you confirm before a replacement that the slot supports x16 Gen4/Gen5 and that the link trained as expected."
+  },
+  {
+    "id": "v178",
+    "domain": "d5",
+    "type": "single",
+    "question": "An administrator needs to manually deploy a BlueField image on a target DPU. After downloading the image file, which command should be used to flash it to the hardware?",
+    "question_ko": "관리자가 대상 DPU에 BlueField 이미지를 수동으로 배포해야 합니다. 이미지 파일을 내려받은 뒤 하드웨어에 기록하려면 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "dd if=/root/bf.image of=/dev/bf/ bs=4096k",
+      "bfb-install --rshim <rshim device> --bfb <image.bfb>",
+      "apt install doca-runtime",
+      "/opt/mellanox/mlnx-fw-updater/mlnx_fw_updater.pl"
+    ],
+    "choices_ko": [
+      "dd if=/root/bf.image of=/dev/bf/ bs=4096k",
+      "bfb-install --rshim <rshim 장치> --bfb <image.bfb>",
+      "apt install doca-runtime",
+      "/opt/mellanox/mlnx-fw-updater/mlnx_fw_updater.pl"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BFB(BlueField Boot Stream) 이미지는 RShim 인터페이스를 통해 DPU로 스트리밍되며, 이를 수행하는 도구가 bfb-install입니다. 이 명령은 이미지를 푸시하고 설치 진행 상황을 콘솔로 보여 주므로 수동 배포의 표준 방법입니다.",
+    "explanation_en": "A BFB (BlueField Boot Stream) image is streamed to the DPU through the RShim interface, and bfb-install is the tool that does it — pushing the image and reporting installation progress on the console, which makes it the standard manual deployment method."
+  },
+  {
+    "id": "v179",
+    "domain": "d4",
+    "type": "single",
+    "question": "During acceptance testing of a newly deployed AI cluster, engineers observe that GPUs remain below 60% utilization even though CPU usage, storage throughput, and network latency are all within expected ranges. Before recommending expensive hardware upgrades, what should the team do first?",
+    "question_ko": "새로 배포한 AI 클러스터의 인수 테스트에서 CPU 사용률, 스토리지 처리량, 네트워크 지연이 모두 기대 범위 안인데도 GPU 사용률이 60% 미만에 머뭅니다. 값비싼 하드웨어 업그레이드를 권고하기 전에 먼저 해야 할 일은?",
+    "choices": [
+      "Perform a systematic end-to-end performance analysis to identify the actual bottleneck.",
+      "Replace all GPUs with the latest generation accelerators.",
+      "Double the amount of system memory in every server.",
+      "Increase the number of Kubernetes worker nodes regardless of workload characteristics."
+    ],
+    "choices_ko": [
+      "실제 병목을 찾기 위해 체계적인 종단 간 성능 분석을 수행한다.",
+      "모든 GPU를 최신 세대 가속기로 교체한다.",
+      "모든 서버의 시스템 메모리를 두 배로 늘린다.",
+      "워크로드 특성과 무관하게 쿠버네티스 워커 노드 수를 늘린다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "인프라 지표가 모두 정상인데 GPU가 놀고 있다면 병목은 인프라 밖, 즉 데이터 파이프라인·동기화·커널 효율·배치 크기 같은 애플리케이션 계층에 있을 가능성이 큽니다. Nsight/DCGM 프로파일링으로 GPU가 '무엇을 기다리는지'를 먼저 규명해야 하며, 근거 없는 하드웨어 투자는 비용만 늘립니다.",
+    "explanation_en": "When infrastructure metrics all look healthy but GPUs idle, the bottleneck is usually above the infrastructure — the data pipeline, synchronization, kernel efficiency, or batch size. Profiling with Nsight/DCGM to establish what the GPUs are waiting on must come first; hardware spending without evidence only adds cost."
+  },
+  {
+    "id": "v180",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator installed a new DPU and needs to connect to the RShim interface using SSH for the first time. What IP address should the administrator connect to?",
+    "question_ko": "시스템 관리자가 새 DPU를 설치하고 처음으로 SSH를 사용해 RShim 인터페이스에 연결하려 합니다. 어떤 IP 주소로 접속해야 하는가?",
+    "choices": [
+      "192.168.100.2/24",
+      "10.0.0.1/24",
+      "172.16.0.2/24",
+      "192.168.1.2/24"
+    ],
+    "choices_ko": [
+      "192.168.100.2/24",
+      "10.0.0.1/24",
+      "172.16.0.2/24",
+      "192.168.1.2/24"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "RShim은 호스트와 DPU 사이에 가상 이더넷 인터페이스(tmfifo_net0)를 만들고 기본적으로 192.168.100.0/24를 사용합니다. 호스트가 192.168.100.1, DPU(Arm 측)가 192.168.100.2이므로 최초 접속은 192.168.100.2로 SSH 합니다.",
+    "explanation_en": "RShim creates a virtual Ethernet interface (tmfifo_net0) between host and DPU using 192.168.100.0/24 by default: the host is 192.168.100.1 and the DPU's Arm side is 192.168.100.2, so the first SSH connection targets 192.168.100.2."
+  },
+  {
+    "id": "v181",
+    "domain": "d1",
+    "type": "single",
+    "question": "A system administrator needs to validate a GPU-based server and ensure that no errors occur under load. What command should be used?",
+    "question_ko": "시스템 관리자가 GPU 기반 서버를 검증하고 부하 상태에서 오류가 발생하지 않는지 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "stress-test --usage",
+      "nvsm stress-test",
+      "nvsm dump health",
+      "nvsm show health"
+    ],
+    "choices_ko": [
+      "stress-test --usage",
+      "nvsm stress-test",
+      "nvsm dump health",
+      "nvsm show health"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`nvsm stress-test`는 시스템에 실제 부하를 걸고 그 동안의 하드웨어 상태를 감시해 오류 발생 여부를 판정합니다. show health는 부하 없이 현재 상태만 조회하고, dump health는 지원용 데이터 수집이므로 '부하 상태 검증'이라는 요구에는 stress-test가 맞습니다.",
+    "explanation_en": "`nvsm stress-test` applies real load while monitoring hardware health to determine whether errors appear. show health only reports current status without load, and dump health collects support data, so the load-validation requirement points to stress-test."
+  }
+]

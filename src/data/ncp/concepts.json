@@ -1,0 +1,1384 @@
+{
+ "desc": {
+  "en": "This guide re-sorts the 72 practice questions by exam domain and gives each one three things: (1) the answer and why it is right, (2) a deeper explanation of the underlying concept, and (3) the elimination strategy and the trap built into the distractors. Domains appear in weight order (D1 → D5).",
+  "ko": "72개 문항을 도메인별로 재정렬하고, 각 문항마다 (1) 정답과 근거, (2) 핵심 개념 해설, (3) 실전 풀이 전략과 함정 포인트를 정리했습니다. 배치 순서는 시험 도메인 가중치 순(D1 → D5)입니다."
+ },
+ "domains": [
+  {
+   "num": "D1",
+   "title": "Cluster Test & Verification",
+   "weight": "33%",
+   "count": 25,
+   "intro": {
+    "en": "The core skill in this domain is matching **a tool to the layer it operates on** (physical / link / logical / application). Question writers deliberately mix up `mlxlink`, `flint`, `ibnodes`, `sminfo`, `smpquery`, nccl-tests, HPL, and CVT. Learn the table below and more than half of these questions answer themselves.",
+    "ko": "이 도메인의 핵심은 **\"어떤 도구가 어떤 계층(물리/링크/논리/애플리케이션)을 담당하는가\"** 를 정확히 매칭하는 것입니다. `mlxlink`, `flint`, `ibnodes`, `sminfo`, `smpquery`, nccl-tests, HPL, CVT의 이름과 역할을 일부러 뒤섞어 출제하므로, 아래 표를 먼저 익히면 절반 이상이 자동으로 풀립니다."
+   },
+   "questions": [
+    {
+     "num": "Q1",
+     "en": {
+      "title": "Command to measure Bit Error Rate (BER)",
+      "answer": "D. `mlxlink -d <device> -p 1 -c`",
+      "concept": "Within the MFT (Mellanox Firmware Tools) family, physical link quality belongs to `mlxlink`. The `-c` (`--show_counters`) flag prints both Raw BER (error rate before FEC) and Effective BER (residual error rate after FEC). For long-term trending use `--show_ber_monitor`; for collection only, `-b`/`--ber_collect`.",
+      "strategy": "Sort the options by layer first: `mlxconfig` (config query), `mstflint -q full` (firmware version), `ethtool -S` (Ethernet driver stats — wrong stack for IB entirely), `mlxlink` (physical link diagnostics). The word \"BER\" narrows you to `mlxlink` immediately; the remaining trap is the flag. Do not mistake `-e` (`--show_eye`, eye diagram / signal quality) for BER. Only `-c` prints BER figures directly."
+     },
+     "ko": {
+      "title": "BER(Bit Error Rate) 측정 명령",
+      "answer": "D. `mlxlink -d <device> -p 1 -c`",
+      "concept": "MFT(Mellanox Firmware Tools) 계열에서 물리 링크 품질을 보는 도구는 `mlxlink`입니다. `-c`(`--show_counters`)가 Raw BER(FEC 적용 전 오류율)와 Effective BER(FEC 적용 후 잔여 오류율)를 함께 출력합니다. 장기 추세는 `--show_ber_monitor`, 수집만 할 때는 `-b`/`--ber_collect`를 씁니다.",
+      "strategy": "보기를 계층별로 먼저 분류하세요 — `mlxconfig`(설정 조회), `mstflint -q full`(펌웨어 버전), `ethtool -S`(이더넷 드라이버 통계, IB에는 애초에 맞지 않음), `mlxlink`(물리 링크 진단). \"BER\"이라는 단어가 나오면 `mlxlink`로 즉시 좁혀지고, 남는 함정은 옵션입니다. `-e`(`--show_eye`, 아이 다이어그램/신호 품질)를 BER로 착각하지 마세요. BER 수치를 직접 보여주는 것은 `-c`뿐입니다."
+     },
+     "bankId": "n001"
+    },
+    {
+     "num": "Q4",
+     "en": {
+      "title": "Tool to verify an FW Version Mismatch",
+      "answer": "D. `flint`",
+      "concept": "When a cluster is expanded, new transceivers may ship with different firmware than the installed base, and UFM raises an \"FW Version Mismatch\" warning. The tool that reads and compares the firmware version embedded in the transceiver is `flint` (or `mstflint`).",
+      "strategy": "`iblinkinfo` stops at link speed and port state (physical/logical link level) and never exposes internal firmware versions. `mlxconfig` shows NV configuration values; `ethtool` shows Ethernet statistics. Any time you see \"query/compare firmware version,\" go straight to `flint`/`mstflint`."
+     },
+     "ko": {
+      "title": "FW Version Mismatch 검증 도구",
+      "answer": "D. `flint`",
+      "concept": "클러스터 확장 시 신규 트랜시버가 기존과 다른 펌웨어를 가지면 UFM에서 \"FW Version Mismatch\" 경고가 뜹니다. 트랜시버에 내장된 펌웨어 버전을 조회·비교하는 도구는 `flint`(또는 `mstflint`)입니다.",
+      "strategy": "`iblinkinfo`는 링크 속도·포트 상태(물리/논리 링크 레벨)까지만 보여주고 펌웨어 내부 버전은 노출하지 않습니다. `mlxconfig`는 NV 설정값, `ethtool`은 이더넷 통계입니다. \"펌웨어 버전 조회·비교\"라는 키워드는 항상 `flint`/`mstflint`로 연결하세요."
+     },
+     "bankId": "n004"
+    },
+    {
+     "num": "Q6",
+     "en": {
+      "title": "Find the name of the server running the Master SM",
+      "answer": "C. `sminfo`, then `smpquery ND`",
+      "concept": "`sminfo` returns the LID of the current Master SM. To turn that LID into a human-readable server name you run `smpquery ND` (Node Description). `smpquery NI` (Node Info) returns hardware identifiers such as GUID and device ID, but no name.",
+      "strategy": "ND = Description (name), NI = Info (GUID / device data) — the initials alone distinguish them. Whenever the question asks for a *name*, pick ND. `ibstat` and the `ibnetdiscover` + `ibsim` combination do not serve this purpose."
+     },
+     "ko": {
+      "title": "Master SM이 실행되는 서버 이름 확인",
+      "answer": "C. `sminfo` 실행 후 `smpquery ND`",
+      "concept": "`sminfo`는 현재 Master SM의 LID를 반환합니다. 그 LID를 사람이 읽을 수 있는 서버 이름으로 바꾸려면 `smpquery ND`(Node Description)를 실행해야 합니다. `smpquery NI`(Node Info)는 GUID·디바이스 ID 같은 하드웨어 식별자를 주지만 이름은 주지 않습니다.",
+      "strategy": "ND = Description(이름), NI = Info(GUID/장치정보) — 이니셜만으로 구분됩니다. \"이름\"을 묻는 문제에는 항상 ND. `ibstat`이나 `ibnetdiscover` + `ibsim` 조합은 이 목적에 맞지 않습니다."
+     },
+     "bankId": "n006"
+    },
+    {
+     "num": "Q8",
+     "en": {
+      "title": "What `ibnodes` outputs",
+      "answer": "B. All hosts and switches",
+      "concept": "`ibnodes` is the high-level topology summary tool from the infiniband-diags package. It lists every HCA (host) and switch attached to the fabric, grouped by type. It is far more condensed than `ibnetdiscover`, which walks port-to-port connectivity in detail.",
+      "strategy": "Eliminate any option that narrows the scope to \"hosts only\" or \"channel adapters only.\" Switches must be included. This is the standard first check after a cluster expansion or bring-up to confirm the expected node and switch counts."
+     },
+     "ko": {
+      "title": "`ibnodes` 명령의 출력 내용",
+      "answer": "B. 모든 호스트와 스위치",
+      "concept": "`ibnodes`는 infiniband-diags 패키지의 상위 레벨 토폴로지 요약 도구로, 패브릭에 연결된 모든 HCA(호스트)와 스위치를 유형별로 나열합니다. 포트 대 포트 상세 연결까지 보여주는 `ibnetdiscover`보다 훨씬 압축된 정보입니다.",
+      "strategy": "\"호스트만\" 또는 \"채널 어댑터만\"으로 범위를 좁힌 보기는 즉시 제거하세요. 스위치까지 포함해야 정답입니다. 클러스터 확장·브링업 직후 예상 노드·스위치 수를 빠르게 확인하는 첫 단계로 자주 쓰입니다."
+     },
+     "bankId": "n008"
+    },
+    {
+     "num": "Q9",
+     "en": {
+      "title": "CVT \"Underperforming (BER)\" threshold",
+      "answer": "D. Raw BER > 1E-6 or Effective BER > 1.5E-254 (measurement under 6 hours)",
+      "concept": "UFM CVT classifies links by BER: Effective BER ≤ 1.5E-254 (under 6 hours) / ≤ 1E-15 (6 hours or more), Raw BER ≤ 1E-6, and zero Effective BER errors during the first 125 minutes after link-up. The trap here is that a lot of circulating study material misremembers the Raw BER threshold as 1e-12 — the correct value is **1E-6**.",
+      "strategy": "The question asks for a *set* of thresholds, so choose the option that carries both Raw and Effective. Temperature (85°C) and Rx power deviation (3 dB) are causes or health indicators, not BER thresholds. The \"first 125 minutes\" condition is factually correct but is only one part of the threshold set, so it is not the answer on its own."
+     },
+     "ko": {
+      "title": "CVT \"Underperforming(BER)\" 판정 임계값",
+      "answer": "D. Raw BER > 1E-6 또는 Effective BER > 1.5E-254 (6시간 미만 측정)",
+      "concept": "UFM CVT는 BER 기준으로 링크를 분류합니다 — Effective BER ≤ 1.5E-254(6시간 미만) / ≤ 1E-15(6시간 이상), Raw BER ≤ 1E-6, 그리고 링크업 후 첫 125분 동안 Effective BER 오류 0회. 함정은 시중 자료 상당수가 Raw BER 임계값을 1e-12로 잘못 적어두었다는 점입니다 — 정답은 **1E-6**입니다.",
+      "strategy": "\"임계값 집합\"을 묻는 문제이므로 Raw와 Effective를 동시에 담은 보기를 고르세요. 온도(85°C)·Rx 파워 편차(3dB)는 BER의 원인이거나 건강 지표일 뿐 임계값 자체가 아닙니다. \"첫 125분\" 조건은 내용은 맞지만 임계값 집합의 일부에 불과해 단독으로는 정답이 아닙니다."
+     },
+     "bankId": "n009"
+    },
+    {
+     "num": "Q10",
+     "en": {
+      "title": "HPL burn-in throws \"illegal value\" on the first iteration",
+      "answer": "B. Verify the matrix size divides evenly by the block size",
+      "concept": "If the problem size (N) and block size (NB) in HPL.dat are not in an integer-multiple relationship, or the process grid (P×Q) does not match the hardware topology, HPL errors out with \"illegal value\" or \"residual too large\" as soon as computation starts. This is a configuration error, not a hardware fault.",
+      "strategy": "The decisive clue is the phrase \"without invalidating the burn-in.\" Options that drop precision from FP64 to FP32 or shorten the test invalidate the benchmark standard itself (FP64, 24–48 hours), so eliminate them. Disabling GPU affinity has nothing to do with the cause of this error."
+     },
+     "ko": {
+      "title": "HPL 번인 첫 반복에서 \"illegal value\" 오류",
+      "answer": "B. 매트릭스 크기가 블록 크기로 나누어떨어지는지 확인",
+      "concept": "HPL.dat의 문제 크기(N)와 블록 크기(NB)가 정수 배 관계가 아니거나, 프로세스 그리드(P×Q)가 하드웨어 토폴로지와 맞지 않으면 계산 시작 직후 \"illegal value\" 또는 \"residual too large\" 오류가 납니다. 하드웨어 결함이 아니라 설정 오류입니다.",
+      "strategy": "\"번인의 유효성을 훼손하지 않으면서\"가 결정적 단서입니다. 정밀도를 FP64 → FP32로 낮추거나 테스트 시간을 줄이는 보기는 벤치마크 표준(FP64, 24~48시간)을 무효화하므로 제거합니다. GPU affinity 비활성화는 이 오류의 원인과 무관합니다."
+     },
+     "bankId": "n010"
+    },
+    {
+     "num": "Q11",
+     "en": {
+      "title": "Criterion for \"ready for AI workloads\" from a cmsh GPU health check",
+      "answer": "A. Every GPU on every node reports Status_Health = OK and Health = OK",
+      "concept": "Cluster readiness in a DGX BasePOD/SuperPOD is a binary verdict. A single degraded GPU drags the whole cluster down, because NCCL All-Reduce and other collectives run at the speed of the slowest participant (the straggler).",
+      "strategy": "Eliminate every option that relaxes the bar — \"half the nodes,\" \"head node only,\" \"ignore the output.\" In AI cluster verification questions, \"partial health is good enough\" is almost always the wrong-answer pattern."
+     },
+     "ko": {
+      "title": "cmsh GPU 헬스 체크에서 \"AI 워크로드 준비 완료\" 판정 기준",
+      "answer": "A. 모든 노드의 모든 GPU가 Status_Health = OK, Health = OK",
+      "concept": "DGX BasePOD/SuperPOD의 클러스터 준비 상태는 이진 판정입니다. 단 하나의 GPU라도 비정상이면 NCCL All-Reduce 등 집합통신이 가장 느린 구성요소(straggler)에 맞춰지므로 클러스터 전체가 저하됩니다.",
+      "strategy": "\"절반만\", \"헤드 노드만\", \"출력을 무시한다\"처럼 기준을 완화하는 보기는 전부 제거하세요. AI 클러스터 검증 문항에서 \"일부만 정상이면 충분하다\"는 거의 항상 오답 패턴입니다."
+     },
+     "bankId": "n011"
+    },
+    {
+     "num": "Q13",
+     "en": {
+      "title": "Primary cause of a 2× speedup after upgrading to HPL-AI 2.0",
+      "answer": "D. MPI-aware GPU communication reduces the CPU bottleneck and GPU idle time",
+      "concept": "In multi-node clusters, the CPU coordinating MPI ranks and staging buffers through host memory becomes the bottleneck. CUDA-aware (MPI-aware) communication lets MPI handle device pointers directly and exploits NCCL and SHARP (in-network reduction) offload to remove that bottleneck. For reference: DGX A100 clusters run Quantum HDR 200G with SHARPv2; SHARPv3 starts with Quantum-2 NDR 400G.",
+      "strategy": "Elimination is fastest. Shrinking N invalidates the benchmark; \"clocks doubled\" and \"NVLink bandwidth doubled\" are fixed hardware properties that firmware or drivers cannot change. Cross those three out and only the communication-optimization option remains."
+     },
+     "ko": {
+      "title": "HPL-AI 2.0 업그레이드 후 2배 성능 향상의 주 원인",
+      "answer": "D. MPI-aware GPU 통신으로 CPU 병목과 GPU 유휴시간 감소",
+      "concept": "멀티노드 클러스터에서는 CPU가 MPI 랭크를 조율하고 호스트 메모리를 경유해 버퍼를 스테이징하는 과정이 병목입니다. CUDA-aware(MPI-aware) 통신은 MPI가 디바이스 포인터를 직접 다루게 하고 NCCL·SHARP(인네트워크 리덕션) 오프로드를 활용해 이 병목을 제거합니다. 참고로 DGX A100 클러스터는 Quantum HDR 200G(SHARPv2)이며, SHARPv3는 Quantum-2 NDR 400G부터입니다.",
+      "strategy": "소거법이 빠릅니다 — N 축소는 벤치마크 무효화, \"클럭 2배\"·\"NVLink 대역폭 2배\"는 펌웨어/드라이버로 바꿀 수 없는 고정 하드웨어 속성입니다. 셋을 지우면 통신 최적화 보기만 남습니다."
+     },
+     "bankId": "n013"
+    },
+    {
+     "num": "Q21",
+     "en": {
+      "title": "Resolving a UFM CVT \"Wrong-neighbor\" error",
+      "answer": "B. Cross-check LLDP data against the topology file and correct it",
+      "concept": "\"Wrong-neighbor\" means the actual cabling differs from the designed topology (.csv/.topology) — either physical miscabling or an error in the topology file. UFM detects this by verifying the GUIDs at both ends via LLDP or SM packets.",
+      "strategy": "The link itself is Up, so rebooting the switch or swapping the cable will not fix anything — the cause is a wiring/design mismatch. Disabling FEC is a trap: it actively harms signal integrity on 400G (NDR) links."
+     },
+     "ko": {
+      "title": "UFM CVT \"Wrong-neighbor\" 오류 해결",
+      "answer": "B. LLDP 데이터를 토폴로지 파일과 대조하여 시정",
+      "concept": "\"Wrong-neighbor\"는 실제 배선이 설계된 토폴로지(.csv/.topology)와 다를 때 발생하는 물리적 오배선 또는 토폴로지 파일 오류입니다. UFM은 LLDP나 SM 패킷으로 양단 GUID를 확인해 이를 탐지합니다.",
+      "strategy": "링크 자체는 Up 상태이므로 스위치 재부팅이나 케이블 교체로는 해결되지 않습니다(원인이 배선·설계 불일치이기 때문). FEC 비활성화는 오히려 400G(NDR) 링크의 신호 무결성을 해치는 함정 보기입니다."
+     },
+     "bankId": "n021"
+    },
+    {
+     "num": "Q23",
+     "en": {
+      "title": "Parameters for detecting Silent Data Corruption (SDC) in a 48-hour NCCL burn-in",
+      "answer": "C. `all_reduce_perf -b 8G -e 32G -c 1000 -z 1 -G 1000`",
+      "concept": "In nccl-tests, `-c` (`--check`) performs result verification (comparing computed results against expected values), which is what catches SDC. Contrary to common belief, `-z` is `--blocking` (NCCL blocking mode) and `-G` is `--cudagraph` (number of CUDA graph launches); neither has anything to do with verification.",
+      "strategy": "Whenever \"detect silent data corruption\" appears, pick the option that explicitly carries `-c`. Also, all_reduce is the heaviest collective because every GPU both sends and receives; lighter collectives like broadcast or reduce_scatter do not suit a burn-in and can be eliminated."
+     },
+     "ko": {
+      "title": "48시간 NCCL 번인에서 Silent Data Corruption(SDC) 탐지 파라미터",
+      "answer": "C. `all_reduce_perf -b 8G -e 32G -c 1000 -z 1 -G 1000`",
+      "concept": "nccl-tests의 `-c`(`--check`)가 결과 검증(계산 결과와 기대값 비교)을 수행해 SDC를 탐지합니다. 흔한 오해와 달리 `-z`는 `--blocking`(NCCL 블로킹 모드), `-G`는 `--cudagraph`(CUDA 그래프 실행 횟수)이며 둘 다 검증과 무관합니다.",
+      "strategy": "\"silent data corruption 탐지\"라는 키워드가 보이면 `-c` 플래그가 명시된 보기를 고르세요. 또한 all_reduce는 모든 GPU가 송수신 양쪽에 관여해 가장 부하가 큰 집합통신이므로, broadcast·reduce_scatter처럼 부하가 약한 보기는 번인 목적에 맞지 않아 제거합니다."
+     },
+     "bankId": "n023"
+    },
+    {
+     "num": "Q30",
+     "en": {
+      "title": "Verifying NVLink bandwidth on a single DGX H100 (8 GPUs)",
+      "answer": "D. `./all_reduce_perf -b 8 -e 16G -f 2 -g 8`",
+      "concept": "Eight H100s are wired through four NVSwitches into a fully non-blocking crossbar. Saturating the entire crossbar requires one collective spanning all eight GPUs with no split. Normal busbw for an 8-GPU all_reduce is roughly 370–480 GB/s; the frequently quoted 900 GB/s is per-GPU bidirectional NVLink aggregate, not measured busbw.",
+      "strategy": "NCCL_TESTS_SPLIT colors are computed from MPI ranks. With `-g 8`, one process owns all eight GPUs, so there is exactly one rank and the split never applies — the \"AND 0x1\" option is pure misdirection. \"AND 0x7 + `-g 1`\" (mpirun with 8 processes) is designed for *inter-node* measurement, the opposite of what this question wants. Broadcast is one-to-many and cannot saturate the crossbar."
+     },
+     "ko": {
+      "title": "단일 DGX H100(8-GPU) NVLink 대역폭 검증",
+      "answer": "D. `./all_reduce_perf -b 8 -e 16G -f 2 -g 8`",
+      "concept": "8개 H100은 4개의 NVSwitch를 통해 완전 논블로킹 크로스바로 연결되므로, 크로스바 전체를 포화시키려면 split 없이 8-GPU 전체를 아우르는 단일 집합통신이 필요합니다. 8-GPU all_reduce의 정상 busbw는 대략 370~480 GB/s이며, 흔히 인용되는 900 GB/s는 GPU당 양방향 NVLink 총 대역폭이지 실측 busbw가 아닙니다.",
+      "strategy": "NCCL_TESTS_SPLIT 색상은 MPI 랭크 기준으로 계산됩니다. `-g 8`처럼 프로세스 하나가 8개 GPU를 모두 갖는 구성에서는 랭크가 1개뿐이라 split이 아예 적용되지 않으므로 AND 0x1 보기는 눈속임입니다. AND 0x7 + `-g 1`(mpirun 8프로세스)은 오히려 노드 간(inter-node) 측정용이라 요구와 정반대입니다. broadcast는 일대다 통신이라 크로스바를 포화시키지 못합니다."
+     },
+     "bankId": "n030"
+    },
+    {
+     "num": "Q31",
+     "en": {
+      "title": "Metric for judging signal integrity on a 400G DAC cable",
+      "answer": "B. Effective BER > 1.5E-254 (monitoring under 6 hours)",
+      "concept": "DAC (Direct Attach Copper) is electrical, so there is no Rx optical power to read. Effective BER — the error rate remaining after FEC — is the decisive indicator of link stability and should ideally be near zero.",
+      "strategy": "DAC is not an optical transceiver, so eliminate any \"Rx power\" option first. Temperature fluctuation and model-number matching are not BER thresholds."
+     },
+     "ko": {
+      "title": "400G DAC 케이블 신호 무결성 판단 지표",
+      "answer": "B. Effective BER > 1.5E-254 (6시간 미만 모니터링)",
+      "concept": "DAC(Direct Attach Copper)는 전기 신호 방식이라 Rx 광파워 개념이 없습니다. FEC 적용 후에도 남는 오류율인 Effective BER가 링크 안정성의 결정적 지표이며, 이상적으로는 0에 가까워야 합니다.",
+      "strategy": "DAC는 광 트랜시버가 아니므로 \"Rx power\" 관련 보기를 먼저 제거하세요. 온도 변동이나 모델명 일치 여부는 BER 임계값과 직접 관련이 없습니다."
+     },
+     "bankId": "n031"
+    },
+    {
+     "num": "Q36",
+     "en": {
+      "title": "Fixing an HPL \"not enough memory\" error",
+      "answer": "C. Keep the block size and reduce the problem size (N)",
+      "concept": "HPL allocates a large matrix in GPU HBM. No matter how much system RAM is installed, exceeding per-GPU HBM capacity (e.g. 80 GB on H100) causes OOM. Practice is to size N to fill roughly 80–90% of available GPU memory; aiming for 100% leaves no workspace and triggers OOM.",
+      "strategy": "Increasing NB enlarges internal buffers and makes the memory problem worse. PMAP (process mapping) and BCAST (broadcast algorithm) parameters are unrelated to total memory — eliminate them."
+     },
+     "ko": {
+      "title": "HPL \"not enough memory\" 오류 해결",
+      "answer": "C. 블록 크기는 유지하고 문제 크기(N)를 축소",
+      "concept": "HPL은 GPU HBM에 큰 행렬을 할당합니다. 시스템 RAM이 아무리 커도 GPU당 HBM 용량(예: H100의 80GB)을 넘으면 OOM이 납니다. 실무적으로는 가용 GPU 메모리의 약 80~90%를 채우도록 N을 설정하는 것이 권장되며, 100%를 노리면 워크스페이스가 부족해 OOM이 발생합니다.",
+      "strategy": "블록 크기(NB)를 키우면 내부 버퍼가 커져 메모리 문제가 오히려 악화됩니다. PMAP(프로세스 매핑)·BCAST(브로드캐스트 알고리즘) 파라미터는 메모리 총량과 무관하므로 제거하세요."
+     },
+     "bankId": "n036"
+    },
+    {
+     "num": "Q38",
+     "en": {
+      "title": "Most important storage characteristic when validating scaling on a 256-GPU AI Factory",
+      "answer": "A. Consistent per-node throughput above 8 GiB/s under full load",
+      "concept": "Large-scale training creates an incast problem: every node requests data simultaneously. Storage that is fast for one node but collapses when 32 nodes read at once leaves GPUs idle and scaling efficiency falls off a cliff.",
+      "strategy": "An \"idle single node\" test has zero concurrency and cannot expose this. RAID rebuild time is an availability metric, not a performance-scaling one. Modern AI datasets are typically large sequential formats (WebDataset and similar), so sequential throughput is the bottleneck — throughput-centric options beat IOPS-centric ones."
+     },
+     "ko": {
+      "title": "256-GPU AI Factory 스케일링 검증에서 가장 중요한 스토리지 특성",
+      "answer": "A. 전체 부하 상태에서 노드당 일관된 처리량 8 GiB/s 초과",
+      "concept": "대규모 학습에서는 모든 노드가 동시에 데이터를 요청하는 incast 문제가 발생합니다. 한 노드에서는 빠르지만 32개 노드가 동시에 요청할 때 처리량이 급감하면 GPU가 대기 상태로 놀게 되어 스케일링 효율이 급락합니다.",
+      "strategy": "\"유휴 상태 단일 노드\" 테스트는 동시성이 전혀 없어 이 문제를 검증하지 못합니다. RAID 재구축 시간은 가용성 지표이지 성능 스케일링 지표가 아닙니다. 최신 AI 데이터셋은 대개 대용량 시퀀셜 포맷(WebDataset 등)이라 순차 처리량이 병목의 핵심이므로, IOPS 위주 보기보다 처리량 위주 보기가 우선합니다."
+     },
+     "bankId": "n038"
+    },
+    {
+     "num": "Q40",
+     "en": {
+      "title": "Command that validates a GPU server error-free *under load*",
+      "answer": "C. `nvsm stress-test`",
+      "concept": "`nvsm stress-test [--usage] [-force] [-no-prompt] [<test>] [DURATION]` drives real simultaneous load across GPU, PCIe, DIMM, storage, CPU, and NIC, and reports pass/fail per component.",
+      "strategy": "`nvsm show health` is a static snapshot (no load) and `nvsm dump health` collects logs/telemetry (also no load), so neither satisfies \"under load.\" `stress-test --usage` is invalid because it drops the `nvsm` prefix — and `--usage` merely prints usage text."
+     },
+     "ko": {
+      "title": "GPU 서버를 부하 상태에서 오류 없이 검증하는 명령",
+      "answer": "C. `nvsm stress-test`",
+      "concept": "`nvsm stress-test [--usage] [-force] [-no-prompt] [<test>] [DURATION]`는 GPU·PCIe·DIMM·스토리지·CPU·NIC에 동시에 실제 부하를 걸고 컴포넌트별 pass/fail을 보고합니다.",
+      "strategy": "`nvsm show health`는 정적 스냅샷(부하 없음), `nvsm dump health`는 로그·텔레메트리 수집(역시 부하 없음)이라 \"부하 하에서 검증\"이라는 요구를 충족하지 못합니다. `stress-test --usage`는 `nvsm` 접두어가 빠진 무효 명령이며, `--usage`는 실제로는 사용법 출력 플래그일 뿐입니다."
+     },
+     "bankId": "n040"
+    },
+    {
+     "num": "Q42",
+     "en": {
+      "title": "Interpreting algbw 178 GB/s and busbw 350 GB/s on a 64-GPU cluster",
+      "answer": "C. For all_reduce, busbw = algbw × 2(n−1)/n is expected; busbw is always larger and is the metric used for hardware validation",
+      "concept": "nccl-tests applies busbw = algbw × correction factor (2(n−1)/n for all_reduce) so results can be compared against hardware peak regardless of rank count. Here 350/178 ≈ 1.966 ≈ 2 × 63/64 for n = 64 — an exact match and a perfectly normal result.",
+      "strategy": "\"algbw and busbw should be equal\" is mathematically impossible for n ≥ 2; eliminate on sight. \"Just look at algbw\" is also wrong because algbw varies with rank count and cannot be compared to a hardware spec. Hardware validation always uses busbw."
+     },
+     "ko": {
+      "title": "64-GPU 클러스터에서 algbw 178GB/s, busbw 350GB/s 해석",
+      "answer": "C. all_reduce에서는 busbw = algbw × 2(n−1)/n 이 정상이며, busbw가 항상 더 크고 하드웨어 검증 지표로 쓰인다",
+      "concept": "nccl-tests는 랭크 수(n)에 무관하게 하드웨어 피크와 비교할 수 있도록 busbw = algbw × 보정계수(all_reduce는 2(n−1)/n) 공식을 씁니다. 이 문제의 수치는 350/178 ≈ 1.966 ≈ 2 × 63/64(n = 64)로 정확히 일치하는 정상 값입니다.",
+      "strategy": "\"algbw와 busbw가 같아야 한다\"는 보기는 n ≥ 2에서 수학적으로 불가능하므로 즉시 제거합니다. algbw는 랭크 수에 따라 변해 하드웨어 스펙과 직접 비교할 수 없으므로 \"algbw만 보면 된다\"는 보기도 틀립니다. 하드웨어 검증에는 항상 busbw를 씁니다."
+     },
+     "bankId": "n042"
+    },
+    {
+     "num": "Q43",
+     "en": {
+      "title": "Why concluding \"IB is running at line rate\" from a multi-node all_reduce busbw of 656 GB/s is wrong",
+      "answer": "D. busbw is compared against per-GPU link speed (NDR ≈ 50 GB/s), not against summed rails, and the NVLink segment dominates the measurement, so it proves nothing about IB",
+      "concept": "Once intra-node aggregation happens through NVLS (NVLink SHARP) or similar, the 2(n−1)/n correction factor no longer accurately reflects the real bottleneck. A very high busbw in a multi-node run is therefore not evidence that the IB fabric is healthy.",
+      "strategy": "To validate IB in isolation, check the transport in use with `NCCL_DEBUG=INFO` and run `ib_write_bw` separately per rail. Reading the number as \"summed line rate across 8 NDR rails\" misunderstands the definition of busbw, and adjusting message size alone does not separate the NVLink and IB layers."
+     },
+     "ko": {
+      "title": "멀티노드 all_reduce busbw 656GB/s를 \"IB가 라인레이트로 동작 중\"이라 결론지은 것의 오류",
+      "answer": "D. busbw는 GPU당 링크 속도(NDR ≈ 50GB/s)와 비교하는 값이지 레일 합산값이 아니며, NVLink 구간이 측정치를 지배해 IB 상태를 증명하지 못함",
+      "concept": "NVLS(NVLink SHARP) 등으로 노드 내 집계가 이뤄지면 2(n−1)/n 보정계수가 실제 병목을 더 이상 정확히 반영하지 못합니다. 즉 멀티노드 실행에서 매우 높은 busbw가 나와도 그것이 IB 패브릭이 건강하다는 증거는 아닙니다.",
+      "strategy": "IB만 분리 검증하려면 `NCCL_DEBUG=INFO`로 사용 중인 transport를 확인하고, 레일별로 `ib_write_bw`를 따로 실행해야 합니다. \"8개 NDR 레일의 합산 라인레이트\"라는 해석은 busbw 정의를 오해한 것이며, 메시지 크기 조건만으로는 NVLink/IB 계층 혼입 문제를 해결하지 못합니다."
+     },
+     "bankId": "n042b"
+    },
+    {
+     "num": "Q44",
+     "en": {
+      "title": "Consolidated view of transceiver firmware versions across 200 ports in the UFM GUI",
+      "answer": "D. Devices > select the switch > Cables tab",
+      "concept": "In UFM Enterprise, Devices → a specific switch → Cables aggregates per-port transceiver data (vendor, part number, firmware version) into a single screen.",
+      "strategy": "The decisive clues are \"200 ports\" and \"consolidated view.\" Running `mlxlink -m` per port by hand or grepping logs does not scale and does not yield structured data. Visually inspecting cable icons in the topology view provides no structured version data either."
+     },
+     "ko": {
+      "title": "UFM GUI에서 200개 포트의 트랜시버 펌웨어 버전 통합 조회",
+      "answer": "D. Devices > 스위치 선택 > Cables 탭",
+      "concept": "UFM Enterprise GUI의 Devices → 특정 스위치 → Cables 탭에서 포트별 트랜시버 정보(제조사, 파트번호, 펌웨어 버전)를 한 화면에 집계해 보여줍니다.",
+      "strategy": "\"200개 포트\", \"통합 뷰(consolidated view)\"가 핵심 단서입니다. 포트마다 CLI(`mlxlink -m`)를 수동 실행하거나 로그를 grep하는 방식은 규모에 맞지 않고 구조화된 데이터도 주지 않습니다. 토폴로지 뷰의 케이블 아이콘 육안 검사도 마찬가지입니다."
+     },
+     "bankId": "n043"
+    },
+    {
+     "num": "Q51",
+     "en": {
+      "title": "Two key metrics to check after a 24-hour stress test",
+      "answer": "B. Zero thermal throttling events plus GPU utilization sustained above 95% for the whole test",
+      "concept": "Thermal throttling, visible via `nvidia-smi -q -d PERFORMANCE`, tells you whether the cooling solution is adequate. Sustained high utilization proves the workload actually saturated the compute cores. Without both, you cannot rule out \"it finished, but degraded.\"",
+      "strategy": "SSD endurance and RAM capacity are static specs, not stress-test outcomes. Total energy consumed, CPU utilization, and container uptime do not directly demonstrate hardware stability — eliminate them."
+     },
+     "ko": {
+      "title": "24시간 스트레스 테스트 후 확인해야 할 두 가지 핵심 지표",
+      "answer": "B. 열 스로틀링 이벤트 0건 + 테스트 전 구간 GPU 사용률 95% 초과 유지",
+      "concept": "`nvidia-smi -q -d PERFORMANCE`로 확인 가능한 열 스로틀링 여부는 냉각 솔루션의 적합성을 나타내고, 지속적인 고사용률은 워크로드가 실제로 연산 코어를 포화시켰음을 증명합니다. 둘 다 없으면 \"완주는 했지만 성능이 저하되었을 가능성\"을 배제할 수 없습니다.",
+      "strategy": "SSD 내구성·RAM 용량은 정적 스펙이지 스트레스 테스트 결과 지표가 아닙니다. 총 에너지 소비량·CPU 사용률·컨테이너 업타임도 하드웨어 안정성을 직접 증명하지 않으므로 제거하세요."
+     },
+     "bankId": "n050"
+    },
+    {
+     "num": "Q54",
+     "en": {
+      "title": "Validating bisectional bandwidth between two racks on Spectrum-X Ethernet, isolating East-West traffic only",
+      "answer": "A. `NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 32 ./all_reduce_perf -g 1`",
+      "concept": "With 8 GPUs per node, AND 0x7 (equivalent to MOD 8) computes color = rank & 7, producing 8 parallel groups that each contain exactly one GPU per node. No two ranks in a group share a node, so NVLink is never used and every byte traverses the leaf-spine switches — that is East-West (inter-node) isolation.",
+      "strategy": "Memory aid: AND isolates vertically (across nodes), OR isolates horizontally (within a node). OR 0x7 (DIV 8) does the opposite — it groups the 8 ranks of one node together and measures pure NVLink. MOD 2 leaves 4 GPUs per node in each group, mixing both layers. Skipping the split and averaging per rack cannot separate the layers after the fact. You must use mpirun with one GPU per rank (`-g 1`) so colors map cleanly onto ranks."
+     },
+     "ko": {
+      "title": "Spectrum-X 이더넷에서 두 랙 간 이분 대역폭 검증, East-West 트래픽만 격리",
+      "answer": "A. `NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 32 ./all_reduce_perf -g 1`",
+      "concept": "8-GPU/노드 환경에서 AND 0x7(= MOD 8)은 색상 = rank & 7로 계산되어, 노드당 GPU 1개씩만 포함하는 8개의 병렬 그룹을 만듭니다. 그룹 내 어떤 두 랭크도 같은 노드에 있지 않으므로 NVLink가 전혀 쓰이지 않고 모든 바이트가 리프-스파인 스위치를 거칩니다 — 이것이 East-West(노드 간) 격리입니다.",
+      "strategy": "암기 팁 — AND는 세로(노드 간) 격리, OR는 가로(노드 내) 격리. OR 0x7(= DIV 8)은 정반대로 노드당 8개 랭크를 한 그룹으로 묶어 순수 NVLink만 측정합니다. MOD 2는 그룹마다 노드당 GPU 4개씩 남아 두 계층이 섞입니다. split 없이 랙별 평균을 내는 방식은 사후에 두 계층을 분리할 수 없습니다. 반드시 mpirun으로 랭크당 GPU 1개(`-g 1`)를 실행해야 색상이 랭크 기준으로 정확히 분리됩니다."
+     },
+     "bankId": "n053"
+    },
+    {
+     "num": "Q55",
+     "en": {
+      "title": "Redfish API to read ATF/BSP/NIC/UEFI firmware versions from a BlueField-3 BMC",
+      "answer": "A. `GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory`",
+      "concept": "The BlueField DPU's BMC supports the industry-standard Redfish API, and the FirmwareInventory endpoint is the standard path returning JSON versions for every component the BMC manages (ATF, BSP, NIC, UEFI, and so on). Host-side `mlxconfig`/`mstflint` can only see NIC firmware, never the BMC's own components.",
+      "strategy": "In automation and firmware-inventory contexts, Redfish always takes priority over IPMI. `FirmwareList` is not a real URI and exists only as a trap."
+     },
+     "ko": {
+      "title": "BlueField-3 BMC에서 ATF/BSP/NIC/UEFI 펌웨어 버전 조회 Redfish API",
+      "answer": "A. `GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory`",
+      "concept": "BlueField DPU의 BMC는 업계 표준 Redfish API를 지원하며, FirmwareInventory 엔드포인트가 BMC가 관리하는 모든 구성요소(ATF, BSP, NIC, UEFI 등)의 버전을 JSON으로 반환하는 표준 경로입니다. 호스트 측 `mlxconfig`/`mstflint`는 NIC 펌웨어만 볼 수 있고 BMC 자체 구성요소는 보지 못합니다.",
+      "strategy": "자동화·펌웨어 조회 문맥에서는 IPMI가 아니라 항상 Redfish가 우선입니다. `FirmwareList`는 존재하지 않는 URI로, 순수한 함정입니다."
+     },
+     "bankId": "n054"
+    },
+    {
+     "num": "Q63",
+     "en": {
+      "title": "Data-loading settings to prevent OOM during a NeMo burn-in",
+      "answer": "D. `blocksize=\"1GB\"` plus RMM async allocation enabled",
+      "concept": "OOM here usually comes not from raw dataset size but from memory fragmentation and sharp allocation spikes during shuffling and batch loading. The RMM (RAPIDS Memory Manager) async allocator pre-allocates a memory pool and manages it more efficiently than the standard CUDA allocator. Specifying blocksize makes ingestion happen in deterministic chunks and prevents reading a huge file whole.",
+      "strategy": "Switching FP16 → FP32 doubles memory use — the exact opposite effect. Raising `files_per_partition` to 1000 also increases per-partition memory demand. Disabling `add_filename` saves a negligible amount of metadata and is not a real fix."
+     },
+     "ko": {
+      "title": "NeMo 번인 중 OOM 방지를 위한 데이터 로딩 설정",
+      "answer": "D. `blocksize=\"1GB\"` + RMM 비동기 할당 활성화",
+      "concept": "OOM은 데이터셋이 커서라기보다 셔플·배치 로딩 중 메모리 파편화와 급격한 할당 스파이크가 원인인 경우가 많습니다. RMM(RAPIDS Memory Manager)의 비동기 할당자는 메모리 풀을 사전 할당해 표준 CUDA 할당자보다 효율적으로 관리합니다. blocksize를 지정하면 데이터 인입이 결정적인 청크 단위로 이뤄져 거대한 파일을 한 번에 통째로 읽는 상황을 방지합니다.",
+      "strategy": "FP16 → FP32 전환은 메모리 사용량을 두 배로 늘려 정반대 효과를 냅니다. `files_per_partition`을 1000으로 늘리는 것도 파티션당 메모리 요구를 키웁니다. `add_filename` 비활성화는 메타데이터 절감 효과가 미미해 근본 대책이 아닙니다."
+     },
+     "bankId": "n062"
+    },
+    {
+     "num": "Q69",
+     "en": {
+      "title": "Tool for benchmarking latency on new IB equipment",
+      "answer": "C. `ib_write_lat`",
+      "concept": "`ib_write_lat` from the perftest suite is the standard microbenchmark for RDMA Write completion time between two nodes, measured in nanoseconds. It runs directly at the IB Verbs layer, so measurements are precise and free of TCP/IP stack overhead. Its sibling `ib_write_bw` measures bandwidth.",
+      "strategy": "`tcpdump` is packet capture; `ibdiagnet` is a full-fabric diagnostic and error-report tool. Neither targets latency. Map the keyword \"latency\" to the perftest `*_lat` family every time."
+     },
+     "ko": {
+      "title": "신규 IB 장비의 지연(latency) 벤치마크 도구",
+      "answer": "C. `ib_write_lat`",
+      "concept": "perftest 스위트의 `ib_write_lat`은 두 노드 간 RDMA Write 완료 시간을 나노초 단위로 측정하는 표준 마이크로벤치마크입니다. IB Verbs 계층에서 직접 동작해 TCP/IP 스택 오버헤드 없이 정밀 측정이 가능합니다. 자매 도구 `ib_write_bw`는 대역폭을 측정합니다.",
+      "strategy": "`tcpdump`는 패킷 캡처, `ibdiagnet`은 패브릭 전수 진단·오류 리포트 도구로 지연 측정이 목적이 아닙니다. \"지연\"이라는 키워드는 항상 perftest 계열(`*_lat`)로 연결하세요."
+     },
+     "bankId": "n068"
+    },
+    {
+     "num": "Q70",
+     "en": {
+      "title": "Interpreting a ClusterKit NCCL bandwidth result of 350 GB/s on 400G IB",
+      "answer": "B. Optimal — indicative of a healthy fabric and functioning GPUDirect RDMA",
+      "concept": "An NDR (400G) link has roughly 50 GB/s theoretical unidirectional bandwidth, so an 8-GPU node totals about 400 GB/s in theory. NCCL busbw is an effective figure that excludes protocol headers and collective-algorithm overhead, which makes 350 GB/s a widely accepted optimal result under these conditions.",
+      "strategy": "\"You should expect above 390 GB/s\" ignores overhead and sets an unrealistic bar — and that option also mislabels 400G (NDR) as HDR (which is actually 200G). FEC tuning addresses signal-quality problems; it is not a way to push already-healthy bandwidth higher."
+     },
+     "ko": {
+      "title": "ClusterKit NCCL 대역폭 테스트 350GB/s (400G IB) 해석",
+      "answer": "B. 최적 성능 — 건강한 패브릭과 GPUDirect RDMA 정상 동작을 시사",
+      "concept": "NDR(400G) 링크의 이론 단방향 대역폭은 약 50GB/s이며, 8-GPU 노드에서 이론 합계는 약 400GB/s입니다. NCCL의 busbw는 프로토콜 헤더와 집합통신 알고리즘 오버헤드를 제외한 실효값이므로, 350GB/s는 이 조건에서 널리 최적으로 평가되는 수치입니다.",
+      "strategy": "\"390GB/s 이상을 기대해야 한다\"는 보기는 오버헤드를 무시한 비현실적 기준이며, 400G(NDR)를 HDR(실제로는 200G)이라고 잘못 라벨링한 함정까지 포함합니다. FEC 튜닝은 신호 품질 문제 해결책이지 이미 건강한 대역폭을 더 끌어올리는 수단이 아닙니다."
+     },
+     "bankId": "n069"
+    },
+    {
+     "num": "Q71",
+     "en": {
+      "title": "Split setting to isolate the inter-node fabric on a 4-node × 8-GPU cluster",
+      "answer": "B. `NCCL_TESTS_SPLIT=\"AND 0x7\"`",
+      "concept": "AND 0x7 (MOD 8) gives color = rank & 7, dividing 32 ranks into 8 groups of the form {c, c+8, c+16, c+24}. Each group holds exactly one GPU per node, so NVLink is never exercised and only the inter-node fabric is measured.",
+      "strategy": "Same principle as the Spectrum-X question — memorize AND (vertical, grouped by slot number) = inter-node isolation, OR (horizontal, grouped by node number) = intra-node isolation. AND 0x1 (MOD 2) leaves 4 GPUs per node in each group and mixes the layers. Measuring without a split makes post-hoc separation impossible. Note also that reported bandwidth is per group, so multiply by the group count when comparing against an aggregate."
+     },
+     "ko": {
+      "title": "4노드 × 8GPU 클러스터에서 노드 간 패브릭만 격리하는 split 설정",
+      "answer": "B. `NCCL_TESTS_SPLIT=\"AND 0x7\"`",
+      "concept": "AND 0x7(= MOD 8)은 색상 = rank & 7로, 32랭크를 8개 그룹(각 그룹 {c, c+8, c+16, c+24})으로 나눕니다. 각 그룹은 노드당 GPU 1개씩만 포함하므로 NVLink는 전혀 쓰이지 않고 순수 노드 간 패브릭만 측정됩니다.",
+      "strategy": "Q54와 동일한 원리 — AND(세로, 슬롯 번호 기준 묶음) = 노드 간 격리, OR(가로, 노드 번호 기준 묶음) = 노드 내 격리로 암기하세요. AND 0x1(= MOD 2)은 그룹마다 각 노드에 GPU 4개가 남아 두 계층이 섞입니다. split 없이 통합 측정하면 사후 분리가 불가능합니다. 보고되는 대역폭은 그룹당 값이므로 전체 집계와 비교할 때는 그룹 수를 곱해야 합니다."
+     },
+     "bankId": "n070"
+    }
+   ],
+   "mapTitle": {
+    "en": "Tool-to-layer map",
+    "ko": "도구–계층 매핑표"
+   },
+   "map": {
+    "en": {
+     "head": [
+      "Layer / purpose",
+      "Tool"
+     ],
+     "rows": [
+      [
+       "Physical signal (BER, eye)",
+       "`mlxlink -c` (counters/BER), `mlxlink -e` (eye opening — **not** BER)"
+      ],
+      [
+       "Firmware version / image",
+       "`flint`, `mstflint`"
+      ],
+      [
+       "Configuration (NV parameters)",
+       "`mlxconfig`"
+      ],
+      [
+       "Link state / topology",
+       "`ibstat`, `iblinkinfo`, `ibnodes`, `ibnetdiscover`"
+      ],
+      [
+       "Subnet Manager",
+       "`sminfo` (master SM LID), `smpquery ND` (name), `smpquery NI` (GUID / hardware info)"
+      ],
+      [
+       "Collective performance",
+       "nccl-tests (`all_reduce_perf`, etc.), busbw/algbw formulas"
+      ],
+      [
+       "Whole-node health",
+       "`nvsm show health`, `nvsm stress-test`"
+      ],
+      [
+       "Cable quality verdict",
+       "UFM CVT (Cable Validation Tool) BER thresholds"
+      ]
+     ]
+    },
+    "ko": {
+     "head": [
+      "계층 / 목적",
+      "도구"
+     ],
+     "rows": [
+      [
+       "물리 신호(BER, Eye)",
+       "`mlxlink -c`(카운터/BER), `mlxlink -e`(아이 오프닝, **BER 아님**)"
+      ],
+      [
+       "펌웨어 버전 / 이미지",
+       "`flint`, `mstflint`"
+      ],
+      [
+       "설정(NV 파라미터)",
+       "`mlxconfig`"
+      ],
+      [
+       "링크 상태 / 토폴로지",
+       "`ibstat`, `iblinkinfo`, `ibnodes`, `ibnetdiscover`"
+      ],
+      [
+       "Subnet Manager",
+       "`sminfo`(마스터 SM의 LID), `smpquery ND`(이름), `smpquery NI`(GUID·하드웨어 정보)"
+      ],
+      [
+       "집합통신 성능",
+       "nccl-tests(`all_reduce_perf` 등), busbw/algbw 공식"
+      ],
+      [
+       "노드 전역 상태",
+       "`nvsm show health`, `nvsm stress-test`"
+      ],
+      [
+       "케이블 품질 판정",
+       "UFM CVT(Cable Validation Tool)의 BER 임계값"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "num": "D2",
+   "title": "System & Server Bring-up",
+   "weight": "31%",
+   "count": 16,
+   "intro": {
+    "en": "This domain recycles physical installation (power, ESD, cabling), DGX self-diagnostics (NVSM), firmware activation procedure, and storage architecture selection. Common pattern: **any option that relaxes a safety rule** — no ESD strap, working on a powered system, permanently disabling Secure Boot — is almost always wrong.",
+    "ko": "물리적 설치(전력·ESD·케이블), DGX 자체 진단(NVSM), 펌웨어 활성화 절차, 스토리지 아키텍처 선택이 반복 출제됩니다. 공통 패턴: **안전 수칙을 완화하는 보기**(ESD 미착용, 전원 켠 채 작업, Secure Boot 영구 비활성화)는 거의 항상 오답입니다."
+   },
+   "questions": [
+    {
+     "num": "Q2",
+     "en": {
+      "title": "Updating NVLink switch transceiver firmware without disrupting the network",
+      "answer": "B. `flint -d -lid 27 --linkx --linkx_auto_update --activate`",
+      "concept": "`--linkx` targets transceiver/cable modules rather than the switch ASIC, `--linkx_auto_update` automates the procedure, and `--activate` applies the new firmware to the module's active memory with no reboot and no link flap. `-lid` lets a central management node address a specific module.",
+      "strategy": "\"Without disrupting the network\" is the decisive clue. System reboot, reset (`mlxfwreset`), and physical re-seating all cause disruption — eliminate them first. Non-disruptive in-service update is only possible with the `flint --linkx --linkx_auto_update --activate` combination."
+     },
+     "ko": {
+      "title": "NVLink 스위치 트랜시버 펌웨어를 네트워크 중단 없이 업데이트",
+      "answer": "B. `flint -d -lid 27 --linkx --linkx_auto_update --activate`",
+      "concept": "`--linkx`는 스위치 ASIC이 아니라 트랜시버·케이블 모듈을 대상으로 하고, `--linkx_auto_update`가 절차를 자동화하며, `--activate`가 재부팅이나 링크 플랩 없이 모듈의 활성 메모리에 새 펌웨어를 적용합니다. `-lid`로 중앙 관리 노드에서 특정 모듈을 지정할 수 있습니다.",
+      "strategy": "\"네트워크를 중단시키지 않고\"가 결정적 단서입니다. 시스템 재부팅, 리셋(`mlxfwreset`), 물리적 재연결은 모두 중단을 유발하므로 먼저 제거하세요. 무중단 in-service 업데이트는 `flint --linkx --linkx_auto_update --activate` 조합으로만 가능합니다."
+     },
+     "bankId": "n002"
+    },
+    {
+     "num": "Q5",
+     "en": {
+      "title": "Physical GPU/DPU installation procedure (slot, lane, and space already secured)",
+      "answer": "A. Verify power → verify cable compatibility → power down the server and remove cables → wear an ESD strap",
+      "concept": "High-performance GPUs draw 300–450 W, so confirming PDU/PSU capacity is mandatory, as is checking cable standard compatibility (12VHPWR and similar). Non-hot-plug PCIe components must be handled as a \"cold service\" — power off, cables removed — and an ESD strap is non-negotiable for protecting the HBM and GPU die.",
+      "strategy": "Eliminate anything containing \"no ESD strap\" or \"install while powered on.\" Among the remainder, the answer is the one that also includes cable compatibility verification — a complete procedure needs all four elements: power, compatibility, cold service, ESD."
+     },
+     "ko": {
+      "title": "GPU/DPU 물리 설치 절차 (슬롯·레인·공간 확보 완료 상태)",
+      "answer": "A. 전력 확인 → 케이블 호환성 검증 → 서버 다운 후 케이블 제거 → ESD 밴드 착용",
+      "concept": "고성능 GPU는 300~450W를 소모하므로 PDU/PSU 용량 확인이 필수이고, 12VHPWR 등 케이블 규격 호환성 확인도 필요합니다. 비-핫플러그 PCIe 부품은 반드시 \"Cold Service\"(전원 차단 후 케이블 제거)로 다뤄야 하며, ESD 밴드는 HBM·GPU 다이 보호를 위해 타협 불가입니다.",
+      "strategy": "\"ESD 미착용\"과 \"전원 켠 채 설치\"가 포함된 보기는 즉시 제거합니다. 남은 보기 중 케이블 호환성 검증까지 포함한 것이 정답 — 전력·호환성·Cold Service·ESD 네 요소가 모두 있어야 완전한 절차입니다."
+     },
+     "bankId": "n005"
+    },
+    {
+     "num": "Q12",
+     "en": {
+      "title": "Storage for high-throughput ingest of large unstructured video plus real-time analytics",
+      "answer": "A. Object storage (scalability plus metadata management)",
+      "concept": "Object storage attaches user-defined metadata (resolution, codec, capture time, labels) to each object, scales horizontally to petabytes through a flat namespace, and supports parallel ingest via HTTP/S3 endpoints — avoiding the metadata-server bottleneck of hierarchical filesystems.",
+      "strategy": "Read the *justification* in each option. File storage's rationale, \"hierarchical organization and easy browsing,\" is a convenience argument and does not answer a throughput/scalability question. Tape is for archive and sequential access, so real-time analytics is out. Block storage has no metadata model and is uneconomical for petabyte-scale unstructured data."
+     },
+     "ko": {
+      "title": "대용량 비정형 영상 데이터의 고처리량 수집 + 실시간 분석용 스토리지",
+      "answer": "A. 오브젝트 스토리지 (확장성 + 메타데이터 관리)",
+      "concept": "오브젝트 스토리지는 각 객체에 사용자 정의 메타데이터(해상도, 코덱, 캡처 시각, 라벨 등)를 부여할 수 있고, 플랫 네임스페이스로 페타바이트급 수평 확장이 가능하며, HTTP/S3 엔드포인트로 병렬 인입이 가능해 계층형 파일시스템의 메타데이터 서버 병목이 없습니다.",
+      "strategy": "보기의 \"근거\"를 읽으세요 — 파일 스토리지의 근거인 \"계층적 구성·손쉬운 탐색\"은 편의성 논거일 뿐 처리량·확장성 질문의 답이 아닙니다. 테이프는 아카이브·순차 접근용이라 실시간 분석이 불가능하고, 블록 스토리지는 메타데이터 모델이 없고 페타바이트급 비정형 데이터에 비경제적입니다."
+     },
+     "bankId": "n012"
+    },
+    {
+     "num": "Q26",
+     "en": {
+      "title": "Best practice for minimizing risk when automating firmware updates across a large DGX cluster",
+      "answer": "A. Drain nodes in the scheduler → pre-update diagnostics → update in batches → post-update health validation → expand to the next batch",
+      "concept": "Batching is the industry standard for preventing one corrupt firmware image from taking down the entire AI Factory. The sequence is: drain in Slurm/K8s to protect running jobs → establish a baseline with `nvsm show health` / `dcgmi diag` → apply the batch → validate afterward (Healthy status, version manifest matches).",
+      "strategy": "\"Skip diagnostics,\" \"do all nodes at once,\" and \"update only nodes that reported failures\" cause loss of baseline, total-outage risk, and configuration drift respectively. Eliminate all three."
+     },
+     "ko": {
+      "title": "대규모 DGX 클러스터 펌웨어 업데이트 자동화 시 위험 최소화 모범 사례",
+      "answer": "A. 스케줄러에서 노드 drain → 사전 진단 → 배치 단위 업데이트 → 사후 헬스 검증 → 다음 배치로 확대",
+      "concept": "배치 방식은 하나의 손상된 펌웨어 이미지가 AI Factory 전체를 무너뜨리는 것을 막는 업계 표준입니다. Slurm/K8s에서 drain으로 활성 작업 보호 → `nvsm show health`/`dcgmi diag`로 기준선 확보 → 배치 적용 → 사후 검증(Healthy 상태·버전 매니페스트 일치) 순서를 따릅니다.",
+      "strategy": "\"진단을 건너뛴다\", \"전부 동시에\", \"장애 보고된 노드만 업데이트\"는 각각 기준선 상실, 전면 장애 위험, 구성 드리프트를 유발하므로 제거하세요."
+     },
+     "bankId": "n026"
+    },
+    {
+     "num": "Q34",
+     "en": {
+      "title": "Connecting a 25GbE HCA to a combined 100G/25G QSFP port",
+      "answer": "B. A QSA adapter",
+      "concept": "The QSA (QSFP to SFP Adapter) physically and electrically bridges a single-lane SFP/SFP28 transceiver into a four-lane QSFP/QSFP28 switch port. It is a pass-through that maps the SFP module's single lane onto the QSFP port's first lane, preserving signal integrity and latency characteristics.",
+      "strategy": "The requirement explicitly states 25GbE, so an SFP-to-BASE-T (RJ45) adapter, which drops the speed to 1G, is eliminated immediately. A plain SFP connector cannot bridge the form-factor difference."
+     },
+     "ko": {
+      "title": "25GbE HCA를 100G/25G 겸용 QSFP 포트에 연결",
+      "answer": "B. QSA 어댑터",
+      "concept": "QSA(QSFP to SFP Adapter)는 1레인 SFP/SFP28 트랜시버를 4레인 QSFP/QSFP28 스위치 포트에 물리적·전기적으로 브리지합니다. SFP 모듈의 단일 레인을 QSFP 포트의 첫 레인에 매핑하는 패스스루 방식이라 신호 무결성과 지연 특성을 유지합니다.",
+      "strategy": "25GbE 요구 조건이 명시되어 있으므로 속도를 1G로 떨어뜨리는 SFP-to-BASE-T(RJ45) 어댑터는 즉시 제거됩니다. 일반 SFP 커넥터만으로는 폼팩터 차이를 브리지할 수 없습니다."
+     },
+     "bankId": "n034"
+    },
+    {
+     "num": "Q39",
+     "en": {
+      "title": "Storage characteristic for a multi-site real-time fraud detection AI model",
+      "answer": "B. Multi-protocol, low-latency access",
+      "concept": "Real-time inference needs millisecond response, which requires an all-flash tier serving multiple protocols at low latency — S3 for ingest, POSIX/NFS for the inference engine. Multi-site synchronization keeps the latest model weights and historical data locally available.",
+      "strategy": "Tape, low-cost HDD, and mid-speed bulk storage all introduce tail latency and collide head-on with real-time requirements. Eliminate them."
+     },
+     "ko": {
+      "title": "다중 사이트 실시간 사기 탐지 AI 모델용 스토리지 특징",
+      "answer": "B. 다중 프로토콜(multi-protocol) 저지연 액세스",
+      "concept": "실시간 추론은 밀리초 단위 응답이 필요하므로 S3(수집)와 POSIX/NFS(추론 엔진) 등 다중 프로토콜을 저지연으로 지원하는 올플래시 계층이 필수입니다. 다중 사이트 동기화로 최신 모델 가중치와 이력 데이터가 지역적으로 가용해야 합니다.",
+      "strategy": "테이프·저가 HDD·중간 속도 대용량 스토리지는 모두 tail latency를 유발해 실시간 요건과 정면 충돌하므로 제거하세요."
+     },
+     "bankId": "n039"
+    },
+    {
+     "num": "Q41",
+     "en": {
+      "title": "Administrator account setup on first DGX boot — BMC/GRUB security",
+      "answer": "D. Create a unique, strong lowercase username and password and use the same credentials for both BMC and GRUB",
+      "concept": "The administrator account created at first boot is synchronized for local OS login, BMC (out-of-band management), and GRUB (pre-boot configuration). Lowercase usernames are standard Linux practice for compatibility across authentication services.",
+      "strategy": "\"Keep the default account\" and \"use a simple password\" are always wrong in security questions. The option using different accounts for BMC and GRUB also contradicts the DGX synchronization model (\"one strong credential for both\") and is eliminated."
+     },
+     "ko": {
+      "title": "DGX 최초 부팅 시 관리자 계정 설정 — BMC/GRUB 보안",
+      "answer": "D. 고유하고 강력한 소문자 사용자명·비밀번호를 만들어 BMC와 GRUB 양쪽에 동일하게 사용",
+      "concept": "최초 부팅 시 만든 관리자 계정은 로컬 OS 로그인뿐 아니라 BMC(Out-of-band 관리)와 GRUB(사전 부팅 구성)에도 동기화되어 사용됩니다. 소문자 사용자명은 여러 인증 서비스 간 호환성을 위한 리눅스 표준 관행입니다.",
+      "strategy": "\"기본 계정 유지\", \"단순 비밀번호\"는 보안 문항에서 항상 오답입니다. BMC와 GRUB에 서로 다른 계정을 쓰는 보기도 DGX의 동기화 구조(\"하나의 강력한 자격증명을 양쪽에\")와 맞지 않아 제거합니다."
+     },
+     "bankId": "n041"
+    },
+    {
+     "num": "Q46",
+     "en": {
+      "title": "Tool required to prevent damage during GPU server installation",
+      "answer": "C. An anti-ESD wrist strap",
+      "concept": "GPUs like the H100 and A100 can suffer permanent die or HBM circuit damage from static discharges below 3,000 V — well below the human perception threshold. An ESD strap safely drains accumulated charge from the technician's body to ground.",
+      "strategy": "Gloves provide no ESD protection unless specifically ESD-rated, and a power screwdriver is actively discouraged around sensitive components because of over-torque risk. Map \"prevent static/component damage\" to the ESD strap every time."
+     },
+     "ko": {
+      "title": "GPU 서버 설치 시 손상 방지를 위해 사용해야 할 도구",
+      "answer": "C. Anti-ESD strap(정전기 방지 손목띠)",
+      "concept": "H100/A100 같은 GPU는 사람이 느끼지도 못하는 3,000V 미만의 정전기로도 다이·HBM 회로가 영구 손상될 수 있습니다. ESD 밴드는 기술자의 몸에 쌓인 정전하를 안전하게 접지로 흘려보냅니다.",
+      "strategy": "장갑은 ESD 등급이 아니면 정전기 보호 효과가 없고, 전동 드라이버는 과도한 조임 위험 때문에 민감 부품에는 오히려 권장되지 않습니다. \"정전기·부품 손상 방지\" 키워드에는 항상 ESD 밴드를 매칭하세요."
+     },
+     "bankId": "n045"
+    },
+    {
+     "num": "Q49",
+     "en": {
+      "title": "Storage infrastructure strategy for scaling AI capability over the next five years",
+      "answer": "C. A hybrid cloud model combining scalable cloud resources with on-premises infrastructure",
+      "concept": "The most future-proof approach is tiering: keep high-throughput, low-latency hot training data on-premises near the DGX systems (NVMe-based parallel filesystem) while absorbing cold archive and burst compute demand with the cloud's elastic scalability.",
+      "strategy": "Options that remove tiering or collapse everything onto one tier (cloud-only, or on-premises block storage only) conflict directly with the scalability and cost-efficiency goals. Eliminate them."
+     },
+     "ko": {
+      "title": "향후 5년 AI 역량 확장을 위한 스토리지 인프라 전략",
+      "answer": "C. 확장 가능한 클라우드 자원 + 온프레미스 인프라를 결합한 하이브리드 클라우드 모델",
+      "concept": "학습에 필요한 고처리량·저지연 hot 데이터는 DGX 근처 온프레미스(NVMe 기반 병렬 파일시스템)에 두고, 콜드 아카이브와 급증하는 컴퓨트 수요는 클라우드의 탄력적 확장성으로 흡수하는 계층화(tiering) 전략이 가장 미래지향적입니다.",
+      "strategy": "\"티어링 제거\", \"단일 계층(클라우드만 / 온프레미스 블록 스토리지만)\"처럼 계층을 없애거나 한쪽에 몰아주는 보기는 확장성·비용 효율과 정면 충돌하므로 제거하세요."
+     },
+     "bankId": "n048"
+    },
+    {
+     "num": "Q52",
+     "en": {
+      "title": "Mandatory action when validating power and cooling for stable DGX H100 operation",
+      "answer": "A. Confirm redundant, correctly rated PDU connections and that every PSU reports valid input",
+      "concept": "A DGX H100 can draw up to 10.2 kW at peak, so the health of the electrical-infrastructure-to-server interface is the top validation priority. Use NVSM to confirm all six PSUs receive normal voltage (200–240 V); anomalies lead to performance throttling or unexpected shutdown.",
+      "strategy": "Pinning fans at 100% is not a normal cooling policy — it is a sign that policy has failed. GPU overclocking is neither supported nor recommended on enterprise DGX, and disabling PCIe devices is a configuration change rather than validation. Eliminate all three."
+     },
+     "ko": {
+      "title": "DGX H100 안정 운영을 위한 전력·냉각 검증의 필수 조치",
+      "answer": "A. 이중화된 정격 PDU 연결 확인 + 모든 PSU가 정상 입력을 보고하는지 확인",
+      "concept": "DGX H100은 피크 시 최대 10.2kW를 소모할 수 있어 전기 인프라–서버 인터페이스의 건전성이 최우선 검증 대상입니다. NVSM으로 6개 PSU 모두 정상 전압(200~240V)을 수신하는지 확인해야 하며, 이상 시 성능 스로틀링이나 예기치 않은 셧다운으로 이어집니다.",
+      "strategy": "팬을 항상 100%로 돌리는 것은 정상 냉각 정책이 아니라 정책 실패의 신호입니다. GPU 오버클럭은 엔터프라이즈 DGX에서 지원·권장되지 않고, PCIe 장치 비활성화는 \"검증\"이 아니라 구성 변경 행위이므로 모두 제거합니다."
+     },
+     "bankId": "n051"
+    },
+    {
+     "num": "Q59",
+     "en": {
+      "title": "Procedure guaranteeing activation of every component (including EROT and CPLD) after uploading a firmware package",
+      "answer": "A. Cold power cycle → BMC reset (recommended command) → AC power cycle (guarantees EROT and CPLD activation)",
+      "concept": "A DGX contains low-level programmable logic — CPLD, FPGA, EROT (Electrically Resilient Root of Trust) — that a plain OS reboot never refreshes. Because the BMC handles power sequencing and EROT monitoring, reset it first so it synchronizes with the new version; then an AC power cycle is required to fully reset power controllers and CPLDs that run on standby power.",
+      "strategy": "An OS-level software restart does not refresh CPLD/EROT, so eliminate any option that stops there. Choose the option that descends to the power layer (cold cycle plus AC cycle)."
+     },
+     "ko": {
+      "title": "펌웨어 패키지 업로드 후 모든 구성요소(EROT·CPLD 포함) 활성화를 보장하는 절차",
+      "answer": "A. 콜드 파워사이클 → BMC 리셋(권장 명령) → AC 파워사이클(EROT·CPLD 활성화 보장)",
+      "concept": "DGX에는 CPLD, FPGA, EROT(Electrically Resilient Root of Trust) 등 단순 OS 재부팅으로는 갱신되지 않는 저수준 프로그래머블 로직이 다수 있습니다. BMC가 전원 시퀀싱과 EROT 모니터링을 담당하므로 BMC를 먼저 리셋해 새 버전과 동기화하고, 대기전원으로 동작하는 전원 컨트롤러·CPLD까지 완전히 리셋하려면 AC 파워사이클이 필요합니다.",
+      "strategy": "OS 소프트웨어 재시작만으로는 CPLD/EROT가 갱신되지 않으므로 거기서 멈추는 보기는 제거합니다. 전원 계층까지 내려가는(콜드 사이클 + AC 사이클) 보기를 선택하세요."
+     },
+     "bankId": "n058"
+    },
+    {
+     "num": "Q61",
+     "en": {
+      "title": "Data center energy efficiency strategy that goes beyond PUE",
+      "answer": "D. Develop workload-specific benchmarks such as MLPerf",
+      "concept": "PUE measures only waste from cooling and power delivery; it says nothing about how efficiently the IT load performs actual work. MLPerf measures the time and energy required to complete standardized AI tasks, quantifying useful work per unit of energy.",
+      "strategy": "Watt and kWh metrics count energy in but not work out — eliminate them. Any option that keeps PUE as the primary metric contradicts the question's \"beyond PUE\" requirement."
+     },
+     "ko": {
+      "title": "PUE를 넘어서는 데이터센터 에너지 효율 전략",
+      "answer": "D. MLPerf 같은 워크로드별 벤치마크 개발",
+      "concept": "PUE는 냉각·전력전달로 인한 낭비만 측정할 뿐 IT 부하가 실제로 얼마나 효율적으로 일하는지는 말해주지 않습니다. MLPerf는 표준화된 AI 작업 완료에 필요한 시간·에너지를 측정해 \"에너지당 유용한 작업량\"을 정량화합니다.",
+      "strategy": "와트·kWh 지표는 투입 에너지만 세고 산출을 세지 않으므로 제거합니다. PUE를 여전히 주 지표로 유지하는 보기는 \"넘어선다\"는 요구와 모순되므로 오답입니다."
+     },
+     "bankId": "n060"
+    },
+    {
+     "num": "Q64",
+     "en": {
+      "title": "Feature providing redundancy plus load balancing on management and storage Ethernet networks",
+      "answer": "C. MLAG for bonded interfaces across redundant switches",
+      "concept": "MLAG (Multi-Chassis Link Aggregation) makes two physical switches appear as one logical unit. A DGX can split an LACP bond across both switches; if one fails, traffic continues immediately on the remaining links without waiting for slow STP convergence, and in normal operation the bandwidth of both links is aggregated.",
+      "strategy": "STP provides redundancy but blocks one path, halving bandwidth, and converges slowly. A single switch or an unmanaged switch is a single point of failure with no VLAN isolation, failing the security and segmentation requirements."
+     },
+     "ko": {
+      "title": "관리·스토리지 이더넷 네트워크의 이중화 + 로드밸런싱 구현 기능",
+      "answer": "C. 이중화된 스위치 간 본딩 인터페이스용 MLAG",
+      "concept": "MLAG(Multi-Chassis Link Aggregation)는 두 물리 스위치를 하나의 논리 유닛으로 보이게 합니다. DGX가 LACP 본드로 두 스위치에 케이블을 나눠 연결해도 한쪽 장애 시 느린 STP 컨버전스 없이 즉시 나머지 링크로 트래픽이 이어지고, 평상시에는 두 링크의 대역폭을 합산해 사용할 수 있습니다.",
+      "strategy": "STP는 이중화는 되지만 한쪽 경로를 차단해 대역폭이 절반이 되고 컨버전스도 느립니다. 단일 스위치나 비관리형 스위치는 단일 장애점(SPOF)이자 VLAN 격리도 없어 보안·격리 요구를 충족하지 못합니다."
+     },
+     "bankId": "n063"
+    },
+    {
+     "num": "Q67",
+     "en": {
+      "title": "Correct order for a DGX H100 firmware update including the GPU tray",
+      "answer": "A. Quiesce GPU activity → update and reboot the BMC → update motherboard/tray components → cold reset → verify completion",
+      "concept": "The BMC manages power sequencing and communication for every other tray, so it must be brought current first. Motherboard and GPU tray updates are then staged to flash, and a cold reset is required for the CPLD and root-of-trust modules to boot the new images. Finally, verify with `nvsm show health` or the BMC dashboard that all components are at the target version and Healthy.",
+      "strategy": "Options that put the cold reset first, defer the BMC reboot to the end, or skip the tray update break the ordering or completeness requirement. Eliminate them."
+     },
+     "ko": {
+      "title": "DGX H100 펌웨어 업데이트(GPU tray 포함)의 올바른 순서",
+      "answer": "A. GPU 활동 중지 → BMC 업데이트·재부팅 → 마더보드/트레이 구성요소 업데이트 → 콜드 리셋 → 완료 검증",
+      "concept": "BMC가 다른 모든 트레이의 전원 시퀀싱·통신을 관리하므로 반드시 가장 먼저 최신 상태로 올려야 합니다. 이후 마더보드·GPU 트레이 업데이트는 플래시에 스테이징되며, CPLD·root-of-trust 모듈이 새 이미지로 부팅하려면 콜드 리셋이 필요합니다. 마지막으로 `nvsm show health`나 BMC 대시보드로 전 구성요소가 목표 버전·Healthy 상태인지 검증합니다.",
+      "strategy": "콜드 리셋을 맨 앞에 두거나, BMC 재부팅을 맨 뒤로 미루거나, 트레이 업데이트를 건너뛰는 보기는 순서·완전성이 어긋나므로 제거합니다."
+     },
+     "bankId": "n066"
+    },
+    {
+     "num": "Q68",
+     "en": {
+      "title": "DGX BasePOD network segmentation requirement",
+      "answer": "D. Four networks — compute, storage, out-of-band (OOB), and management (in-band)",
+      "concept": "The standard is four layers: compute (IB/Spectrum-X, dedicated to GPU collectives), storage (high-bandwidth data ingest and checkpointing), management (in-band: SSH, PXE, orchestration), and OOB (BMC-only, providing power control and console access even when the OS is down).",
+      "strategy": "Any option folding BMC traffic into the management network defeats the fault-isolation purpose of OOB and is wrong. Collapsing to a single VLAN or two networks causes congestion from storage and compute traffic competing — eliminate."
+     },
+     "ko": {
+      "title": "DGX BasePOD 네트워크 세그멘테이션 요구사항",
+      "answer": "D. 4개 네트워크 — 컴퓨트, 스토리지, Out-of-Band(OOB), 관리(In-band)",
+      "concept": "컴퓨트망(IB/Spectrum-X, GPU 집합통신 전용), 스토리지망(고대역폭 데이터 인입·체크포인팅), 관리망(In-band, SSH·PXE·오케스트레이션), OOB망(BMC 전용, OS 다운 상태에서도 전원제어·콘솔 접근 가능)의 4개 계층이 표준입니다.",
+      "strategy": "BMC 트래픽을 관리망에 합치는 보기는 OOB의 존재 이유인 장애 격리를 무력화하므로 오답입니다. 단일 VLAN이나 2개 네트워크로 축소하는 보기는 스토리지·컴퓨트 트래픽 경쟁으로 혼잡을 유발하므로 제거하세요."
+     },
+     "bankId": "n067"
+    },
+    {
+     "num": "Q72",
+     "en": {
+      "title": "Safest approach to configuring the BMC port when bringing up a new DGX server",
+      "answer": "A. Connect it to a dedicated, firewalled OOB network and immediately change the default administrator credentials",
+      "concept": "The BMC is a high-value target: it controls firmware flashing, power, and serial console access. Security requires both layers — (1) network isolation (a dedicated, firewalled OOB network, never exposed to production or the internet) and (2) credential management (change to a strong unique password on first access).",
+      "strategy": "Eliminate any option satisfying only one layer (isolated but keeping default passwords, or allowing remote internet access). \"Leave the BMC disconnected until OS configuration is complete\" makes headless remote management impossible and does not match real data center operations."
+     },
+     "ko": {
+      "title": "신규 DGX 서버 브링업 시 BMC 포트 구성의 가장 안전한 접근",
+      "answer": "A. 전용 방화벽 OOB 네트워크에 연결 + 기본 관리자 자격증명 즉시 변경",
+      "concept": "BMC는 펌웨어 플래싱, 전원 제어, 시리얼 콘솔 접근까지 총괄하는 고가치 공격 표적입니다. 보안에는 (1) 네트워크 격리(전용·방화벽 처리된 OOB 망, 프로덕션망·인터넷 노출 금지)와 (2) 자격증명 관리(최초 접속 시 강력한 고유 비밀번호로 즉시 변경) 두 층위가 모두 필요합니다.",
+      "strategy": "두 층위 중 하나만 충족하는 보기(격리는 됐지만 기본 비번 유지, 또는 인터넷 원격 접속 허용)는 모두 제거합니다. \"OS 구성이 끝날 때까지 BMC 미연결\" 보기는 헤드리스 원격 관리가 불가능해 현실적인 데이터센터 운영과 맞지 않습니다."
+     },
+     "bankId": "n071"
+    }
+   ]
+  },
+  {
+   "num": "D3",
+   "title": "Control Plane Install & Config",
+   "weight": "19%",
+   "count": 15,
+   "intro": {
+    "en": "The pillars here are the NVIDIA Container Toolkit / Docker GPU integration, BCM (Bright Cluster Manager) with cmsh and cmha, Secure Boot and MOK, and NGC CLI authentication. One pattern repeats constantly: **if you edited a config file, the service must be restarted for it to take effect.**",
+    "ko": "NVIDIA Container Toolkit / Docker GPU 연동, BCM(Bright Cluster Manager)의 cmsh·cmha, Secure Boot & MOK, NGC CLI 인증이 핵심 축입니다. **\"설정 파일을 고쳤다면 반드시 서비스를 재시작해야 적용된다\"** 는 패턴이 반복 출제됩니다."
+   },
+   "questions": [
+    {
+     "num": "Q7",
+     "en": {
+      "title": "NVIDIA Container Toolkit install — next step after adding the repository and GPG key",
+      "answer": "A. Install the nvidia-container-toolkit package",
+      "concept": "The standard workflow is: register repo/GPG → `apt-get update` → `apt-get install -y nvidia-container-toolkit` → configure the runtime (which is Q14) → restart the daemon. No kernel module is touched, so no reboot is needed at this step.",
+      "strategy": "Downloading the CUDA Toolkit is a separate procedure — the host only needs the driver for containers to run CUDA applications. Formatting a disk is an unrelated destructive act and out of scope."
+     },
+     "ko": {
+      "title": "NVIDIA Container Toolkit 설치 — 저장소·GPG 키 등록 후 다음 단계",
+      "answer": "A. nvidia-container-toolkit 패키지 설치",
+      "concept": "표준 워크플로우는 저장소·GPG 등록 → `apt-get update` → `apt-get install -y nvidia-container-toolkit` → 런타임 구성(Q14로 이어짐) → 데몬 재시작 순서입니다. 커널 모듈을 건드리지 않으므로 이 단계에서 재부팅은 불필요합니다.",
+      "strategy": "CUDA Toolkit 다운로드는 별개 절차입니다(호스트에는 드라이버만 있으면 컨테이너가 CUDA 앱을 실행 가능). 디스크 포맷은 관련 없는 파괴적 행위라 논외입니다."
+     },
+     "bankId": "n007"
+    },
+    {
+     "num": "Q14",
+     "en": {
+      "title": "Final step after running `nvidia-ctk runtime configure --runtime docker`",
+      "answer": "C. `systemctl restart docker`",
+      "concept": "`nvidia-ctk runtime configure` edits `/etc/docker/daemon.json` to register the nvidia runtime, but the Docker daemon reads that file only at initialization. The daemon must be restarted before `--gpus all` actually works.",
+      "strategy": "Remember the \"edited a config file → restart the service\" pattern; the exam varies it several times (see also Q66). `apt-get remove` and installing the DOCA repo (`dpkg -i doca-host-repo...`) are unrelated at this point."
+     },
+     "ko": {
+      "title": "`nvidia-ctk runtime configure --runtime docker` 실행 후 마무리 단계",
+      "answer": "C. `systemctl restart docker`",
+      "concept": "`nvidia-ctk runtime configure`는 `/etc/docker/daemon.json`을 수정해 nvidia 런타임을 등록하지만, Docker 데몬은 초기화 시점에만 이 파일을 읽습니다. 따라서 데몬을 재시작해야 `--gpus all`이 실제로 동작합니다.",
+      "strategy": "\"설정 파일을 고쳤다 → 서비스 재시작\" 패턴을 기억하세요. 시험에서 여러 번 변주됩니다(Q66과 연계). `apt-get remove`나 DOCA repo 설치(`dpkg -i doca-host-repo...`)는 이 시점의 요구와 무관합니다."
+     },
+     "bankId": "n014"
+    },
+    {
+     "num": "Q17",
+     "en": {
+      "title": "Command to verify BCM HA (active head node, failover readiness)",
+      "answer": "A. `cmha status`",
+      "concept": "`cmha status` runs in the head node shell and reports the local role (e.g. \"running in active master mode\") along with `mysql` (DB replication), `failoverping`, `ping`, and `status` items as [OK]/[FAIL] for both head nodes.",
+      "strategy": "Never confuse this with `cmsh status` (the Cluster Management Shell's status), which only shows managed nodes up/down and says nothing about HA roles or failover readiness. `nvsm show health` is a DGX hardware tool with no knowledge of BCM HA logic. Restarting the service or pinging is not verification — one induces an outage, the other only checks connectivity."
+     },
+     "ko": {
+      "title": "BCM에서 HA 기능(액티브 헤드노드·failover 준비상태) 검증 명령",
+      "answer": "A. `cmha status`",
+      "concept": "`cmha status`는 헤드노드 셸에서 실행하며 로컬 역할(예: \"running in active master mode\")과 함께 mysql(DB 복제), failoverping, ping, status 항목을 양쪽 헤드노드에 대해 [OK]/[FAIL]로 보여줍니다.",
+      "strategy": "`cmsh status`(Cluster Management Shell의 status)와 절대 혼동하지 마세요 — 그것은 관리 대상 노드의 up/down만 보여주고 HA 역할·페일오버 준비상태는 알려주지 않습니다. `nvsm show health`는 DGX 하드웨어 도구라 BCM HA 로직을 모릅니다. 서비스 재시작이나 ping은 \"검증\"이 아니라 각각 장애 유발과 단순 연결성 확인일 뿐입니다."
+     },
+     "bankId": "n017"
+    },
+    {
+     "num": "Q19",
+     "en": {
+      "title": "Cause of a mysql [FAIL] for the secondary head node in `cmha status`",
+      "answer": "C. A network connectivity problem between the primary and secondary head nodes",
+      "concept": "The CMDaemon database (MySQL/MariaDB) must stay replicated between both head nodes for failover to be stateful. If the management/heartbeat network path breaks, the standby node stops receiving binary logs and mysql reports [FAIL].",
+      "strategy": "An expired license would block CMDaemon functionality broadly, not just the mysql item. The head node is a management server, so GPU drivers are irrelevant, and compute node power state has no causal link to head-node MySQL replication. Eliminate options that connect unrelated layers like these."
+     },
+     "ko": {
+      "title": "`cmha status`에서 secondary head node의 mysql [FAIL] 원인",
+      "answer": "C. Primary–Secondary 헤드노드 간 네트워크 연결 문제",
+      "concept": "CMDaemon 데이터베이스(MySQL/MariaDB)는 페일오버가 상태를 유지하려면 두 헤드노드 간 복제가 유지되어야 합니다. 관리·heartbeat 네트워크 경로가 끊기면 대기 노드가 바이너리 로그를 받지 못해 mysql [FAIL]이 뜹니다.",
+      "strategy": "라이선스 만료라면 mysql 항목만이 아니라 CMDaemon 기능 전반이 막힙니다. 헤드노드는 관리 서버이므로 GPU 드라이버와 무관하고, 컴퓨트 노드의 전원 상태는 헤드노드 MySQL 복제와 인과관계가 없습니다. 이렇게 무관한 계층을 연결한 보기를 소거하세요."
+     },
+     "bankId": "n019"
+    },
+    {
+     "num": "Q20",
+     "en": {
+      "title": "Restricting a Docker container to GPUs 0 and 2",
+      "answer": "D. `docker run --gpus '\"device=0,2\"' nvidia/cuda:12.1-base nvidia-smi`",
+      "concept": "With Docker 19.03+ and the NVIDIA Container Toolkit, the official method is the `--gpus '\"device=0,2\"'` string syntax. The `NVIDIA_VISIBLE_DEVICES` environment variable is the older nvidia-docker2-era approach, treated as legacy, and can be overridden by the `--gpus` flag.",
+      "strategy": "Mapping device nodes directly (`/dev/nvidia0,/dev/nvidia2`) is incomplete because it omits driver library mounts. `nvidia-smi -id=0,2` only filters the display of an already-exposed GPU list; it is not isolation."
+     },
+     "ko": {
+      "title": "Docker 컨테이너를 GPU 0과 2로만 제한",
+      "answer": "D. `docker run --gpus '\"device=0,2\"' nvidia/cuda:12.1-base nvidia-smi`",
+      "concept": "Docker 19.03+ 및 NVIDIA Container Toolkit 환경의 공식 방법은 `--gpus '\"device=0,2\"'` 문자열 문법입니다. `NVIDIA_VISIBLE_DEVICES` 환경변수는 nvidia-docker2 시절의 구식 방식으로 레거시 취급되며 `--gpus` 플래그에 의해 오버라이드될 수 있습니다.",
+      "strategy": "`/dev/nvidia0,/dev/nvidia2`처럼 디바이스 노드를 직접 매핑하는 방식은 드라이버 라이브러리 마운트가 빠져 불완전합니다. `nvidia-smi -id=0,2`는 이미 노출된 전체 GPU 목록의 표시만 필터링할 뿐 실제 격리가 아닙니다."
+     },
+     "bankId": "n020"
+    },
+    {
+     "num": "Q22",
+     "en": {
+      "title": "First action when drivers fail to load after installation on a Secure Boot–enabled DGX H100",
+      "answer": "C. Enroll the MOK (Machine Owner Key) during reboot and enter the password you recorded",
+      "concept": "Secure Boot permits only signed code to execute during boot. Installing the NVIDIA driver generates a unique MOK, but for the kernel to trust it the user must manually select \"Enroll MOK\" at the Shim stage and enter the temporary password.",
+      "strategy": "\"Permanently disable Secure Boot\" only removes the symptom while degrading security posture, so the exam treats it as wrong. Deleting xorg.conf or reinstalling without a reboot is unrelated to the actual cause (an untrusted signature)."
+     },
+     "ko": {
+      "title": "Secure Boot 활성화된 DGX H100에서 드라이버 로드 실패 시 첫 조치",
+      "answer": "C. 재부팅 중 MOK(Machine Owner Key) 등록 + 기록해둔 비밀번호 입력",
+      "concept": "Secure Boot는 서명된 코드만 부팅 중 실행을 허용합니다. NVIDIA 드라이버 설치 시 고유 MOK가 생성되지만, 커널이 이를 신뢰하려면 Shim 단계에서 사용자가 수동으로 \"Enroll MOK\"를 선택하고 임시 비밀번호를 입력해야 합니다.",
+      "strategy": "\"Secure Boot 영구 비활성화\"는 증상만 없애고 보안 태세를 훼손하므로 시험에서는 오답 처리됩니다. xorg.conf 삭제나 재부팅 없는 재설치는 원인(서명 미신뢰)과 무관합니다."
+     },
+     "bankId": "n022"
+    },
+    {
+     "num": "Q25",
+     "en": {
+      "title": "Configuring a bond0 interface (2 physical NICs) on a DGX node via cmsh",
+      "answer": "D. `device use dgx001` → `interfaces add bond bond0` → `append interfaces enp225s0f1np1 enp97s0f1np1` → `set mode 1` → `set network internalnet`",
+      "concept": "cmsh uses a hierarchical command structure. The bond object must be created first (`interfaces add bond bond0`) before slave interfaces can be attached with `append interfaces`; only then do you set the mode (1 = active-backup, 4 = LACP) and the logical network.",
+      "strategy": "Options adding the VLAN before the bond have the order backwards, and options assigning the network directly to physical ports prevent use of a unified bond IP. Deleting interfaces is unrelated to bonding — eliminate."
+     },
+     "ko": {
+      "title": "cmsh로 DGX 노드에 bond0(2개 물리 NIC) 인터페이스 구성",
+      "answer": "D. `device use dgx001` → `interfaces add bond bond0` → `append interfaces enp225s0f1np1 enp97s0f1np1` → `set mode 1` → `set network internalnet`",
+      "concept": "cmsh는 계층적 명령 구조를 씁니다. 본드 객체를 먼저 생성(`interfaces add bond bond0`)한 뒤에야 슬레이브 인터페이스를 `append interfaces`로 붙일 수 있고, 그 다음 모드(1 = Active-Backup, 4 = LACP)와 논리 네트워크를 지정합니다.",
+      "strategy": "VLAN을 본드보다 먼저 추가하는 보기는 순서가 뒤바뀐 것이고, 물리 포트에 직접 네트워크를 할당하는 보기는 통합 본드 IP 사용을 막습니다. 인터페이스 삭제는 본딩과 무관하므로 제거하세요."
+     },
+     "bankId": "n025"
+    },
+    {
+     "num": "Q28",
+     "en": {
+      "title": "With an NGC account registered and the CLI installed, the first step to gain NGC access",
+      "answer": "D. `ngc config set`",
+      "concept": "`ngc config set` prompts for the API key issued from the NGC portal and stores the authentication token, organization, and team details in `~/.ngc/config`. It is the initial authentication step. Note that container registry login is separate, and the username there is the literal string `$oauthtoken`.",
+      "strategy": "`ngc config get` only reads existing settings; `ngc init` is not a current NGC CLI command; `ngc config update` is not standard either. Match \"first step of authentication\" to `config set`."
+     },
+     "ko": {
+      "title": "NGC 계정 등록 + CLI 설치 완료 상태에서 NGC 접근을 위해 가장 먼저 할 일",
+      "answer": "D. `ngc config set`",
+      "concept": "`ngc config set`은 NGC 포털에서 발급받은 API Key를 입력받아 `~/.ngc/config`에 인증 토큰·조직·팀 정보를 저장하는 최초 인증 단계입니다. 컨테이너 레지스트리 로그인은 별개이며 사용자명은 리터럴 문자열 `$oauthtoken`을 씁니다.",
+      "strategy": "`ngc config get`은 기존 설정 조회만 하고, `ngc init`은 현재 NGC CLI의 표준 명령이 아니며, `ngc config update`도 표준 명령이 아닙니다. \"인증의 첫 단계\" 키워드에는 `config set`을 매칭하세요."
+     },
+     "bankId": "n028"
+    },
+    {
+     "num": "Q29",
+     "en": {
+      "title": "\"Permission denied\" when running a GPU container under Secure Boot",
+      "answer": "A. Enroll the MOK and sign the NVIDIA kernel modules",
+      "concept": "The block is at the kernel-firmware layer: `nvidia.ko` and `nvidia-uvm.ko` are unsigned, so the kernel refuses to load them. When the container tries to reach device nodes like `/dev/nvidiactl`, the modules simply are not there, producing permission denied. The fix is to sign the modules with a MOK and enroll that key in the Secure Boot DB.",
+      "strategy": "Using sudo or disabling SELinux are user-space permission measures and cannot unblock a kernel-firmware-layer refusal. Reinstalling Docker without the NVIDIA runtime does not address the root cause (unverified signatures) either."
+     },
+     "ko": {
+      "title": "Secure Boot 환경에서 GPU 컨테이너 실행 시 \"permission denied\"",
+      "answer": "A. MOK 등록 + NVIDIA 커널 모듈 서명",
+      "concept": "차단 지점은 커널–펌웨어 계층입니다(`nvidia.ko`, `nvidia-uvm.ko`가 서명되지 않아 커널이 로드를 거부). 컨테이너가 `/dev/nvidiactl` 같은 디바이스 노드에 접근하려 해도 모듈 자체가 없으니 permission denied가 발생합니다. 해결책은 모듈을 MOK로 서명하고 그 키를 Secure Boot DB에 등록하는 것입니다.",
+      "strategy": "sudo 사용이나 SELinux 비활성화는 사용자 공간 권한 조치라 커널–펌웨어 계층 차단을 풀지 못합니다. NVIDIA 런타임 없이 Docker를 재설치하는 것도 근본 원인(서명 미검증)을 해결하지 못합니다."
+     },
+     "bankId": "n029"
+    },
+    {
+     "num": "Q35",
+     "en": {
+      "title": "Two mandatory tasks when installing the OS on a BCM cluster head node",
+      "answer": "B (verify the ISO checksum) and D (configure time zone and NTP)",
+      "concept": "BCM ships as a dedicated installation ISO (customized OS plus the Bright Cluster Manager stack), so checksum verification prevents install failures caused by a corrupted download. NTP is essential for log aggregation, LDAP/AD authentication tokens, and time alignment in performance monitoring; clock skew can break cmdaemon synchronization between head and compute nodes.",
+      "strategy": "DGX requires UEFI boot, so eliminate the \"legacy boot mode\" option. Configuring the PXE switch is a post-install task performed after BCM is already running, so it falls outside the scope of \"mandatory during OS installation.\""
+     },
+     "ko": {
+      "title": "BCM 클러스터 헤드노드 OS 설치에서 필수적인 두 가지 작업",
+      "answer": "B(ISO 체크섬 검증) + D(시간대·NTP 구성)",
+      "concept": "BCM은 전용 설치 ISO(맞춤 OS + Bright Cluster Manager 스택)로 배포되므로 체크섬 검증이 다운로드 손상으로 인한 설치 실패를 예방합니다. NTP는 로그 집계, LDAP/AD 인증 토큰, 성능 모니터링의 시각 동기화에 필수이며, 시간이 어긋나면 cmdaemon의 헤드–컴퓨트 노드 간 동기화가 실패할 수 있습니다.",
+      "strategy": "DGX는 UEFI 부팅이 필수이므로 \"legacy boot 모드\" 보기는 제거합니다. PXE 스위치 구성은 BCM 가동 이후의 설치-후 작업이라 \"OS 설치 단계의 필수 작업\"이라는 질문 범위에 맞지 않습니다."
+     },
+     "bankId": "n035"
+    },
+    {
+     "num": "Q45",
+     "en": {
+      "title": "Most important step when upgrading GPU and DOCA drivers from an older stack",
+      "answer": "B. Fully remove the existing GPU and DOCA drivers and kernel modules, then install fresh",
+      "concept": "The GPU driver and the DOCA (including OFED) stack are tightly coupled. Leftovers from an old version or custom kernel modules cause version mismatches or symbol errors that prevent the new driver from loading. The validated best practice is complete removal (`apt-get purge` or the `.run` file's `--uninstall`) followed by a clean install.",
+      "strategy": "\"Update only one side\" and \"keep the old version alongside for rollback\" both invite symbol conflicts and version mismatch — eliminate. Note also that mixing package-based and runfile-based installs causes conflicts, and Fabric Manager must be upgraded in lockstep with the driver version."
+     },
+     "ko": {
+      "title": "GPU 드라이버 + DOCA 드라이버를 구버전 스택에서 업그레이드할 때 가장 중요한 단계",
+      "answer": "B. 기존 GPU·DOCA 드라이버 및 커널 모듈을 완전히 제거한 후 새로 설치",
+      "concept": "GPU 드라이버와 DOCA(OFED 포함) 스택은 긴밀히 결합되어 있어, 구버전 잔재나 커스텀 커널 모듈이 남아 있으면 버전 불일치나 심볼 오류로 신규 드라이버 로드가 실패할 수 있습니다. 검증된 모범 사례는 완전 삭제(`apt-get purge` 또는 `.run` 파일의 `--uninstall`) 후 클린 설치입니다.",
+      "strategy": "\"한쪽만 업데이트\", \"구버전을 함께 남겨 롤백 대비\"는 심볼 충돌·버전 부정합의 원인이므로 제거합니다. 패키지 방식과 runfile 방식의 혼용도 충돌을 일으키며, Fabric Manager도 드라이버 버전에 맞춰 함께 업그레이드해야 합니다."
+     },
+     "bankId": "n044"
+    },
+    {
+     "num": "Q47",
+     "en": {
+      "title": "\"Authentication failed\" persisting after `ngc config set` — the missing step",
+      "answer": "C. The API key was never entered during `ngc config set`, or was not saved to `~/.ngc/config`",
+      "concept": "NGC CLI authentication is purely application-level. If the API key is omitted or expired when running `ngc config set`, the local config file is incomplete and authentication fails. Note that the NGC CLI is not installed via a package manager — you extract an archive and add it to PATH — and the registry login username is `$oauthtoken`.",
+      "strategy": "Restarting Docker is irrelevant to this authentication (a daemon restart is needed for runtime configuration changes, not NGC auth). `--format_type=json` is an output formatting option and unrelated to authentication — eliminate."
+     },
+     "ko": {
+      "title": "`ngc config set` 이후에도 발생하는 \"Authentication failed\" — 누락된 단계",
+      "answer": "C. `ngc config set` 과정에서 API 키를 입력하지 않았거나 `~/.ngc/config`에 저장되지 않음",
+      "concept": "NGC CLI 인증은 순수 애플리케이션 수준입니다. `ngc config set` 실행 시 API Key를 누락하거나 만료된 키를 입력하면 로컬 설정 파일이 불완전해져 인증 오류가 발생합니다. NGC CLI는 패키지 매니저가 아니라 아카이브 추출 후 PATH 등록 방식으로 설치되며, 레지스트리 로그인 사용자명은 `$oauthtoken`입니다.",
+      "strategy": "Docker 재시작은 이 인증과 무관합니다(데몬 재시작이 필요한 건 런타임 구성 변경 때이지 NGC 인증 때가 아님). `--format_type=json`은 출력 포맷 옵션일 뿐이므로 제거하세요."
+     },
+     "bankId": "n046"
+    },
+    {
+     "num": "Q48",
+     "en": {
+      "title": "Two things to verify before installing the NVIDIA Run:ai control plane on Kubernetes",
+      "answer": "B (a running Kubernetes cluster) and C (Helm installed on the install machine)",
+      "concept": "Run:ai is a cloud-native platform whose control plane and worker agents deploy as Kubernetes resources, making a running K8s cluster an absolute prerequisite. Helm manages the complex installation charts, deployments, and service definitions, so the installation script fails without Helm on the install machine.",
+      "strategy": "The control plane itself installs without GPUs, so eliminate \"GPUs required on all nodes.\" Disabling NTP breaks TLS certificates and logging and can never be a correct answer in any question."
+     },
+     "ko": {
+      "title": "Kubernetes에 NVIDIA Run:ai control plane 설치 전 검증해야 할 두 가지",
+      "answer": "B(실행 중인 Kubernetes) + C(설치 머신에 Helm 설치됨)",
+      "concept": "Run:ai는 클라우드 네이티브 플랫폼으로 control plane과 워커 에이전트가 Kubernetes 리소스로 배포되므로 실행 중인 K8s 클러스터가 절대 전제조건입니다. 또한 Helm이 복잡한 설치 차트·배포·서비스 구성을 관리하므로 설치 머신에 Helm이 없으면 스크립트가 실패합니다.",
+      "strategy": "control plane 자체는 GPU 없이도 설치 가능하므로 \"모든 노드에 GPU 필요\"는 제거합니다. NTP 비활성화는 TLS 인증서·로깅을 깨뜨리므로 어떤 문항에서도 정답이 될 수 없는 패턴입니다."
+     },
+     "bankId": "n047"
+    },
+    {
+     "num": "Q60",
+     "en": {
+      "title": "Grouping DGX H200 nodes into a dedicated BCM category",
+      "answer": "C. Create a new \"dgx-h200\" category and assign all DGX H200 nodes to it",
+      "concept": "BCM categories are the basic unit for applying configuration, software images, and security policy to a group of nodes in bulk. A per-generation category (H100 vs H200) lets you target specific kernel parameters, driver versions, and optimization packages at just that generation, and lets you validate rolling upgrades or driver tests on a subset first. Slurm partitions can be mapped directly onto BCM categories for further granularity.",
+      "strategy": "Reusing the shared \"dgxnodes\" category produces configuration drift between generations, and configuring nodes individually via CLI becomes unmanageable at scale. The \"login\" category is not for compute nodes — eliminate."
+     },
+     "ko": {
+      "title": "BCM에서 DGX H200 노드를 전용 카테고리로 그룹화",
+      "answer": "C. 새로운 \"dgx-h200\" 카테고리를 만들어 모든 DGX H200 노드를 할당",
+      "concept": "BCM 카테고리는 노드 그룹에 구성·소프트웨어 이미지·보안 정책을 일괄 적용하는 기본 단위입니다. 하드웨어 세대별(H100 vs H200)로 전용 카테고리를 만들면 특정 커널 파라미터·드라이버 버전·최적화 패키지를 그 세대에만 적용할 수 있고, 롤링 업그레이드·드라이버 테스트를 부분 집합에서 먼저 검증할 수 있습니다. Slurm 파티션도 BCM 카테고리와 직접 매핑해 세분화할 수 있습니다.",
+      "strategy": "기존 공용 \"dgxnodes\" 카테고리를 그대로 재사용하면 세대 간 구성 드리프트가 생기고, 노드를 개별 CLI로 구성하면 규모가 커질수록 관리 불가능해집니다. \"login\" 카테고리는 컴퓨트 노드용이 아니므로 제거합니다."
+     },
+     "bankId": "n059"
+    },
+    {
+     "num": "Q66",
+     "en": {
+      "title": "Verifying container GPU access after initial DGX H100 setup",
+      "answer": "A. `sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi`",
+      "concept": "A complete smoke test needs all three elements: `--gpus all` (the Container Toolkit maps host GPU devices and driver libraries into the container), an official NGC CUDA base image (supplying user-space libraries), and `nvidia-smi` (which actually queries driver-hardware communication). Successful output proves the whole stack — physical hardware → kernel driver → container runtime → toolkit — is working.",
+      "strategy": "Options running `ls -la` or `systemctl` only confirm the container starts; they never verify GPU access. Options missing the `--gpus` flag inject no GPUs at all — eliminate on sight."
+     },
+     "ko": {
+      "title": "DGX H100 초기 설정 후 컨테이너의 GPU 접근 검증",
+      "answer": "A. `sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi`",
+      "concept": "표준 스모크 테스트는 세 요소가 모두 있어야 완전합니다 — `--gpus all`(Container Toolkit이 호스트 GPU 디바이스·드라이버 라이브러리를 컨테이너에 매핑), NGC 공식 CUDA 베이스 이미지(사용자 공간 라이브러리 포함), `nvidia-smi`(드라이버–하드웨어 통신을 실제로 질의). 성공 출력이 나오면 물리 하드웨어 → 커널 드라이버 → 컨테이너 런타임 → 툴킷 전체 스택이 정상임이 증명됩니다.",
+      "strategy": "`ls -la`나 `systemctl`을 실행하는 보기는 컨테이너가 뜨는지만 확인할 뿐 GPU 접근을 검증하지 못합니다. `--gpus` 플래그가 빠진 보기는 GPU가 전혀 주입되지 않으므로 즉시 제거하세요."
+     },
+     "bankId": "n065"
+    }
+   ]
+  },
+  {
+   "num": "D4",
+   "title": "Troubleshoot & Optimize",
+   "weight": "12%",
+   "count": 11,
+   "intro": {
+    "en": "The core pattern in this domain is distinguishing **actions that mask a symptom** from **actions that isolate and diagnose a cause**. Options that lower the load, reboot, or change the workload are usually masking and are not the answer. Options that run a tool to collect and measure data (nvidia-smi, DCGM, NVSM) usually are.",
+    "ko": "이 도메인의 핵심 패턴은 **\"증상을 완화·은폐하는 조치\"** 와 **\"원인을 격리·진단하는 조치\"** 를 구분하는 것입니다. 부하를 낮추거나, 재부팅하거나, 워크로드를 바꾸는 보기는 대개 증상 은폐이며 정답이 아닙니다. 데이터를 수집·측정하는 도구(nvidia-smi, DCGM, NVSM)를 실행하는 보기가 대개 정답입니다."
+   },
+   "questions": [
+    {
+     "num": "Q3",
+     "en": {
+      "title": "Isolating a hardware fault behind an intermittent \"GPU fell off bus\" during a NeMo burn-in",
+      "answer": "A. Run DCGM diagnostics concurrently with the burn-in and monitor GPU health metrics",
+      "concept": "\"GPU fell off bus\" is a severe failure in which the GPU-to-CPU PCIe link collapses (the XID 79 family), caused by thermal stress, power instability, or physical defects. Running `dcgmi diag -r 3` (comprehensive stress) or `dcgmi health --check` alongside the workload captures PCIe replay counts, temperature spikes, and the exact moment XID errors occur.",
+      "strategy": "Options that reduce load (shrinking blocksize, swapping in a lighter model) hide the symptom without isolating the cause — eliminate. When the verb is \"isolate,\" pick the tool that collects telemetry."
+     },
+     "ko": {
+      "title": "NeMo 번인 중 \"GPU fell off bus\" 간헐 발생 시 하드웨어 결함 격리",
+      "answer": "A. DCGM 진단을 번인과 동시에 실행해 GPU 헬스 지표 모니터링",
+      "concept": "\"GPU fell off bus\"는 GPU–CPU 간 PCIe 링크가 붕괴하는 심각한 장애(XID 79 계열)로, 열 스트레스·전원 불안정·물리적 결함이 원인입니다. `dcgmi diag -r 3`(종합 스트레스) 또는 `dcgmi health --check`를 워크로드와 동시에 돌리면 PCIe replay count, 온도 급등, XID 오류 발생 시점을 정확히 포착할 수 있습니다.",
+      "strategy": "부하를 낮추는 보기(blocksize 축소, 더 가벼운 모델로 교체)는 증상을 숨길 뿐 원인을 격리하지 못하므로 제거합니다. \"격리한다\"는 동사가 나오면 텔레메트리를 수집하는 도구를 고르세요."
+     },
+     "bankId": "n018"
+    },
+    {
+     "num": "Q15",
+     "en": {
+      "title": "`ibstat` shows State: Initializing and SM lid: 0 — the cause",
+      "answer": "A. No Subnet Manager is running on the fabric",
+      "concept": "\"Physical state: LinkUp\" means the cable and port are physically fine, which rules out a broken cable or faulty port. But \"State: Initializing\" with \"SM lid: 0\" means no LID was assigned at the logical layer, which happens when a Subnet Manager is absent or unresponsive.",
+      "strategy": "Build the habit of reading physical and logical state separately. Once LinkUp is confirmed, cable and port fault options are automatically eliminated, and the remaining clue (LID = 0) points at a missing SM."
+     },
+     "ko": {
+      "title": "`ibstat` 출력의 State: Initializing, SM lid: 0 → 원인",
+      "answer": "A. 패브릭에 실행 중인 SM이 없다",
+      "concept": "Physical state: LinkUp은 케이블·포트의 물리적 연결이 정상임을 뜻합니다(케이블 단선·포트 결함 배제). 하지만 State: Initializing과 SM lid: 0은 논리 계층에서 LID 할당이 안 됐다는 뜻이며, 이는 Subnet Manager가 없거나 응답하지 않을 때 발생합니다.",
+      "strategy": "물리 상태와 논리 상태를 분리해서 읽는 습관을 들이세요. LinkUp이 확인되면 케이블·포트 결함 보기는 자동 제거되고, 남은 단서(LID = 0)가 SM 부재를 가리킵니다."
+     },
+     "bankId": "n015"
+    },
+    {
+     "num": "Q18",
+     "en": {
+      "title": "Isolating an intermittent \"GPU fell off bus\" hardware fault during a NeMo burn-in",
+      "answer": "A. Run DCGM diagnostics concurrently with the burn-in and monitor GPU health metrics",
+      "concept": "Same scenario and answer pattern as Q3. Concurrent monitoring with the `dcgmi diag -r 3` comprehensive stress test or `dcgmi health --check` captures PCIe retransmit counts, temperature spikes, and XID errors in real time.",
+      "strategy": "Options that shrink the workload (swapping models, reducing blocksize) merely lower the load and hide the symptom without producing diagnostic information. Memory-sharing options like `HPL_USE_NVSHMEM` are unrelated traps."
+     },
+     "ko": {
+      "title": "NeMo 번인 중 간헐적 \"GPU fell off bus\" 하드웨어 결함 격리",
+      "answer": "A. DCGM 진단을 번인과 동시에 실행해 GPU 헬스 지표 모니터링",
+      "concept": "Q3과 동일한 시나리오·정답 패턴입니다. `dcgmi diag -r 3` 종합 스트레스 테스트 또는 `dcgmi health --check` 병행 모니터링으로 PCIe 재전송 횟수, 온도 스파이크, XID 오류를 실시간 캡처합니다.",
+      "strategy": "워크로드를 줄이는 보기(모델 교체, blocksize 축소)는 부하를 낮춰 증상을 숨길 뿐 진단 정보를 주지 않습니다. `HPL_USE_NVSHMEM` 같은 메모리 공유 옵션은 무관한 함정입니다."
+     },
+     "bankId": "n018"
+    },
+    {
+     "num": "Q24",
+     "en": {
+      "title": "First diagnostic step for increased fan noise plus degraded GPU performance",
+      "answer": "A. Check GPU state and temperature with `nvidia-smi`",
+      "concept": "High fan speed plus reduced performance is the classic thermal throttling signature. `nvidia-smi` shows temperature, power, and critically \"Clocks Throttle Reasons\" in real time — the first clue for distinguishing an environmental cause (blocked airflow, hot-aisle temperature) from a hardware one (failed thermal interface, dead internal fan).",
+      "strategy": "Options that add load (running a deep learning stress test) or drain power provide no diagnostic data at all. When a question asks for a diagnostic step, always choose the option that starts with measurement."
+     },
+     "ko": {
+      "title": "팬 소음 증가 + GPU 성능 저하 시 첫 진단 단계",
+      "answer": "A. `nvidia-smi`로 GPU 상태·온도 확인",
+      "concept": "팬 고속 회전 + 성능 저하는 전형적인 열 스로틀링 증상입니다. `nvidia-smi`는 온도, 전력, 그리고 결정적으로 \"Clocks Throttle Reasons\"를 실시간으로 보여줘, 스로틀링 원인이 환경적(공기 흐름 차단, 핫아일 온도)인지 하드웨어적(열전달 인터페이스 결함, 내부 팬 고장)인지 구분하는 첫 단서를 줍니다.",
+      "strategy": "부하를 더 주거나(딥러닝 워크로드 스트레스 테스트) 전원을 방전하는 보기는 진단 데이터를 전혀 제공하지 않습니다. \"진단 단계\"를 묻는 문제에서는 항상 계측부터 시작하는 보기를 고르세요."
+     },
+     "bankId": "n024"
+    },
+    {
+     "num": "Q27",
+     "en": {
+      "title": "Command to check GPU state when only one node is slow",
+      "answer": "D. `nvidia-smi`",
+      "concept": "`nvidia-smi` immediately shows utilization, memory, and \"Clocks Throttle Reasons\" such as power caps, thermal issues, and uncorrectable ECC errors, making it the first-line tool for identifying the bottleneck behind performance degradation or jitter.",
+      "strategy": "`lspci | grep NVIDIA` only confirms the GPU is enumerated on the PCIe bus and offers no operational telemetry. `iblinkinfo` reports IB link state and has nothing to do with GPUs. `nvidia-gpu-status` is not a real command."
+     },
+     "ko": {
+      "title": "특정 노드만 성능이 느릴 때 GPU 상태 확인 명령",
+      "answer": "D. `nvidia-smi`",
+      "concept": "`nvidia-smi`는 GPU 사용률, 메모리, 그리고 파워 캡·열 문제·정정 불가능 ECC 오류 같은 \"Clocks Throttle Reasons\"를 즉시 보여줘 성능 저하(지터)의 병목을 식별하는 1차 도구입니다.",
+      "strategy": "`lspci | grep NVIDIA`는 PCIe 버스에서 GPU가 인식되는지만 확인할 뿐 운영 성능 텔레메트리는 없습니다. `iblinkinfo`는 IB 링크 상태만 보고 GPU와 무관합니다. `nvidia-gpu-status`는 실재하지 않는 명령입니다."
+     },
+     "bankId": "n027"
+    },
+    {
+     "num": "Q33",
+     "en": {
+      "title": "Tool to isolate a hardware fault when ClusterKit reports \"GPU-Host latency exceeds threshold\"",
+      "answer": "A. `dcgmi diag -r 2` (DCGM Diagnostics)",
+      "concept": "`dcgmi diag -r 2` is the medium-level run (under two minutes) that executes the Software, PCIe/NVLink, and GPU Memory plugins. The PCIe plugin (GPU bandwidth plugin) in particular measures GPU-to-host bandwidth and latency precisely using pinned and unpinned H2D/D2H transfers, compares against thresholds, and returns PASS/FAIL per GPU — an exact match for the reported symptom.",
+      "strategy": "`nvidia-smi topo -m` is a static query (an affinity matrix) that detects no faults and only helps interpret results afterward. `ib_write_bw` measures inter-node IB bandwidth and is unrelated to the GPU-host path. Re-running the reporting tool (ClusterKit) for longer is not isolation either."
+     },
+     "ko": {
+      "title": "ClusterKit이 \"GPU-Host latency exceeds threshold\"를 보고할 때 결함 격리 도구",
+      "answer": "A. `dcgmi diag -r 2` (DCGM Diagnostics)",
+      "concept": "`dcgmi diag -r 2`는 Medium 레벨(2분 이내) 진단으로 Software, PCIe/NVLink, GPU Memory 플러그인을 실행합니다. 특히 PCIe 플러그인(GPU bandwidth 플러그인)은 GPU–호스트 간 대역폭·지연을 pinned/unpinned H2D·D2H 전송으로 정밀 측정해 임계값과 비교하고 GPU별 PASS/FAIL을 반환합니다 — ClusterKit이 보고한 증상과 정확히 대응됩니다.",
+      "strategy": "`nvidia-smi topo -m`은 정적 조회(affinity 매트릭스)라 결함을 검출하지 못하고 사후 해석용일 뿐입니다. `ib_write_bw`는 노드 간 IB 대역폭을 측정하지 GPU–호스트 경로와 무관합니다. 보고 도구(ClusterKit)를 더 오래 재실행하는 것도 격리가 아닙니다."
+     },
+     "bankId": "n033"
+    },
+    {
+     "num": "Q37",
+     "en": {
+      "title": "Meaning of \"Missing GPU at PCI address '07:00.0'\" from `nvsm show healthinfo`",
+      "answer": "B. One GPU is missing from the DGX system",
+      "concept": "NVSM compares live lspci enumeration against the system's Golden Configuration (the hardware manifest defined in firmware). \"Missing GPU at PCI address\" means the GPU module at that bus address is not responding and is not physically detected — a hardware fault (failed module, power problem, PCIe switch defect), not a software or driver issue.",
+      "strategy": "If it were a driver problem, the GPU would still be visible on the bus and a different class of error (driver load failure) would appear. \"Missing as far as lspci is concerned\" is a hardware-layer signal, so eliminate the driver and tray-upgrade-failure options."
+     },
+     "ko": {
+      "title": "`nvsm show healthinfo`의 \"Missing GPU at PCI address '07:00.0'\" 의미",
+      "answer": "B. DGX 시스템에서 GPU가 하나 누락됨",
+      "concept": "NVSM은 라이브 lspci 열거 결과를 시스템의 Golden Configuration(펌웨어에 정의된 하드웨어 매니페스트)과 대조합니다. \"Missing GPU at PCI address\"는 해당 버스 주소의 GPU 모듈이 응답하지 않아 물리적으로 인식되지 않는다는 뜻으로, 소프트웨어·드라이버 문제가 아니라 하드웨어 결함(모듈 고장, 전원 문제, PCIe 스위치 결함)을 가리킵니다.",
+      "strategy": "드라이버 문제였다면 GPU는 버스에 보이면서 다른 종류의 오류(드라이버 로드 실패 등)가 났을 것입니다. \"lspci 기준으로 누락\"은 하드웨어 계층의 신호이므로 드라이버·트레이 업그레이드 실패 보기는 제거하세요."
+     },
+     "bankId": "n037"
+    },
+    {
+     "num": "Q50",
+     "en": {
+      "title": "DGX H100 reboots and only the BMC is reachable",
+      "answer": "D. More than two power supply units have failed",
+      "concept": "The DGX H100/H200 user guide states that with fewer than three healthy PSUs the host will not boot and only the BMC is available. A DGX H100 carries six PSUs in N+N (4+2) redundancy; below the threshold, host power never comes up and only the BMC, running on standby power, responds.",
+      "strategy": "The boot disks are in RAID-1 (two M.2 NVMe), so a single disk failure would not produce this, and even a destroyed array would show a UEFI shell or a \"no bootable device\" screen through the BMC KVM. A failed GPU only reduces the GPU count and does not block OS boot, and network link problems are unrelated to host power and boot. The phrase \"only the BMC\" is the signature of a PSU problem."
+     },
+     "ko": {
+      "title": "DGX H100 재부팅 후 BMC만 사용 가능한 경우",
+      "answer": "D. 2개를 초과하는 전원 공급 장치(PSU) 고장",
+      "concept": "DGX H100/H200 사용자 가이드는 정상 PSU가 3개 미만이면 호스트가 부팅되지 않고 BMC만 가용하다고 명시합니다. DGX H100은 6개 PSU를 N+N(4+2) 이중화로 탑재하며, 부족 시 호스트 전원 자체가 켜지지 않고 대기전원으로 동작하는 BMC만 응답합니다.",
+      "strategy": "부팅 디스크는 RAID-1(M.2 NVMe 2개)이라 디스크 하나 고장으로는 이 증상이 나지 않고, 설령 배열이 파괴되어도 UEFI 셸이나 \"no bootable device\" 화면이 BMC KVM으로 보일 것입니다. GPU 고장은 GPU 개수만 줄어들 뿐 OS 부팅을 막지 않고, 네트워크 링크 문제는 호스트 전원·부팅과 무관합니다. **\"BMC만\"이라는 표현이 PSU 문제의 시그니처입니다.**"
+     },
+     "bankId": "n049"
+    },
+    {
+     "num": "Q56",
+     "en": {
+      "title": "Why a RAID-0 local SSD cache matters for deep learning workloads",
+      "answer": "C. Most training data is read from the network only once, dramatically reducing NFS traffic",
+      "concept": "Training iterates over the same dataset across many epochs. Caching data from remote storage to local NVMe during the first epoch (RAID-0 here is for performance, not redundancy) lets every subsequent epoch read at local NVMe speed, removing the network and NFS server bottleneck (incast).",
+      "strategy": "RAID-0 provides no redundancy whatsoever — in fact a single drive failure loses the entire cache — so \"provides redundancy\" is immediately wrong. Direct GPU access is a separate technology (GPUDirect Storage), and increasing NFS thread count is not the purpose of a local cache."
+     },
+     "ko": {
+      "title": "RAID-0 구성 로컬 SSD 캐시가 딥러닝 워크로드에 중요한 이유",
+      "answer": "C. 대부분의 학습 데이터를 네트워크에서 한 번만 읽어 NFS 트래픽을 크게 줄임",
+      "concept": "학습은 여러 epoch에 걸쳐 동일 데이터셋을 반복 순회합니다. 첫 epoch에서 원격 스토리지 → 로컬 NVMe(RAID-0은 성능 최적화 목적이지 이중화 목적이 아님)로 데이터를 캐싱하면, 이후 모든 epoch은 로컬 NVMe 속도로 읽어 네트워크·NFS 서버 병목(incast)을 제거합니다.",
+      "strategy": "RAID-0은 이중화가 전혀 없으므로(오히려 드라이브 하나 고장 시 캐시 전체 손실) \"이중화 제공\" 보기는 즉시 오답입니다. GPU 직접 접근은 GDS(GPUDirect Storage)라는 별개 기술이고, NFS 스레드 수 증가는 로컬 캐시의 목적이 아닙니다."
+     },
+     "bankId": "n055"
+    },
+    {
+     "num": "Q57",
+     "en": {
+      "title": "Root-cause fix for \"transport retry count exceeded\" during an NCCL burn-in",
+      "answer": "C. Inspect IB link quality metrics (BER, symbol errors) and replace the faulty cable",
+      "concept": "This error is a physical-layer signal integrity problem: packet corruption or loss on InfiniBand Reliable Connection (RC) transport pushed retransmissions past a hardware-defined threshold. Use `ibqueryerrors`, `ibdiagnet`, and `mlxlink` to check BER and symbol errors, then find and replace the root cause — a dirty optical connector, a loose transceiver, a marginal DAC cable.",
+      "strategy": "Increasing the timeout (`NCCL_IB_TIMEOUT`), shrinking message size, and changing the algorithm (`NCCL_ALGO=TREE`) all temporarily mask the symptom without repairing the physical defect. When the question says \"underlying\" or \"root cause,\" descend to the physical layer."
+     },
+     "ko": {
+      "title": "NCCL 번인에서 \"transport retry count exceeded\"의 근본 원인 해결책",
+      "answer": "C. IB 링크 품질 지표(BER, symbol error) 점검 후 결함 케이블 교체",
+      "concept": "이 오류는 InfiniBand Reliable Connection(RC) 전송에서 패킷 손상·손실로 재전송이 하드웨어 정의 임계값을 초과했을 때 나타나는 물리 계층 신호 무결성 문제입니다. `ibqueryerrors`, `ibdiagnet`, `mlxlink`로 BER·symbol error를 확인해 더러운 광커넥터, 헐거운 트랜시버, 한계치 DAC 케이블 등 근본 원인을 찾아 교체해야 합니다.",
+      "strategy": "타임아웃 증가(`NCCL_IB_TIMEOUT`), 메시지 크기 축소, 알고리즘 변경(`NCCL_ALGO=TREE`)은 모두 증상을 일시적으로 완화할 뿐 물리적 결함을 고치지 못하는 은폐형 보기입니다. \"근본 원인(underlying)\"이라는 단어가 나오면 물리 계층으로 내려가세요."
+     },
+     "bankId": "n056"
+    },
+    {
+     "num": "Q65",
+     "en": {
+      "title": "Setting to balance uneven GPU utilization in a multi-node HPL burn-in",
+      "answer": "B. Align `--gpu-affinity` and `--cpu-affinity` with the GPU-NUMA node layout",
+      "concept": "On a DGX H100, each set of GPUs is physically close to a particular CPU socket and NIC set (NUMA locality). Without enforced affinity, CPU cores on socket 0 end up driving GPUs attached to socket 1, forcing data across the inter-socket link (UPI/xGMI — higher latency and lower bandwidth than PCIe) and leaving some GPUs waiting longer than others.",
+      "strategy": "Any option that skips verification via `HPL_RUN_GEMM_TESTS` invalidates the burn-in — eliminate immediately. NVSHMEM and tile size (`HPL_OOC_TILE_M`) adjustments do not fix a NUMA misalignment."
+     },
+     "ko": {
+      "title": "멀티노드 HPL 번인에서 GPU 사용률이 불균등할 때 균형 조정 설정",
+      "answer": "B. `--gpu-affinity`, `--cpu-affinity`를 GPU–NUMA 노드에 맞춰 정렬",
+      "concept": "DGX H100의 각 GPU 세트는 물리적으로 특정 CPU 소켓·NIC 세트와 가깝습니다(NUMA 근접성). Affinity를 강제하지 않으면 Socket 0의 CPU 코어가 Socket 1에 붙은 GPU를 제어하게 되어, 데이터가 소켓 간 링크(UPI/xGMI — PCIe보다 지연이 높고 대역폭이 낮음)를 건너야 하고 일부 GPU가 다른 GPU보다 오래 대기하게 됩니다.",
+      "strategy": "`HPL_RUN_GEMM_TESTS`로 검증을 건너뛰는 보기는 번인 자체를 무효화하므로 즉시 제거하세요. NVSHMEM이나 타일 크기(`HPL_OOC_TILE_M`) 조정은 NUMA 오정렬을 해결하지 못합니다."
+     },
+     "bankId": "n064"
+    }
+   ]
+  },
+  {
+   "num": "D5",
+   "title": "Physical Layer Management",
+   "weight": "5%",
+   "count": 5,
+   "intro": {
+    "en": "Small in weight but very specific in content — BlueField-3 (SuperNIC/DPU) mode switching, vGPU scheduler registry keys, RShim enablement. This domain rewards straight memorization.",
+    "ko": "비중은 작지만 BlueField-3(SuperNIC/DPU) 모드 전환, vGPU 스케줄러 레지스트리 키, RShim 활성화처럼 지식이 매우 구체적이라 암기가 필요한 도메인입니다."
+   },
+   "questions": [
+    {
+     "num": "Q16",
+     "en": {
+      "title": "Configuring BlueField-3 for NIC mode with RoCE enabled (choose two)",
+      "answer": "A (`INTERNAL_CPU_OFFLOAD_ENGINE=1`) and C (`LINK_TYPE_P1=2`)",
+      "concept": "Running BlueField-3 as an Ethernet NIC on an East-West Spectrum-X fabric requires two things: (1) set the port link type to Ethernet with `LINK_TYPE_P1=2` (1 = IB, 2 = Ethernet), and (2) switch the operating mode with `INTERNAL_CPU_OFFLOAD_ENGINE`. The trap is that the value semantics are counterintuitive — 0 = ENABLED (DPU mode, the Arm cores own the datapath), 1 = DISABLED (NIC mode, the host owns the datapath and controls RoCE/congestion control directly). So enabling NIC mode means setting `INTERNAL_CPU_OFFLOAD_ENGINE=1`.",
+      "strategy": "`DISABLE_SPECTRUM_X` and `DPU_MODE` are not real mlxconfig parameters — eliminate immediately. Memorize the value semantics as \"0 = DPU mode (offload enabled) / 1 = NIC mode (offload disabled).\""
+     },
+     "ko": {
+      "title": "BlueField-3를 NIC 모드 + RoCE 활성화로 설정 (2개 선택)",
+      "answer": "A(`INTERNAL_CPU_OFFLOAD_ENGINE=1`) + C(`LINK_TYPE_P1=2`)",
+      "concept": "East-West Spectrum-X 패브릭에서 BlueField-3를 이더넷 NIC 모드로 쓰려면 두 가지가 필요합니다 — (1) 포트 링크 타입을 이더넷으로: `LINK_TYPE_P1=2`(1 = IB, 2 = Ethernet), (2) 동작 모드 전환: `INTERNAL_CPU_OFFLOAD_ENGINE`. 값의 의미가 직관과 반대라는 게 핵심 함정입니다 — 0 = ENABLED(DPU 모드, Arm 코어가 데이터패스 소유), 1 = DISABLED(NIC 모드, 호스트가 데이터패스·RoCE·혼잡제어를 직접 제어). 그래서 NIC 모드를 켜려면 `INTERNAL_CPU_OFFLOAD_ENGINE=1`을 설정합니다.",
+      "strategy": "`DISABLE_SPECTRUM_X`, `DPU_MODE`는 mlxconfig에 실재하지 않는 파라미터이므로 바로 제거합니다. 값 의미를 \"0 = DPU 모드(오프로드 활성) / 1 = NIC 모드(오프로드 비활성)\"로 확실히 암기하세요."
+     },
+     "bankId": "n016"
+    },
+    {
+     "num": "Q32",
+     "en": {
+      "title": "Switching a single GPU to the Fixed Share scheduler",
+      "answer": "A. `esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwordsPerDevice=pci=<domain>:<bdf>;RmPVMRL=0x11\"`",
+      "concept": "\"Fixed Share Scheduler\" is not MIG terminology — it is one of the three time-slicing scheduling policies in NVIDIA vGPU software (Best Effort, Equal Share, Fixed Share). It is controlled by the `RmPVMRL` registry key. To apply it to a specific (single) GPU use `NVreg_RegistryDwordsPerDevice` (specifying PCI domain/BDF); to apply it to all GPUs use `NVreg_RegistryDwords`. `RmPVMRL=0x11` selects Fixed Share (for example, `0x00180011` is Fixed Share with a 24 ms time slice), and a host reboot is required to apply it.",
+      "strategy": "Do not let \"Fixed Share\" make you think of MIG — `nvidia-smi -i 0 -mig 1` is physical partitioning, not a time-slicing scheduler. `esxcli -i 0 -mig 18` is invalid syntax, and `mlxconfig ... LINK_TYPE_P1=2` sets a ConnectX port type and has nothing to do with GPU scheduling."
+     },
+     "ko": {
+      "title": "단일 GPU의 스케줄링을 Fixed Share 스케줄러로 변경",
+      "answer": "A. `esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwordsPerDevice=pci=<domain>:<bdf>;RmPVMRL=0x11\"`",
+      "concept": "\"Fixed Share Scheduler\"는 MIG 용어가 아니라 NVIDIA vGPU 소프트웨어의 3가지 시간분할 스케줄링 정책(Best Effort, Equal Share, Fixed Share) 중 하나입니다. `RmPVMRL` 레지스트리 키로 제어하며, 특정(단일) GPU에 적용하려면 `NVreg_RegistryDwordsPerDevice`(PCI 도메인/BDF 지정), 전체 GPU에 적용하려면 `NVreg_RegistryDwords`를 씁니다. `RmPVMRL=0x11`이 Fixed Share를 선택하며(예: `0x00180011`은 24ms 타임슬라이스의 Fixed Share) 적용에는 호스트 재부팅이 필요합니다.",
+      "strategy": "\"Fixed Share\"라는 단어에 MIG를 떠올리지 마세요(`nvidia-smi -i 0 -mig 1`은 물리적 파티셔닝이지 시간분할 스케줄러가 아닙니다). `esxcli -i 0 -mig 18`은 유효하지 않은 문법이고, `mlxconfig ... LINK_TYPE_P1=2`는 ConnectX 포트 타입 설정이라 GPU 스케줄링과 무관합니다."
+     },
+     "bankId": "n032"
+    },
+    {
+     "num": "Q53",
+     "en": {
+      "title": "Direct benefit of integrating a BlueField DPU into a storage architecture",
+      "answer": "C. Offloading data-processing tasks to the DPU reduces CPU load",
+      "concept": "The BlueField DPU moves infrastructure work that consumes large numbers of host CPU cycles — NVMe-oF target emulation, hardware-accelerated encryption, compression — onto the DPU's dedicated Arm cores and hardware acceleration engines. NVIDIA DOCA/BlueField documentation states the key benefit as reclamation of host CPU resources.",
+      "strategy": "Eliminate absolutes first — \"eliminates latency entirely,\" \"unlimited scalability\" — since no technology achieves them. Improved I/O performance and reduced latency are downstream effects of the offload, not the direct primary benefit."
+     },
+     "ko": {
+      "title": "BlueField DPU를 스토리지 아키텍처에 통합할 때의 직접적 이점",
+      "answer": "C. 데이터 처리 작업을 DPU로 오프로드하여 CPU 부하 감소",
+      "concept": "BlueField DPU는 NVMe-oF 타겟 에뮬레이션, 하드웨어 가속 암호화, 압축처럼 호스트 CPU 사이클을 많이 소모하는 인프라 작업을 DPU의 전용 Arm 코어와 하드웨어 가속 엔진으로 넘깁니다. NVIDIA DOCA/BlueField 문서가 명시하는 핵심 이점은 호스트 CPU 자원의 회수(reclamation)입니다.",
+      "strategy": "\"완전 제거\", \"무제한\"처럼 절대적 표현이 들어간 보기(지연 완전 제거, 무제한 확장성)는 어떤 기술도 달성할 수 없으므로 먼저 제거하세요. I/O 성능 향상이나 지연 감소는 오프로드의 파생 효과이지 직접적 1차 이점이 아닙니다."
+     },
+     "bankId": "n052"
+    },
+    {
+     "num": "Q58",
+     "en": {
+      "title": "Setting vGPU scheduling to Equal Share (default time slice) for all GPUs",
+      "answer": "D. `esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"`",
+      "concept": "`RmPVMRL=0x01` enables the Equal Share scheduler, giving each vGPU an equal time slice of the physical GPU engines. `0x00` reverts to the default (generally Best Effort). Use `NVreg_RegistryDwords` to apply across all GPUs; `NVreg_RegistryDwordsPerDevice` targets a specific GPU.",
+      "strategy": "`esxcli graphics module ...` is an invalid subcommand; the correct syntax is `esxcli system module parameters set`. FRL (Frame Rate Limiter) is a separate key, not a scheduling policy — eliminate."
+     },
+     "ko": {
+      "title": "모든 GPU의 vGPU 스케줄링을 Equal Share(기본 타임슬라이스)로 설정",
+      "answer": "D. `esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"`",
+      "concept": "`RmPVMRL=0x01`이 Equal Share 스케줄러(각 vGPU에 물리 GPU 엔진의 동일 타임슬라이스 배분)를 활성화합니다. `0x00`은 기본값(대개 Best Effort) 복귀입니다. 전체 GPU에 적용할 때는 `NVreg_RegistryDwords`, 특정 GPU만이면 `NVreg_RegistryDwordsPerDevice`를 씁니다.",
+      "strategy": "`esxcli graphics module ...`는 잘못된 하위 명령이며 정확한 문법은 `esxcli system module parameters set`입니다. FRL(Frame Rate Limiter)은 스케줄링 정책이 아닌 별개의 키이므로 제거하세요."
+     },
+     "bankId": "n057"
+    },
+    {
+     "num": "Q62",
+     "en": {
+      "title": "Enabling RShim between a BlueField DPU and the BMC",
+      "answer": "B. `ipmitool raw 0x32 0x6a 1`",
+      "concept": "RShim is the low-level communication channel used for initial provisioning, console access, and firmware loading between the DPU and the host/BMC. Enabling out-of-band management through the BMC requires a raw IPMI command (`ipmitool raw 0x32 0x6a 1`) that opens the RShim path across the BMC's internal USB-to-BMC bridge. Once enabled, the BMC recognizes the DPU as a USB device even with the host CPU powered off and can push a BFB image to `/dev/rshim0/boot`.",
+      "strategy": "`systemctl restart/enable rshim...` commands are host-side services that assume the hardware path is already open, which is not what this question asks. Copying the BFB image over scp is the step *after* the path is open, not the enablement itself."
+     },
+     "ko": {
+      "title": "BlueField DPU와 BMC 간 RShim 활성화",
+      "answer": "B. `ipmitool raw 0x32 0x6a 1`",
+      "concept": "RShim은 DPU와 호스트·BMC 간 초기 프로비저닝, 콘솔 접근, 펌웨어 로딩에 쓰이는 저수준 통신 채널입니다. BMC를 통한 out-of-band 관리를 활성화하려면 BMC 내부 USB-to-BMC 브릿지의 RShim 경로 자체를 여는 raw IPMI 명령(`ipmitool raw 0x32 0x6a 1`)이 필요합니다. 활성화 후에는 호스트 CPU가 꺼져 있어도 BMC가 DPU를 USB 장치로 인식해 `/dev/rshim0/boot`로 BFB 이미지를 푸시할 수 있습니다.",
+      "strategy": "`systemctl restart/enable rshim...` 계열은 하드웨어 경로가 이미 열려 있다고 가정하는 호스트 측 서비스 명령이라 이 문제의 요구와 다릅니다. BFB 이미지를 scp로 전송하는 것은 경로가 열린 다음 단계이지 활성화 자체가 아닙니다."
+     },
+     "bankId": "n061"
+    }
+   ]
+  }
+ ],
+ "strategy": {
+  "en": {
+   "title": "Overall Study Strategy",
+   "items": [
+    "**1. Memorize the tool-layer map first.** Most D1 and D4 questions are \"symptom → correct diagnostic tool\" matching. Draw a table for these nine tool families and their layers: `mlxlink` (physical/BER), `flint`/`mstflint` (firmware), `mlxconfig` (configuration), `ibstat`/`iblinkinfo`/`ibnodes` (link and topology), `sminfo`/`smpquery` (SM), `nvidia-smi` (live GPU), `dcgmi` (GPU hardware stress/diagnostics), `nvsm` (whole DGX), nccl-tests (collectives). This alone lifts your score substantially.",
+    "**2. Internalize the NCCL_TESTS_SPLIT AND/OR rule.** It recurs across Q30, Q42, Q43, Q54, and Q71. Compress it to one sentence: **AND = vertical (inter-node isolation), OR = horizontal (intra-node isolation).**",
+    "**3. Make \"masking vs diagnosing\" your default elimination filter.** Nearly all of D4 follows this pattern — options that lower load, reboot, or change the workload are usually wrong; options that run a measurement or diagnostic tool are usually right.",
+    "**4. Always distrust options that relax a safety or security rule.** No ESD strap, permanently disabling Secure Boot, keeping default credentials, working on a powered system — these appear as traps repeatedly throughout D2 and D3.",
+    "**5. Keep a separate list of the numbers and terms people mix up.**"
+   ],
+   "table": {
+    "head": [
+     "Item",
+     "Value to remember"
+    ],
+    "rows": [
+     [
+      "HDR / NDR",
+      "HDR = 200G, NDR = 400G (getting this backwards costs several questions at once)"
+     ],
+     [
+      "CVT Raw BER threshold",
+      "1E-6 (not 1e-12 — a common transcription error)"
+     ],
+     [
+      "RmPVMRL",
+      "0x00 = default, 0x01 = Equal Share, 0x11 = Fixed Share"
+     ],
+     [
+      "INTERNAL_CPU_OFFLOAD_ENGINE",
+      "0 = DPU mode (enabled), 1 = NIC mode (disabled)"
+     ],
+     [
+      "DGX H100 PSUs",
+      "Fewer than 3 healthy → only the BMC is available"
+     ]
+    ]
+   }
+  },
+  "ko": {
+   "title": "종합 학습 전략",
+   "items": [
+    "**1. 도구 계층 지도를 먼저 암기하세요.** D1·D4 문항 다수가 \"증상 → 올바른 진단 도구\" 매칭입니다. `mlxlink`(물리/BER), `flint`·`mstflint`(펌웨어), `mlxconfig`(설정), `ibstat`/`iblinkinfo`/`ibnodes`(링크·토폴로지), `sminfo`/`smpquery`(SM), `nvidia-smi`(GPU 실시간), `dcgmi`(GPU 하드웨어 스트레스·진단), `nvsm`(DGX 전역), nccl-tests(집합통신) — 이 9개 도구군의 담당 계층을 표로 그려 외우면 정답률이 크게 오릅니다.",
+    "**2. NCCL_TESTS_SPLIT의 AND/OR 규칙은 반드시 체화하세요.** Q30·Q42·Q43·Q54·Q71처럼 반복 출제됩니다. **\"AND = 세로(노드 간 격리), OR = 가로(노드 내 격리)\"** 한 문장으로 압축해 암기하세요.",
+    "**3. \"증상 은폐 vs 원인 진단\" 소거법을 습관화하세요.** D4는 거의 전부 이 패턴입니다 — 부하를 낮추거나, 재부팅하거나, 워크로드를 바꾸는 보기는 대부분 오답이고, 계측·진단 도구를 실행하는 보기가 대부분 정답입니다.",
+    "**4. 안전·보안 수칙을 완화하는 보기는 항상 의심하세요.** ESD 미착용, Secure Boot 영구 비활성화, 기본 자격증명 유지, 전원 켠 채 작업 등은 D2·D3에서 반복적으로 오답 함정으로 등장합니다.",
+    "**5. 자주 헷갈리는 수치·용어는 따로 정리해 두세요.**"
+   ],
+   "table": {
+    "head": [
+     "항목",
+     "외울 값"
+    ],
+    "rows": [
+     [
+      "HDR / NDR",
+      "HDR = 200G, NDR = 400G (거꾸로 알면 여러 문제가 함께 틀립니다)"
+     ],
+     [
+      "CVT Raw BER 임계값",
+      "1E-6 (1e-12 아님 — 흔한 오기)"
+     ],
+     [
+      "RmPVMRL",
+      "0x00 = 기본, 0x01 = Equal Share, 0x11 = Fixed Share"
+     ],
+     [
+      "INTERNAL_CPU_OFFLOAD_ENGINE",
+      "0 = DPU 모드(활성), 1 = NIC 모드(비활성)"
+     ],
+     [
+      "DGX H100 PSU",
+      "정상 3개 미만이면 BMC만 가용"
+     ]
+    ]
+   }
+  }
+ }
+}

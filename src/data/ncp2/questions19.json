@@ -1,0 +1,240 @@
+[
+  {
+    "id": "v182",
+    "domain": "d4",
+    "type": "single",
+    "question": "An infrastructure engineer has replaced a power supply unit on an NVIDIA DGX H100. After installation, both the IN and OUT LEDs on the new power supply are solid green. Which NVSM CLI command should the engineer use to quickly verify overall system status?",
+    "question_ko": "인프라 엔지니어가 NVIDIA DGX H100의 전원 공급 장치를 교체했습니다. 설치 후 새 PSU의 IN·OUT LED가 모두 녹색으로 점등되었습니다. 전체 시스템 상태를 빠르게 확인하려면 어떤 NVSM CLI 명령을 사용해야 하는가?",
+    "choices": [
+      "nvsm show powermode",
+      "nvsm show health",
+      "nvsm show power",
+      "nvsm show alerts"
+    ],
+    "choices_ko": [
+      "nvsm show powermode",
+      "nvsm show health",
+      "nvsm show power",
+      "nvsm show alerts"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "LED 녹색은 해당 PSU 자체가 정상이라는 국소적 신호일 뿐입니다. 교체 작업 후에는 시스템 전체 관점에서 이상이 남아 있지 않은지 확인해야 하므로, 모든 점검 항목을 요약하는 `nvsm show health`가 적절합니다. 이상이 보이면 그때 power나 alerts로 좁혀 들어갑니다.",
+    "explanation_en": "A green LED is only a local indication for that one PSU. After a replacement the system as a whole must be re-checked, so `nvsm show health`, which summarizes every check, is the right command; narrow down with power or alerts only if something is flagged."
+  },
+  {
+    "id": "v183",
+    "domain": "d1",
+    "type": "single",
+    "question": "Which of the following commands should be used to inspect a server's subnet manager log file and detect whether the SM's chosen routing engine changed?",
+    "question_ko": "서버의 서브넷 매니저 로그 파일을 확인해 SM이 선택한 라우팅 엔진이 변경되었는지 탐지하려면 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "show ib sm log matching tables",
+      "grep -i 'routing' /var/log/opensm.log",
+      "grep tables /var/log/opensim.log",
+      "show ib sm log matching log_trap_info"
+    ],
+    "choices_ko": [
+      "show ib sm log matching tables",
+      "grep -i 'routing' /var/log/opensm.log",
+      "grep tables /var/log/opensim.log",
+      "show ib sm log matching log_trap_info"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "OpenSM은 시작 시와 재구성 시 선택된 라우팅 엔진(minhop, updn, ftree 등)을 로그에 기록합니다. 따라서 서버의 /var/log/opensm.log에서 routing 관련 항목을 grep 하면 엔진이 바뀌었는지, 폴백이 발생했는지 확인할 수 있습니다. 참고: 덤프 원문의 보기 문자열은 파일명과 패턴이 깨져 있어 실제 경로에 맞게 정리했습니다.",
+    "explanation_en": "OpenSM logs the routing engine it selected (minhop, updn, ftree, and so on) at startup and on reconfiguration, so grepping the routing entries in /var/log/opensm.log on the server reveals whether the engine changed or fell back. Note: the dump's option strings had corrupted file names and patterns, which were cleaned up to the real path here."
+  },
+  {
+    "id": "v184",
+    "domain": "d4",
+    "type": "single",
+    "question": "After ClusterKit reports \"GPU-Host latency exceeds threshold\", which NVIDIA diagnostic tool should be used to isolate hardware faults?",
+    "question_ko": "ClusterKit이 \"GPU-Host latency exceeds threshold\"를 보고한 뒤, 하드웨어 결함을 분리하기 위해 사용해야 할 NVIDIA 진단 도구는?",
+    "choices": [
+      "nvidia-smi topo -m to inspect GPU topology connections",
+      "Re-run ClusterKit with --stress=gpu to extend the test duration",
+      "DCGM Diagnostics: dcgmi diag -r 2",
+      "ib_write_bw to measure InfiniBand bandwidth between nodes"
+    ],
+    "choices_ko": [
+      "GPU 토폴로지 연결을 확인하기 위한 nvidia-smi topo -m",
+      "테스트 시간을 늘리기 위해 --stress=gpu로 ClusterKit 재실행",
+      "DCGM 진단: dcgmi diag -r 2",
+      "노드 간 InfiniBand 대역폭 측정을 위한 ib_write_bw"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "GPU-호스트 지연 이상은 PCIe 링크 열화, 열 문제, 메모리 오류 등 하드웨어 원인일 수 있습니다. dcgmi diag -r 2는 PCIe/대역폭, 메모리, SM 등 항목을 실제로 실행해 검증하는 중간 수준 진단으로, 토폴로지 조회나 테스트 재실행보다 결함 분리에 직접적입니다.",
+    "explanation_en": "Abnormal GPU-host latency can stem from PCIe link degradation, thermal issues, or memory errors. dcgmi diag -r 2 actively exercises PCIe/bandwidth, memory, and SM checks — a medium-level diagnostic that isolates faults far more directly than a topology dump or rerunning the same test."
+  },
+  {
+    "id": "v185",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are leading a project to improve the energy efficiency of a data center running AI workloads. NVIDIA suggests moving beyond traditional metrics such as Power Usage Effectiveness (PUE). Which strategy should you prioritize to develop more accurate energy-efficiency metrics?",
+    "question_ko": "AI 워크로드를 운영하는 데이터센터의 에너지 효율을 개선하는 프로젝트를 이끌고 있습니다. NVIDIA는 PUE 같은 전통적 지표를 넘어설 것을 제안합니다. 더 정확한 에너지 효율 지표를 개발하기 위해 우선해야 할 전략은?",
+    "choices": [
+      "Focus on integrating kilowatt-hours into existing metrics to better reflect actual energy used.",
+      "Use watts-used as the primary measure of efficiency, as it reflects power input at any given time.",
+      "Use PUE as the primary metric while supplementing it with additional measures of useful work per unit of energy.",
+      "Develop benchmarks tailored to specific workloads, such as MLPerf for AI applications, to understand energy use in real-world scenarios."
+    ],
+    "choices_ko": [
+      "실제 사용 에너지를 더 잘 반영하도록 기존 지표에 킬로와트시를 통합하는 데 집중한다.",
+      "임의 시점의 전력 입력을 정확히 반영하므로 사용 전력(W)을 주요 효율 지표로 사용한다.",
+      "PUE를 주요 지표로 유지하면서 단위 에너지당 유용한 작업량 측정을 보완적으로 추가한다.",
+      "AI 애플리케이션의 MLPerf처럼 특정 워크로드에 맞춘 벤치마크를 개발해 실제 시나리오의 에너지 사용을 파악한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "PUE는 시설이 IT 장비에 전력을 얼마나 효율적으로 전달하는지를 볼 뿐, 그 전력으로 얼마나 많은 유용한 연산을 했는지는 말해 주지 않습니다. AI 데이터센터의 진짜 효율은 '에너지당 처리한 학습·추론 작업량'이며, MLPerf 같은 워크로드 기반 벤치마크가 이를 실제 환경에서 측정할 수 있게 해 줍니다.",
+    "explanation_en": "PUE only shows how efficiently the facility delivers power to IT equipment, not how much useful computation that power produced. Real AI data center efficiency is work per unit of energy, and workload-based benchmarks such as MLPerf make that measurable under realistic conditions."
+  },
+  {
+    "id": "v186",
+    "domain": "d3",
+    "type": "single",
+    "question": "An engineer is reimaging a DGX system in a large cluster. Which method ensures the most efficient and secure remote installation without physical access?",
+    "question_ko": "엔지니어가 대규모 클러스터의 DGX 시스템을 재이미징하려 합니다. 물리적 접근 없이 가장 효율적이고 안전한 원격 설치를 보장하는 방법은?",
+    "choices": [
+      "Create a USB drive with the ISO and manually boot from it on the DGX system.",
+      "Skip ISO verification and directly flash the OS to the disk via SSH.",
+      "Use apt-get to upgrade the OS without rebooting the system.",
+      "Build a software image in Base Command Manager and then reimage the node."
+    ],
+    "choices_ko": [
+      "ISO로 USB 드라이브를 만들어 DGX 시스템에서 수동으로 부팅한다.",
+      "ISO 검증을 건너뛰고 SSH로 디스크에 OS를 직접 기록한다.",
+      "재부팅 없이 apt-get으로 OS를 업그레이드한다.",
+      "Base Command Manager에서 소프트웨어 이미지를 만든 뒤 노드를 재이미징한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "BCM은 관리되는 소프트웨어 이미지를 PXE로 배포해 노드를 재이미징합니다. 물리적 접근 없이 원격으로 수행되고, 동일 이미지가 모든 노드에 재현 가능하게 적용되며, 이미지 버전과 변경 이력이 관리되므로 대규모 클러스터에서 가장 효율적이고 안전합니다.",
+    "explanation_en": "BCM reimages nodes by deploying a managed software image over PXE: it runs remotely with no physical access, applies the identical image reproducibly to every node, and keeps image versions and change history — the most efficient and safest option at cluster scale."
+  },
+  {
+    "id": "v187",
+    "domain": "d3",
+    "type": "single",
+    "question": "An engineer needs to completely remove NVIDIA GPU drivers from an Ubuntu 22.04 system to troubleshoot conflicts. Which command sequence ensures all driver components are purged?",
+    "question_ko": "엔지니어가 충돌 문제를 해결하기 위해 Ubuntu 22.04 시스템에서 NVIDIA GPU 드라이버를 완전히 제거해야 합니다. 모든 드라이버 구성 요소를 확실히 제거하는 명령 순서는?",
+    "choices": [
+      "sudo apt-get remove nvidia-driver-550",
+      "sudo apt-get purge 'nvidia-*' && sudo apt-get autoremove",
+      "sudo rm -rf /usr/lib/nvidia",
+      "sudo ubuntu-drivers uninstall"
+    ],
+    "choices_ko": [
+      "sudo apt-get remove nvidia-driver-550",
+      "sudo apt-get purge 'nvidia-*' && sudo apt-get autoremove",
+      "sudo rm -rf /usr/lib/nvidia",
+      "sudo ubuntu-drivers uninstall"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "remove는 패키지만 지우고 설정 파일을 남기지만 purge는 설정까지 제거합니다. 와일드카드로 nvidia-* 전체를 대상으로 하고 autoremove로 남은 의존 패키지(커널 모듈, 라이브러리)까지 정리해야 잔재로 인한 충돌을 막을 수 있습니다.",
+    "explanation_en": "remove deletes packages but leaves configuration files, whereas purge removes configuration too. Targeting all nvidia-* packages and then running autoremove to clean up orphaned dependencies (kernel modules, libraries) is what prevents leftovers from causing further conflicts."
+  },
+  {
+    "id": "v188",
+    "domain": "d1",
+    "type": "single",
+    "question": "What is the primary purpose of performing a NeMo burn-in on new AI infrastructure?",
+    "question_ko": "새 AI 인프라에서 NeMo 번인을 수행하는 주된 목적은?",
+    "choices": [
+      "To stress test the hardware and software stack with representative NeMo workloads, ensuring reliability.",
+      "To benchmark production training speed and ensure all GPUs run at identical clock speeds.",
+      "To tune NeMo model hyperparameters for maximum accuracy on user datasets during cluster deployment."
+    ],
+    "choices_ko": [
+      "대표성 있는 NeMo 워크로드로 하드웨어와 소프트웨어 스택을 스트레스 테스트해 신뢰성을 확인하기 위해",
+      "프로덕션 학습 속도를 벤치마킹하고 모든 GPU가 동일한 클럭으로 동작하는지 확인하기 위해",
+      "클러스터 배포 중 사용자 데이터셋에 대해 NeMo 모델 하이퍼파라미터를 최적 정확도로 튜닝하기 위해"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NeMo 번인은 실제 학습과 유사한 워크로드를 장시간 돌려 GPU, NVLink, 네트워크, 스토리지, 드라이버, 컨테이너, 프레임워크를 한꺼번에 검증합니다. 합성 벤치마크가 놓치는 통합 문제(예: 특정 단계에서만 나타나는 OOM, 체크포인트 저장 시 스토리지 정체)를 드러내는 것이 핵심 가치입니다.",
+    "explanation_en": "A NeMo burn-in runs a realistic training-like workload for an extended period, exercising GPUs, NVLink, network, storage, drivers, containers, and the framework together. Its value is exposing integration problems that synthetic benchmarks miss — OOM that appears only at a certain phase, storage stalls during checkpointing, and so on."
+  },
+  {
+    "id": "v189",
+    "domain": "d1",
+    "type": "single",
+    "question": "A system administrator wants to determine whether ConnectX ports are configured in Ethernet or InfiniBand mode. What command should be used?",
+    "question_ko": "시스템 관리자가 ConnectX 포트가 이더넷 모드인지 InfiniBand 모드인지 확인하려 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "ibstat",
+      "netstat",
+      "iostat",
+      "vmstat"
+    ],
+    "choices_ko": [
+      "ibstat",
+      "netstat",
+      "iostat",
+      "vmstat"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "ibstat은 어댑터와 포트별 정보를 출력하며 그중 \"Link layer\" 항목이 InfiniBand인지 Ethernet인지 보여 줍니다. 모드를 바꾸려면 `mlxconfig -d <dev> set LINK_TYPE_P1=1|2`(1=IB, 2=Ethernet)를 사용한 뒤 장치를 리셋합니다.",
+    "explanation_en": "ibstat prints adapter and per-port information including the \"Link layer\" field, which reads InfiniBand or Ethernet. To change the mode you use `mlxconfig -d <dev> set LINK_TYPE_P1=1|2` (1 = IB, 2 = Ethernet) and reset the device."
+  },
+  {
+    "id": "v190",
+    "domain": "d2",
+    "type": "single",
+    "question": "A machine learning platform stores multi-petabyte training datasets accessed concurrently by hundreds of GPUs. The storage system must provide high aggregate throughput, parallel client access, and efficient scaling as storage nodes are added. Which storage solution is most appropriate?",
+    "question_ko": "한 머신러닝 플랫폼이 수백 개 GPU가 동시에 접근하는 수 페타바이트 규모의 학습 데이터셋을 저장합니다. 스토리지는 높은 총 처리량, 병렬 클라이언트 접근, 스토리지 노드 추가에 따른 효율적 확장을 제공해야 합니다. 가장 적합한 솔루션은?",
+    "choices": [
+      "Local USB-attached storage",
+      "An NFS server running on a single virtual machine",
+      "A parallel file system such as BeeGFS or Lustre",
+      "Individual SATA disks installed in each compute server"
+    ],
+    "choices_ko": [
+      "로컬 USB 연결 스토리지",
+      "단일 가상 머신에서 동작하는 NFS 서버",
+      "BeeGFS나 Lustre 같은 병렬 파일 시스템",
+      "각 컴퓨트 서버에 장착한 개별 SATA 디스크"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "병렬 파일 시스템은 메타데이터 서버와 데이터 서버를 분리하고 파일을 여러 스토리지 타깃에 스트라이핑합니다. 그 덕분에 수백 개 클라이언트가 동시에 읽어도 총 대역폭이 서버 수에 비례해 늘어나며, 노드를 추가하는 방식으로 용량과 성능을 함께 확장할 수 있습니다.",
+    "explanation_en": "A parallel filesystem separates metadata servers from data servers and stripes files across multiple storage targets, so aggregate bandwidth grows with the number of servers even under hundreds of concurrent clients, and capacity and performance scale together by adding nodes."
+  },
+  {
+    "id": "v191",
+    "domain": "d3",
+    "type": "single",
+    "question": "After configuring HA, the administrator checks the BCM HA status and notices the secondary head node reports mysql [FAIL]. What is the most likely cause?",
+    "question_ko": "HA 구성 후 관리자가 BCM HA 상태를 확인하자 보조 헤드 노드가 mysql [FAIL]을 보고합니다. 가장 유력한 원인은?",
+    "choices": [
+      "The secondary head node lacks NVIDIA GPU drivers.",
+      "The BCM license expired after HA configuration.",
+      "The cluster nodes were powered on during HA configuration.",
+      "Network connectivity issues between the primary and secondary head nodes."
+    ],
+    "choices_ko": [
+      "보조 헤드 노드에 NVIDIA GPU 드라이버가 없다.",
+      "HA 구성 후 BCM 라이선스가 만료되었다.",
+      "HA 구성 중 클러스터 노드들이 켜져 있었다.",
+      "기본 헤드 노드와 보조 헤드 노드 간 네트워크 연결 문제."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "BCM HA에서 보조 헤드 노드의 MySQL은 기본 노드와 복제 연결을 유지해야 정상으로 표시됩니다. 두 헤드 노드 사이의 통신이 막히면 복제가 끊겨 mysql 항목이 FAIL로 나타납니다. 따라서 HA 전용 링크, 방화벽 규칙, 가상 IP 설정 등 노드 간 연결을 먼저 점검해야 합니다.",
+    "explanation_en": "In BCM HA the secondary head node's MySQL must maintain a replication link to the primary to report healthy. If communication between the head nodes is blocked, replication breaks and the mysql entry shows FAIL, so the HA link, firewall rules, and virtual IP configuration are what to check first."
+  }
+]

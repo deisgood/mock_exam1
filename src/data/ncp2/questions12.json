@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v111",
+    "domain": "d2",
+    "type": "single",
+    "question": "A media company is developing an AI platform for video content analysis that requires storing and processing large volumes of unstructured video data. The platform must support high throughput for ingestion and efficient access for real-time analytics. Which storage strategy should the company implement?",
+    "question_ko": "한 미디어 기업이 대량의 비정형 비디오 데이터를 저장·처리해야 하는 비디오 콘텐츠 분석 AI 플랫폼을 개발하고 있습니다. 플랫폼은 높은 수집 처리량과 실시간 분석을 위한 효율적 접근을 지원해야 합니다. 어떤 스토리지 전략을 도입해야 하는가?",
+    "choices": [
+      "Block storage for low latency and high performance",
+      "Object storage for scalability and metadata management",
+      "Tape storage for cost-effectiveness and archival capabilities",
+      "File storage for hierarchical organization and easy navigation"
+    ],
+    "choices_ko": [
+      "낮은 지연과 높은 성능을 위한 블록 스토리지",
+      "확장성과 메타데이터 관리를 위한 오브젝트 스토리지",
+      "비용 효율과 아카이브를 위한 테이프 스토리지",
+      "계층적 구성과 쉬운 탐색을 위한 파일 스토리지"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "비디오 같은 비정형 대용량 데이터는 오브젝트 스토리지가 적합합니다. 수평 확장으로 페타바이트급 용량과 높은 병렬 수집 처리량을 제공하고, 객체마다 풍부한 메타데이터를 붙일 수 있어 분석 파이프라인에서 필요한 콘텐츠를 빠르게 선별할 수 있습니다.",
+    "explanation_en": "Object storage suits large unstructured data such as video: it scales out to petabytes with high parallel ingest throughput, and rich per-object metadata lets analytics pipelines select the content they need quickly."
+  },
+  {
+    "id": "v112",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator needs to check the status of the RShim driver. What command should be used?",
+    "question_ko": "시스템 관리자가 RShim 드라이버의 상태를 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "lspci -vvv | grep RShim",
+      "dmesg | grep rshim",
+      "systemctl status rshim",
+      "rshim status"
+    ],
+    "choices_ko": [
+      "lspci -vvv | grep RShim",
+      "dmesg | grep rshim",
+      "systemctl status rshim",
+      "rshim status"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "RShim은 호스트에서 systemd 서비스로 동작하며 BlueField DPU의 관리·콘솔·부팅 인터페이스(/dev/rshim0)를 노출합니다. `systemctl status rshim`으로 서비스가 active인지, 실패했는지, 어떤 오류를 남겼는지 확인하는 것이 표준 점검 방법입니다.",
+    "explanation_en": "RShim runs as a systemd service on the host and exposes the BlueField DPU's management/console/boot interface (/dev/rshim0). `systemctl status rshim` is the standard check for whether the service is active, failed, or logging errors."
+  },
+  {
+    "id": "v113",
+    "domain": "d5",
+    "type": "single",
+    "question": "A BlueField DPU label shows the base host MAC address 0002C9270500. Which MAC address should the system administrator use as the DPU's out-of-band management interface MAC address?",
+    "question_ko": "BlueField DPU 라벨에 기본 호스트 MAC 주소가 0002C9270500으로 표시되어 있습니다. 시스템 관리자가 DPU의 대역외 관리 인터페이스 MAC 주소로 사용해야 할 값은?",
+    "choices": [
+      "0002C9270502",
+      "0002C9270500",
+      "0002C927050F",
+      "0002C927050E"
+    ],
+    "choices_ko": [
+      "0002C9270502",
+      "0002C9270500",
+      "0002C927050F",
+      "0002C927050E"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "BlueField 보드는 하나의 기본(base) MAC에서 파생된 주소들을 포트별로 할당합니다. 라벨의 base MAC은 호스트 인터페이스용이고, 대역외 관리(OOB) 인터페이스는 여기서 일정 오프셋만큼 증가한 주소를 사용합니다. 이 예에서는 base + 2인 0002C9270502가 OOB 관리 MAC입니다.",
+    "explanation_en": "A BlueField board derives its per-port addresses from a single base MAC. The label's base MAC belongs to the host interface, while the out-of-band management interface uses an address offset from it — here base + 2, i.e. 0002C9270502."
+  },
+  {
+    "id": "v114",
+    "domain": "d2",
+    "type": "single",
+    "question": "A healthcare organization is deploying an AI system to analyze patient data for predictive diagnostics and must comply with regulations such as HIPAA. Which combination of strategies should the organization prioritize to protect against data breaches and ensure compliance?",
+    "question_ko": "한 의료 기관이 예측 진단을 위해 환자 데이터를 분석하는 AI 시스템을 배포하며 HIPAA 같은 규정을 준수해야 합니다. 데이터 유출을 방지하고 규정을 준수하기 위해 우선해야 할 전략 조합은?",
+    "choices": [
+      "Use tokenization to replace sensitive data with non-sensitive tokens and employ multi-factor authentication (MFA) for system access.",
+      "Deploy data masking to obscure sensitive data during processing and use role-based access control (RBAC) to limit data access based on user roles.",
+      "Rely on asymmetric encryption for all communications and use data deduplication to minimize storage costs without additional security measures.",
+      "Implement symmetric encryption for all data at rest and rely solely on password-based access controls."
+    ],
+    "choices_ko": [
+      "민감 데이터를 비민감 토큰으로 대체하는 토큰화를 사용하고 시스템 접근에 다중 인증(MFA)을 적용한다.",
+      "처리 중 민감 데이터를 가리는 데이터 마스킹을 배포하고 역할 기반 접근 제어(RBAC)로 역할에 따라 데이터 접근을 제한한다.",
+      "모든 통신에 비대칭 암호화를 사용하고 추가 보안 조치 없이 중복 제거로 스토리지 비용을 최소화한다.",
+      "저장 데이터 전체에 대칭 암호화를 적용하고 접근 제어는 비밀번호에만 의존한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "보호 대상은 '처리 중 노출'과 '접근 권한' 두 가지입니다. 데이터 마스킹은 분석·개발 과정에서 실제 환자 식별 정보가 드러나지 않게 하고, RBAC는 업무 역할에 필요한 최소한의 데이터에만 접근하도록 제한합니다. 두 통제가 함께 있어야 최소 권한 원칙과 노출 최소화를 동시에 만족합니다.",
+    "explanation_en": "Two exposures must be controlled: data in use and who may reach it. Masking keeps real patient identifiers out of analysis and development workflows, while RBAC limits each role to the minimum data it needs. Together they satisfy least privilege and minimized exposure."
+  },
+  {
+    "id": "v115",
+    "domain": "d3",
+    "type": "single",
+    "question": "An engineer wants to verify that their NVIDIA GPU is accessible inside a Docker container. The NVIDIA Container Toolkit is installed and the drivers work. Which command demonstrates the correct way to run a container that can access all available GPUs?",
+    "question_ko": "엔지니어가 Docker 컨테이너 안에서 NVIDIA GPU에 접근할 수 있는지 확인하려 합니다. NVIDIA Container Toolkit이 설치되어 있고 드라이버도 정상입니다. 가용한 모든 GPU에 접근할 수 있는 컨테이너 실행 방법을 올바르게 보여주는 명령은?",
+    "choices": [
+      "docker run --rm --gpus all nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi",
+      "docker run --rm --runtime=docker nvidia/cuda nvidia-smi",
+      "docker run --rm -it ubuntu:22.04 nvidia-smi",
+      "docker run --rm nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi"
+    ],
+    "choices_ko": [
+      "docker run --rm --gpus all nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi",
+      "docker run --rm --runtime=docker nvidia/cuda nvidia-smi",
+      "docker run --rm -it ubuntu:22.04 nvidia-smi",
+      "docker run --rm nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`--gpus all`은 호스트의 모든 GPU를 컨테이너에 노출하며, NVIDIA Container Toolkit이 장치 노드와 드라이버 라이브러리를 함께 주입합니다. CUDA 베이스 이미지 안에서 nvidia-smi가 GPU 목록을 출력하면 접근이 정상임이 확인됩니다.",
+    "explanation_en": "`--gpus all` exposes every host GPU to the container while the NVIDIA Container Toolkit injects the device nodes and driver libraries. Seeing the GPU table from nvidia-smi inside the CUDA base image confirms access works."
+  },
+  {
+    "id": "v116",
+    "domain": "d3",
+    "type": "single",
+    "question": "You are updating both NVIDIA GPU drivers and DOCA drivers on servers that previously ran an older driver stack with custom kernel modules. What is the most important step to upgrade without causing conflicts?",
+    "question_ko": "이전에 구버전 드라이버 스택과 커스텀 커널 모듈을 사용하던 서버들에서 NVIDIA GPU 드라이버와 DOCA 드라이버를 함께 갱신하려 합니다. 충돌 없이 업그레이드하기 위해 가장 중요한 단계는?",
+    "choices": [
+      "Update the GPU driver and leave DOCA and OFED unchanged as long as they detect the hardware properly.",
+      "Uninstall all existing GPU and DOCA-related drivers and associated kernel modules before the new install.",
+      "Keep the older driver running alongside the new version in case you need to roll back.",
+      "Validate the driver version post-install, since the fresh install will overwrite the legacy drivers."
+    ],
+    "choices_ko": [
+      "DOCA와 OFED가 하드웨어를 제대로 인식하고 있다면 그대로 두고 GPU 드라이버만 갱신한다.",
+      "새로 설치하기 전에 기존 GPU·DOCA 관련 드라이버와 연관 커널 모듈을 모두 제거한다.",
+      "롤백에 대비해 구버전 드라이버를 새 버전과 함께 유지한다.",
+      "새 설치가 레거시 드라이버를 덮어쓰므로 설치 후 버전만 검증한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "구버전 커널 모듈과 라이브러리가 남아 있으면 DKMS 빌드 충돌, 심볼 불일치, 잘못된 라이브러리 로딩이 발생합니다. 특히 커스텀 모듈이 있었다면 잔재가 새 스택과 섞이기 쉽습니다. 기존 GPU·DOCA·OFED 패키지와 모듈을 깨끗이 제거한 뒤 검증된 새 버전을 설치하는 것이 원칙입니다.",
+    "explanation_en": "Leftover kernel modules and libraries cause DKMS build conflicts, symbol mismatches, and wrong-library loading — especially where custom modules existed. Cleanly removing the existing GPU, DOCA, and OFED packages and modules before installing the validated new versions is the rule."
+  },
+  {
+    "id": "v117",
+    "domain": "d1",
+    "type": "single",
+    "question": "A leaf switch shows \"FW Version Mismatch\" alerts for transceivers after cluster expansion. Which tool validates transceiver firmware against expected versions?",
+    "question_ko": "클러스터 확장 후 리프 스위치가 트랜시버에 대해 \"FW Version Mismatch\" 경보를 표시합니다. 기대 버전과 트랜시버 펌웨어를 대조하는 도구는?",
+    "choices": [
+      "ethtool",
+      "iblinkinfo",
+      "mlxconfig",
+      "flint"
+    ],
+    "choices_ko": [
+      "ethtool",
+      "iblinkinfo",
+      "mlxconfig",
+      "flint"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "flint는 MFT 패키지의 펌웨어 도구로, 장치와 LinkX 케이블·트랜시버의 펌웨어 이미지와 버전을 조회·검증하고 필요 시 갱신합니다. 확장 후 새로 들어온 트랜시버의 버전이 기존과 다른지 확인하는 데 적합합니다.",
+    "explanation_en": "flint, from the MFT package, queries and validates firmware images and versions for devices and LinkX cables/transceivers, and updates them when needed — exactly what is required to compare newly added transceivers against the expected version."
+  },
+  {
+    "id": "v118",
+    "domain": "d2",
+    "type": "single",
+    "question": "A cluster administrator deploys GPUDirect RDMA for a distributed AI training environment. Afterwards GPU utilization improves while CPU utilization during communication decreases substantially. Which architectural change most directly explains this improvement?",
+    "question_ko": "클러스터 관리자가 분산 AI 학습 환경에 GPUDirect RDMA를 배포했습니다. 이후 GPU 사용률은 향상되고 통신 중 CPU 사용률은 크게 감소했습니다. 이 개선을 가장 직접적으로 설명하는 아키텍처 변화는?",
+    "choices": [
+      "Network traffic is compressed before entering GPU memory.",
+      "Data transfers bypass CPU memory and move directly between GPUs and network adapters.",
+      "All communication is redirected through NVSwitch.",
+      "PCIe transactions are replaced entirely by Ethernet broadcasts."
+    ],
+    "choices_ko": [
+      "네트워크 트래픽이 GPU 메모리에 들어가기 전에 압축된다.",
+      "데이터 전송이 CPU 메모리를 우회해 GPU와 네트워크 어댑터 사이를 직접 오간다.",
+      "모든 통신이 NVSwitch를 통해 재전달된다.",
+      "PCIe 트랜잭션이 이더넷 브로드캐스트로 완전히 대체된다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "GPUDirect RDMA는 NIC이 GPU 메모리에 직접 DMA 하도록 허용합니다. 호스트 메모리를 경유하는 복사 두 번이 사라지므로 CPU 개입이 줄고 지연이 낮아지며, GPU가 통신 대기에 쓰던 시간이 줄어 사용률이 올라갑니다.",
+    "explanation_en": "GPUDirect RDMA lets the NIC DMA directly into GPU memory, eliminating the two copies through host memory. CPU involvement and latency drop, and GPUs spend less time waiting on communication, raising utilization."
+  },
+  {
+    "id": "v119",
+    "domain": "d1",
+    "type": "single",
+    "question": "After upgrading to HPL-AI 2.0 on a DGX A100 cluster, a 2x performance gain is observed. Which optimization is primarily responsible for this improvement?",
+    "question_ko": "DGX A100 클러스터에서 HPL-AI 2.0으로 업그레이드한 뒤 2배의 성능 향상이 관측되었습니다. 이 개선의 주된 요인은?",
+    "choices": [
+      "Reduction of the problem size (N) to accelerate computation.",
+      "Doubling of GPU clock speeds through firmware updates.",
+      "Automatic NVLink bandwidth doubling via driver updates.",
+      "MPI-aware GPU communication that reduces CPU bottlenecks and GPU idle time."
+    ],
+    "choices_ko": [
+      "연산을 가속하기 위한 문제 크기(N) 축소",
+      "펌웨어 업데이트를 통한 GPU 클럭 속도 2배 상승",
+      "드라이버 업데이트를 통한 NVLink 대역폭 자동 2배 증가",
+      "CPU 병목과 GPU 유휴 시간을 줄이는 MPI-aware GPU 통신"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "HPL-AI 2.0의 성능 향상은 GPU를 직접 인식하는(CUDA-aware) MPI 통신 경로에서 나옵니다. GPU 버퍼를 호스트로 복사하지 않고 그대로 주고받으므로 CPU 병목이 사라지고 통신과 연산이 겹쳐져 GPU 유휴 시간이 줄어듭니다. 문제 크기 축소는 성능 향상이 아니라 측정 조건 변경이고, 클럭·대역폭이 소프트웨어 업데이트로 2배가 되는 일은 없습니다.",
+    "explanation_en": "The gain comes from CUDA/GPU-aware MPI communication: GPU buffers are exchanged without staging through host memory, removing the CPU bottleneck and overlapping communication with computation so GPUs idle less. Shrinking N changes the measurement rather than improving performance, and software updates do not double clocks or link bandwidth."
+  },
+  {
+    "id": "v120",
+    "domain": "d3",
+    "type": "single",
+    "question": "You are following the official steps to install the NVIDIA Container Toolkit with a package manager on Ubuntu. After importing the NVIDIA package repository and GPG key, what is the next action?",
+    "question_ko": "우분투에서 패키지 관리자로 NVIDIA Container Toolkit을 설치하는 공식 절차를 따르고 있습니다. NVIDIA 패키지 저장소와 GPG 키를 가져온 다음 단계는?",
+    "choices": [
+      "Download the CUDA toolkit installer from NVIDIA's website.",
+      "Install the nvidia-container-toolkit package using your package manager.",
+      "Reboot the host system to apply the repository changes.",
+      "Format the disk to clear any existing NVIDIA-related dependencies."
+    ],
+    "choices_ko": [
+      "NVIDIA 웹사이트에서 CUDA 툴킷 설치 파일을 내려받는다.",
+      "패키지 관리자로 nvidia-container-toolkit 패키지를 설치한다.",
+      "저장소 변경을 적용하기 위해 호스트 시스템을 재부팅한다.",
+      "기존 NVIDIA 관련 의존성을 정리하기 위해 디스크를 포맷한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "저장소와 키를 등록한 다음에는 `apt-get update`로 인덱스를 갱신하고 `apt-get install -y nvidia-container-toolkit`으로 패키지를 설치합니다. 그 뒤 `nvidia-ctk runtime configure --runtime=docker`로 런타임을 설정하고 Docker를 재시작하면 마무리됩니다.",
+    "explanation_en": "After registering the repo and key you refresh the index with `apt-get update` and install with `apt-get install -y nvidia-container-toolkit`. Then `nvidia-ctk runtime configure --runtime=docker` wires up the runtime and restarting Docker completes the install."
+  }
+]

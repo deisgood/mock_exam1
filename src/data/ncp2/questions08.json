@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v071",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are deploying NVIDIA DGX H100 systems in a data center. Each system is configured to draw up to 10.2 kW. What is the most critical step to validate the power requirements?",
+    "question_ko": "데이터센터에 NVIDIA DGX H100 시스템을 배포하고 있습니다. 각 시스템은 최대 10.2 kW를 소비하도록 구성되어 있습니다. 전력 요구사항 검증에서 가장 중요한 단계는?",
+    "choices": [
+      "Confirm that the power supply units in each DGX H100 are rated 80 PLUS Gold or higher.",
+      "Verify the input voltage range (200-240V AC) for compatibility with the data center's power infrastructure.",
+      "Ensure that each rack has at least one power circuit capable of delivering 10.2 kW.",
+      "Validate that the power distribution system supports N+1 redundancy with sufficient capacity for peak loads."
+    ],
+    "choices_ko": [
+      "각 DGX H100의 전원 공급 장치가 80 PLUS Gold 이상 등급인지 확인한다.",
+      "데이터센터 전력 인프라와의 호환을 위해 입력 전압 범위(200-240V AC)를 확인한다.",
+      "각 랙에 10.2 kW를 공급할 수 있는 전력 회로가 최소 하나 있는지 확인한다.",
+      "전력 분배 시스템이 피크 부하를 감당할 용량과 함께 N+1 이중화를 지원하는지 검증한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "10 kW급 시스템에서 핵심 질문은 '한 경로가 죽어도 계속 돌아가는가'입니다. 회로 하나가 정격 용량을 채우는 구성은 그 회로가 차단되는 순간 시스템이 정지합니다. N+1 이중화와 피크 부하 기준 용량을 함께 검증해야 전원 장애 시에도 서비스가 유지됩니다. 전압 범위나 PSU 효율 등급은 확인 사항이지만 가용성을 좌우하는 핵심은 아닙니다.",
+    "explanation_en": "For a 10 kW-class system the decisive question is whether it keeps running when one feed fails. A single circuit sized exactly to the load drops the system the moment that circuit trips. Validating N+1 redundancy with capacity for peak load is what preserves availability; voltage range and PSU efficiency are checks, not the critical one."
+  },
+  {
+    "id": "v072",
+    "domain": "d2",
+    "type": "single",
+    "question": "An infrastructure architect is selecting a network technology for a dedicated AI training cluster requiring extremely low latency, adaptive routing, congestion control, and efficient collective communications across thousands of GPUs. Which networking solution is generally preferred?",
+    "question_ko": "인프라 아키텍트가 수천 개 GPU에 걸쳐 극히 낮은 지연, 적응형 라우팅, 혼잡 제어, 효율적인 집합 통신이 필요한 전용 AI 학습 클러스터의 네트워크 기술을 선정하고 있습니다. 일반적으로 선호되는 솔루션은?",
+    "choices": [
+      "Standard Layer 2 Ethernet without RDMA",
+      "InfiniBand",
+      "Fibre Channel SAN",
+      "Wi-Fi 7"
+    ],
+    "choices_ko": [
+      "RDMA 없는 표준 L2 이더넷",
+      "InfiniBand",
+      "Fibre Channel SAN",
+      "Wi-Fi 7"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "InfiniBand는 HPC/AI를 위해 설계된 패브릭으로 RDMA, 적응형 라우팅, 크레딧 기반 흐름 제어(무손실), 하드웨어 오프로드, SHARP 기반 in-network 집계를 기본 제공합니다. 나열된 요구사항이 사실상 InfiniBand의 기능 목록과 일치합니다.",
+    "explanation_en": "InfiniBand is purpose-built for HPC/AI: RDMA, adaptive routing, credit-based (lossless) flow control, hardware offloads, and SHARP in-network aggregation are native features. The listed requirements read like InfiniBand's feature list."
+  },
+  {
+    "id": "v073",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are validating the cooling system for a high-density AI cluster using NVIDIA Blackwell GPUs, with racks generating up to 120 kW. What should you prioritize during validation?",
+    "question_ko": "랙당 최대 120 kW를 발생시키는 NVIDIA Blackwell GPU 기반 고밀도 AI 클러스터의 냉각 시스템을 검증하고 있습니다. 검증 시 무엇을 우선해야 하는가?",
+    "choices": [
+      "Validate that the cooling system can keep supply air below 20°C at all times.",
+      "Confirm that the cooling architecture uses liquid cooling with heat exchangers (e.g. liquid-to-air CDUs) sized for the full rack heat load.",
+      "Ensure dynamic fan speed control is enabled to optimize airflow based on real-time thermal conditions.",
+      "Verify each rack has sufficient airflow to handle 50% of its maximum heat load, as full load scenarios are rare."
+    ],
+    "choices_ko": [
+      "공급 공기 온도를 항상 20°C 미만으로 유지할 수 있는지 검증한다.",
+      "냉각 아키텍처가 랙 전체 발열량에 맞게 산정된 열교환기(예: liquid-to-air CDU)를 갖춘 액랭 방식인지 확인한다.",
+      "실시간 열 조건에 따라 기류를 최적화하도록 동적 팬 속도 제어가 활성화되어 있는지 확인한다.",
+      "최대 발열의 50%를 처리할 기류가 각 랙에 있는지 확인한다. 전부하 상황은 드물기 때문이다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "랙당 120 kW는 공랭으로 감당할 수 있는 범위를 한참 넘어섭니다. 이 수준에서는 액랭이 전제이며, 검증의 핵심은 CDU/열교환기 용량과 유량, 공급수 온도가 전부하 발열을 감당하도록 산정되었는지입니다. 부분 부하만 가정하거나 팬 제어에 기대는 접근은 고밀도 랙에서 성립하지 않습니다.",
+    "explanation_en": "120 kW per rack is far beyond air cooling. At this density liquid cooling is a given, and validation centers on whether the CDU/heat-exchanger capacity, flow rate, and supply water temperature are sized for the full rack heat load. Assuming partial load or relying on fan control does not hold at this density."
+  },
+  {
+    "id": "v074",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator needs to enable MIG so that end users can run multiple jobs on an NVIDIA A100 GPU. What command should be used?",
+    "question_ko": "시스템 관리자가 최종 사용자들이 NVIDIA A100 GPU에서 여러 작업을 실행할 수 있도록 MIG를 활성화하려 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "nvidia-smi -a100 -enablemig",
+      "nvidia smi -i 0 --enablemig",
+      "nvidia-smi -i 0 -mig 1",
+      "nvidia -smi -i -mig 1 enable"
+    ],
+    "choices_ko": [
+      "nvidia-smi -a100 -enablemig",
+      "nvidia smi -i 0 --enablemig",
+      "nvidia-smi -i 0 -mig 1",
+      "nvidia -smi -i -mig 1 enable"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "MIG 모드 활성화는 `nvidia-smi -i <GPU 인덱스> -mig 1`입니다(-mig은 --multi-instance-gpu의 축약). 활성화 후 GPU 인스턴스(GI)와 컴퓨트 인스턴스(CI)를 생성해야 실제로 분할된 자원을 쓸 수 있으며, 경우에 따라 GPU 리셋이 필요합니다.",
+    "explanation_en": "MIG mode is enabled with `nvidia-smi -i <gpu index> -mig 1` (-mig is short for --multi-instance-gpu). Afterwards you still create GPU instances (GI) and compute instances (CI) to actually use the partitions, and a GPU reset may be required."
+  },
+  {
+    "id": "v075",
+    "domain": "d3",
+    "type": "single",
+    "question": "The system administrator needs to set up authentication credentials for the NGC CLI. After installing the NGC CLI on a computer, what command should be used?",
+    "question_ko": "시스템 관리자가 NGC CLI의 인증 자격 증명을 설정해야 합니다. 컴퓨터에 NGC CLI를 설치한 뒤 사용할 명령은?",
+    "choices": [
+      "ngc credentials",
+      "ngc config set",
+      "ngc login",
+      "ngc authenticate"
+    ],
+    "choices_ko": [
+      "ngc credentials",
+      "ngc config set",
+      "ngc login",
+      "ngc authenticate"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NGC CLI는 별도의 login 명령 없이 `ngc config set`으로 API 키를 포함한 자격 증명과 org/team/ACE 컨텍스트를 설정합니다. 설정 값은 ~/.ngc/config에 저장되어 이후 모든 CLI 호출에 사용됩니다.",
+    "explanation_en": "The NGC CLI has no separate login command: `ngc config set` collects the API key plus the org/team/ACE context and stores it in ~/.ngc/config for all subsequent CLI calls."
+  },
+  {
+    "id": "v076",
+    "domain": "d1",
+    "type": "multiple",
+    "question": "You are validating a new AI training cluster before releasing it to users and want to perform a NeMo burn-in. Which actions are required as part of a proper NeMo burn-in process? (Choose two.)",
+    "question_ko": "새 AI 학습 클러스터를 사용자에게 개방하기 전에 검증하며 NeMo 번인을 수행하려 합니다. 올바른 NeMo 번인 과정에 필요한 조치 두 가지는? (2개 선택)",
+    "choices": [
+      "Run the configured NeMo training job repeatedly or for an extended duration, monitoring for errors, stalls, or performance drops across all GPUs and nodes.",
+      "Configure a representative NeMo training or pretraining recipe and set up an executor to launch the job across the intended nodes and GPUs.",
+      "Test inference using the NeMo API and approve the environment if the model outputs valid predictions.",
+      "Download a pre-trained NeMo model and use it for a quick accuracy check on a user dataset, then consider the burn-in complete."
+    ],
+    "choices_ko": [
+      "구성한 NeMo 학습 작업을 반복적으로 또는 장시간 실행하며 모든 GPU와 노드에서 오류·정지·성능 저하를 모니터링한다.",
+      "대표성 있는 NeMo 학습/사전학습 레시피를 구성하고, 대상 노드와 GPU 전체에서 작업을 띄울 executor를 설정한다.",
+      "NeMo API로 추론을 테스트하고 모델이 유효한 예측을 내면 환경을 승인한다.",
+      "사전 학습된 NeMo 모델을 내려받아 사용자 데이터셋으로 간단한 정확도 검사를 한 뒤 번인을 완료로 간주한다."
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explanation": "번인은 '대표 워크로드를 실제 규모로, 오래' 돌려 하드웨어와 소프트웨어 스택 전체의 안정성을 확인하는 절차입니다. 따라서 대상 노드·GPU 전체를 사용하는 대표 학습 레시피와 실행기를 구성하고(설정), 그 작업을 장시간 반복 실행하며 오류·정지·성능 저하를 관찰해야(실행·관찰) 합니다.",
+    "explanation_en": "A burn-in runs a representative workload at full scale for a long time to prove the hardware and software stack are stable. That means configuring a representative training recipe and executor across the intended nodes and GPUs, then running it repeatedly or for an extended period while watching for errors, stalls, and performance drops."
+  },
+  {
+    "id": "v077",
+    "domain": "d1",
+    "type": "multiple",
+    "question": "What is the purpose of using NCCL when verifying the east/west fabric in an NVIDIA AI Factory? (Choose two.)",
+    "question_ko": "NVIDIA AI 팩토리에서 east/west 패브릭을 검증할 때 NCCL을 사용하는 목적은? (2개 선택)",
+    "choices": [
+      "To measure bandwidth between GPUs.",
+      "To measure the latency between GPUs.",
+      "To measure the power consumption of GPUs.",
+      "To measure the storage network performance."
+    ],
+    "choices_ko": [
+      "GPU 간 대역폭 측정",
+      "GPU 간 지연 측정",
+      "GPU의 전력 소비 측정",
+      "스토리지 네트워크 성능 측정"
+    ],
+    "answer": [
+      0,
+      1
+    ],
+    "explanation": "NCCL 테스트(all_reduce_perf 등)는 실제 집합 통신을 수행하며 메시지 크기별 대역폭(algbw/busbw)과 소형 메시지 구간의 지연을 함께 보고합니다. 이는 GPU 간 east/west 경로(NVLink, InfiniBand/RoCE, GPUDirect RDMA)가 기대 성능을 내는지 판정하는 근거가 됩니다.",
+    "explanation_en": "NCCL tests such as all_reduce_perf run real collectives and report both bandwidth per message size (algbw/busbw) and latency in the small-message regime. That is the evidence used to judge whether the east/west GPU paths — NVLink, InfiniBand/RoCE, GPUDirect RDMA — meet expectations."
+  },
+  {
+    "id": "v078",
+    "domain": "d1",
+    "type": "single",
+    "question": "Over a 12-hour NCCL burn-in on eight nodes: aggregate bandwidth stays within 5% of the documented reference on every run; no NCCL errors or timeouts appear; on three occasions one GPU logged a single-run bandwidth dip of 15-20% that recovered on the next run; two unreproducible WARN-level \"unexpected latency spike\" messages appear for separate nodes; system logs show no hardware or drive errors. What is the best conclusion before releasing the cluster to production?",
+    "question_ko": "8개 노드에서 12시간 NCCL 번인을 수행한 결과: 모든 실행에서 집계 대역폭이 문서화된 기준치의 5% 이내를 유지했고, NCCL 오류나 타임아웃은 없었으며, 세 차례 한 GPU에서 단발성으로 15~20% 대역폭 저하가 있었으나 다음 실행에서 회복되었고, 서로 다른 노드에서 재현되지 않는 WARN 수준 \"unexpected latency spike\" 메시지가 두 건 있었으며, 시스템 로그에는 하드웨어·드라이브 오류가 없습니다. 프로덕션 투입 전 가장 적절한 결론은?",
+    "choices": [
+      "Approve for AI workload use, but flag the affected nodes for manual exclusion from distributed training jobs.",
+      "Proceed, since all bandwidth targets are met, the issues were transient and self-resolved, and there are no persistent errors or timeouts across repeated burn-ins.",
+      "Recommend proactive maintenance, because any bandwidth drop — even transient and unreproducible — means the burn-in failed."
+    ],
+    "choices_ko": [
+      "AI 워크로드 사용은 승인하되, 해당 노드를 분산 학습 작업에서 수동으로 제외하도록 표시한다.",
+      "모든 대역폭 목표를 충족했고 문제는 일시적이며 스스로 해소되었고 반복 번인에서 지속적인 오류나 타임아웃이 없으므로 진행한다.",
+      "일시적이고 재현되지 않더라도 대역폭 저하가 있었다면 번인 실패이므로 선제 정비를 권고한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "판정 기준은 '기준 성능을 반복적으로 충족하는가'와 '지속·재현되는 오류가 있는가'입니다. 여기서는 모든 실행이 기준치의 5% 이내였고, 오류·타임아웃이 없었으며, 관측된 이상은 재현되지 않고 자체 회복되었습니다. 이런 단발성 변동은 운영 중 모니터링으로 관리하는 것이 합리적이며, 정상 노드를 배제하거나 전면 정비를 요구하는 것은 과잉 대응입니다.",
+    "explanation_en": "The decision rests on whether the reference performance is met repeatedly and whether errors persist or reproduce. Every run landed within 5% of reference, no errors or timeouts occurred, and the anomalies were transient and self-resolving. Such one-off variation is handled by ongoing monitoring; excluding healthy nodes or demanding full maintenance is an overreaction."
+  },
+  {
+    "id": "v079",
+    "domain": "d1",
+    "type": "single",
+    "question": "Which InfiniBand management function is responsible for collecting fabric counter information (port counters, errors, and performance data) across the cluster?",
+    "question_ko": "클러스터 전반의 패브릭 카운터 정보(포트 카운터, 오류, 성능 데이터)를 수집하는 InfiniBand 관리 기능은?",
+    "choices": [
+      "BM (Baseboard Manager)",
+      "GM (Generic Manager)",
+      "PM (Performance Manager)",
+      "SM (Subnet Manager)"
+    ],
+    "choices_ko": [
+      "BM (Baseboard Manager)",
+      "GM (Generic Manager)",
+      "PM (Performance Manager)",
+      "SM (Subnet Manager)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "InfiniBand 관리 모델에서 카운터 수집은 Performance Manager(PM)의 역할입니다. PM은 각 포트의 PerfMgt 에이전트를 폴링해 전송량, 심볼 오류, 링크 다운 횟수 같은 카운터를 모으며 UFM/OpenSM의 성능 관리 기능이 이를 사용합니다. SM은 토폴로지 탐색과 라우팅·LID 할당을 담당합니다. 참고: 덤프 원문은 정답을 GM으로 표기했으나 카운터 수집 기능은 PM이 맞으며, 원문의 보기 A/C는 숫자로 깨져 있어 실제 InfiniBand 관리자 약어로 재구성했습니다.",
+    "explanation_en": "In the InfiniBand management model, counter collection belongs to the Performance Manager (PM), which polls each port's performance management agent for throughput, symbol errors, link-down counts, and similar data used by UFM/OpenSM. The SM handles discovery, routing, and LID assignment. Note: the original dump marked GM as the answer and its options A/C were corrupted into numbers; counter collection is the PM's role, so the options were reconstructed with the real IB manager abbreviations."
+  },
+  {
+    "id": "v080",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are standing up an NVIDIA DGX system for enterprise production. Which deployment and validation sequence best addresses production readiness and mitigates the risk of avoidable downtime or performance loss?",
+    "question_ko": "엔터프라이즈 프로덕션용 NVIDIA DGX 시스템을 구축하고 있습니다. 프로덕션 준비도를 확보하고 피할 수 있는 다운타임·성능 손실 위험을 줄이는 배포·검증 순서로 가장 적절한 것은?",
+    "choices": [
+      "Complete hardware and cabling, power on, update firmware and drivers, run full hardware health checks and stress diagnostics (NVSM), verify GPU and system sensor logs, and validate GPU accessibility.",
+      "Power on, install all AI frameworks, configure the CUDA and library stack, set up user environments, then plan stress tests and diagnostics as part of routine operations.",
+      "Update network topology, assign static IPs and DNS entries, register the system with NVIDIA, then conduct basic OS-level checks and enable user access after login testing.",
+      "Install the latest OS images and drivers, confirm OS and container functionality, invite users for a monitored production trial, and collect workload feedback to plan further diagnostics."
+    ],
+    "choices_ko": [
+      "하드웨어·케이블링 완료 → 전원 인가 → 펌웨어·드라이버 업데이트 → NVSM으로 전체 하드웨어 상태 점검 및 스트레스 진단 → GPU·시스템 센서 로그 확인 → GPU 접근성 검증",
+      "전원 인가 → 모든 AI 프레임워크 설치 → CUDA·라이브러리 스택 구성 → 사용자 환경 설정 → 스트레스 테스트와 진단은 일상 운영의 일부로 계획",
+      "네트워크 토폴로지 갱신 → 고정 IP·DNS 등록 → NVIDIA에 시스템 등록 → 기본 OS 점검 → 로그인 테스트 후 사용자 접근 허용",
+      "최신 OS 이미지·드라이버 설치 → OS와 컨테이너 동작 확인 → 모니터링 하에 사용자 프로덕션 시험 → 워크로드 피드백을 모아 추가 진단 계획"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "프로덕션 준비 검증은 하드웨어부터 위로 올라갑니다. 물리 설치와 케이블링을 마치고, 펌웨어·드라이버 기준선을 맞춘 뒤, NVSM으로 상태 점검과 스트레스 진단을 수행해 초기 불량(열·전원·GPU 결함)을 잡아내고, 센서 로그와 컨테이너의 GPU 접근성까지 확인한 다음 사용자에게 넘깁니다. 사용자를 먼저 들이고 진단을 나중에 하는 순서는 피할 수 있는 장애를 프로덕션에서 겪게 만듭니다.",
+    "explanation_en": "Production readiness is validated bottom-up: finish physical installation and cabling, establish the firmware/driver baseline, run NVSM health checks and stress diagnostics to catch infant-mortality faults (thermal, power, GPU), then verify sensor logs and container GPU access before handing the system to users. Letting users on first and diagnosing later moves avoidable failures into production."
+  }
+]

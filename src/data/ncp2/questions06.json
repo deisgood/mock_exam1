@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v051",
+    "domain": "d4",
+    "type": "single",
+    "question": "A cluster administrator notices that distributed training jobs scale efficiently from one to four GPUs but experience a sharp reduction in scaling efficiency when expanded to 64 GPUs across multiple servers. Hardware diagnostics show no failed components and network bandwidth remains underutilized. Which software library should the administrator examine first?",
+    "question_ko": "클러스터 관리자가 분산 학습 작업이 GPU 1개에서 4개까지는 효율적으로 확장되지만 여러 서버에 걸쳐 64개로 늘리면 확장 효율이 급격히 떨어지는 것을 발견했습니다. 하드웨어 진단은 이상이 없고 네트워크 대역폭도 여유가 있습니다. 가장 먼저 살펴봐야 할 소프트웨어 라이브러리는?",
+    "choices": [
+      "NCCL",
+      "cuDNN",
+      "TensorRT",
+      "CUDA Compiler"
+    ],
+    "choices_ko": [
+      "NCCL",
+      "cuDNN",
+      "TensorRT",
+      "CUDA 컴파일러"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "노드 내부(4 GPU)에서는 NVLink로 잘 확장되다가 노드를 넘어가면서 효율이 무너지는 패턴은 집합 통신 계층의 문제입니다. NCCL이 토폴로지를 잘못 인식하거나 IB 대신 TCP 소켓으로 폴백하면 대역폭이 남아도는데도 AllReduce가 지연됩니다. NCCL_DEBUG=INFO로 트랜스포트와 링 구성을 먼저 확인해야 합니다.",
+    "explanation_en": "Scaling well inside a node (4 GPUs over NVLink) but collapsing across nodes points at the collective communication layer. If NCCL misdetects topology or falls back from IB to TCP sockets, AllReduce stalls even though link bandwidth looks idle. Start with NCCL_DEBUG=INFO to inspect the chosen transport and ring layout."
+  },
+  {
+    "id": "v052",
+    "domain": "d5",
+    "type": "single",
+    "question": "Which statement best explains why maintaining high cable signal quality is essential in modern high-speed data centers?",
+    "question_ko": "현대 고속 데이터센터에서 케이블 신호 품질 유지가 필수적인 이유를 가장 잘 설명한 것은?",
+    "choices": [
+      "It reduces electromagnetic interference (EMI) and cross-talk, helping prevent unexpected packet drops during sustained workloads.",
+      "It minimizes bit error rates and supports reliable, high-throughput communication, reducing retransmissions and congestion across the network.",
+      "It enables effective use of forward error correction (FEC), which is required for reliable operation at high data rates such as 200GbE and above.",
+      "It ensures that cable length and connector type do not play as big a role in deploying new infrastructure."
+    ],
+    "choices_ko": [
+      "전자기 간섭(EMI)과 누화를 줄여 지속 부하 중 예기치 않은 패킷 손실을 방지한다.",
+      "비트 오류율을 최소화해 신뢰성 높은 고속 통신을 뒷받침하고, 재전송과 혼잡을 줄인다.",
+      "200GbE 이상 고속 동작에 필요한 FEC를 효과적으로 사용할 수 있게 한다.",
+      "새 인프라 배포 시 케이블 길이와 커넥터 종류의 영향이 줄어들게 한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "신호 품질의 최종 척도는 BER입니다. BER이 낮아야 재전송이 줄고, 재전송이 줄어야 혼잡과 지연 스파이크가 사라져 AI 워크로드의 집합 통신이 안정적으로 동작합니다. EMI 억제나 FEC 활용은 그 과정의 일부일 뿐, '왜 중요한가'에 대한 가장 포괄적인 답은 BER 최소화와 그로 인한 신뢰성 확보입니다.",
+    "explanation_en": "Signal quality ultimately shows up as BER. Low BER means fewer retransmissions, which means less congestion and fewer latency spikes, which is what keeps AI collectives stable. EMI control and FEC are parts of that chain; the most complete answer is minimizing BER and the reliability that follows."
+  },
+  {
+    "id": "v053",
+    "domain": "d4",
+    "type": "single",
+    "question": "After an NCCL burn-in reports \"transport retry count exceeded\", which corrective action addresses the underlying fabric issue?",
+    "question_ko": "NCCL 번인이 \"transport retry count exceeded\"를 보고했습니다. 근본적인 패브릭 문제를 해결하는 조치는?",
+    "choices": [
+      "Switch from Ring to Tree algorithms via NCCL_ALGO=TREE",
+      "Inspect InfiniBand link quality metrics (BER, symbol errors) and replace faulty cables",
+      "Increase NCCL_IB_TIMEOUT to tolerate longer latencies",
+      "Reduce message size to decrease network utilization"
+    ],
+    "choices_ko": [
+      "NCCL_ALGO=TREE로 Ring에서 Tree 알고리즘으로 전환한다",
+      "InfiniBand 링크 품질 지표(BER, 심볼 오류)를 점검하고 불량 케이블을 교체한다",
+      "더 긴 지연을 허용하도록 NCCL_IB_TIMEOUT을 늘린다",
+      "네트워크 사용률을 낮추기 위해 메시지 크기를 줄인다"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "\"transport retry count exceeded\"는 RDMA 전송이 반복 재시도 끝에 실패했다는 뜻으로, 대개 물리 계층 열화(불량 케이블, 커넥터 오염, 심볼 오류 증가)나 링크 플랩이 원인입니다. 포트 카운터와 BER을 확인해 문제 링크를 찾아 케이블을 교체하는 것이 근본 해결입니다. 타임아웃을 늘리는 것은 오류를 숨길 뿐입니다.",
+    "explanation_en": "\"Transport retry count exceeded\" means RDMA transfers failed after repeated retries — typically physical-layer degradation (bad cable, dirty connector, rising symbol errors) or link flap. Checking port counters and BER to find the bad link and replacing the cable is the real fix; raising the timeout only hides the errors."
+  },
+  {
+    "id": "v054",
+    "domain": "d3",
+    "type": "single",
+    "question": "A researcher wants to allow a container to use only two specific GPUs out of four available ones (GPU 1 and GPU 2) on the host. The system is already set up with NVIDIA Docker and the container toolkit. Which Docker command will correctly assign only these GPUs to the container?",
+    "question_ko": "연구자가 호스트의 GPU 4개 중 특정 2개(GPU 1과 GPU 2)만 컨테이너가 사용하도록 하려 합니다. 시스템에는 NVIDIA Docker와 컨테이너 툴킷이 이미 설정되어 있습니다. 올바른 Docker 명령은?",
+    "choices": [
+      "docker run --gpus '\"device=0,3\"' nvidia/cuda nvidia-smi --query-gpu=uuid --format=csv",
+      "docker run --rm --gpus '\"device=1,2\"' nvidia/cuda nvidia-smi",
+      "docker run --gpus '\"device=0,1\"' nvidia/cuda nvidia-smi --query-gpu=uuid --format=csv",
+      "docker run --rm --gpus 2 nvidia/cuda nvidia-smi"
+    ],
+    "choices_ko": [
+      "docker run --gpus '\"device=0,3\"' nvidia/cuda nvidia-smi --query-gpu=uuid --format=csv",
+      "docker run --rm --gpus '\"device=1,2\"' nvidia/cuda nvidia-smi",
+      "docker run --gpus '\"device=0,1\"' nvidia/cuda nvidia-smi --query-gpu=uuid --format=csv",
+      "docker run --rm --gpus 2 nvidia/cuda nvidia-smi"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "요구사항은 '인덱스 1번과 2번'이라는 특정 GPU 지정입니다. `--gpus '\"device=1,2\"'`가 정확히 그 두 장치만 주입하며, 컨테이너 안에서 nvidia-smi를 실행해 두 개만 보이는지 검증할 수 있습니다. 인덱스가 다른 보기들은 요구와 맞지 않습니다.",
+    "explanation_en": "The requirement names specific indexes 1 and 2. `--gpus '\"device=1,2\"'` injects exactly those devices, and running nvidia-smi inside the container verifies only two are visible. The other options use the wrong indexes or the wrong selector."
+  },
+  {
+    "id": "v055",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to validate NVLink Switch functionality on a DGX H100 system with 8 GPUs. Which NCCL command verifies intra-node NVLink bandwidth?",
+    "question_ko": "엔지니어가 GPU 8개를 가진 DGX H100 시스템에서 NVLink Switch 기능을 검증해야 합니다. 노드 내부 NVLink 대역폭을 확인하는 NCCL 명령은?",
+    "choices": [
+      "all_reduce_perf -b 8 -e 16G -f2 -g 4 with NCCL_TESTS_SPLIT=\"MOD 2\"",
+      "all_reduce_perf -b 8 -e 16G -f2 -g 8 with NCCL_TESTS_SPLIT=\"OR 0x7\"",
+      "broadcast_perf -b 8 -e 16G -f2 -g 8 without split configuration",
+      "all_reduce_perf -b 8 -e 16G -f2 -g 1 repeated 8 times"
+    ],
+    "choices_ko": [
+      "NCCL_TESTS_SPLIT=\"MOD 2\"와 함께 all_reduce_perf -b 8 -e 16G -f2 -g 4",
+      "NCCL_TESTS_SPLIT=\"OR 0x7\"와 함께 all_reduce_perf -b 8 -e 16G -f2 -g 8",
+      "split 설정 없이 broadcast_perf -b 8 -e 16G -f2 -g 8",
+      "all_reduce_perf -b 8 -e 16G -f2 -g 1을 8번 반복"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "노드 내부 NVLink/NVSwitch 도메인 전체를 검증하려면 8개 GPU가 모두 참여하는 all_reduce를 돌려야 합니다(-g 8). 또한 -b 8에서 -e 16G까지 크기를 2배씩(-f2) 키우며 측정해야 소형 메시지의 지연과 대형 메시지의 대역폭 포화를 함께 볼 수 있습니다. GPU 4개만 쓰거나 GPU 1개씩 따로 돌리면 스위치 경로가 제대로 부하를 받지 않습니다.",
+    "explanation_en": "Validating the full intra-node NVLink/NVSwitch domain requires an all_reduce across all 8 GPUs (-g 8), sweeping sizes from 8 B to 16 GB with a factor of 2 (-f2) so both small-message latency and large-message bandwidth saturation are observed. Using only 4 GPUs, or running one GPU at a time, never loads the switch paths."
+  },
+  {
+    "id": "v056",
+    "domain": "d2",
+    "type": "single",
+    "question": "During a scale-out expansion, the AI Factory team needs to ensure minimal communication latency between GPUs across multiple nodes. Which NVIDIA technology should be prioritized in the network design?",
+    "question_ko": "스케일아웃 확장 중 AI 팩토리 팀이 여러 노드에 걸친 GPU 간 통신 지연을 최소화해야 합니다. 네트워크 설계에서 우선해야 할 NVIDIA 기술은?",
+    "choices": [
+      "InfiniBand with Fat-Tree topology between nodes.",
+      "Standard Ethernet switches with no GPU interconnect.",
+      "Token ring network for all node communication.",
+      "Spectrum-X with Dragonfly topology between nodes."
+    ],
+    "choices_ko": [
+      "노드 간 InfiniBand + Fat-Tree 토폴로지",
+      "GPU 인터커넥트가 없는 일반 이더넷 스위치",
+      "모든 노드 통신에 토큰 링 네트워크",
+      "노드 간 Spectrum-X + Dragonfly 토폴로지"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "노드 간 GPU 통신 지연을 최소화하는 표준 설계는 InfiniBand와 비과부하(non-blocking) Fat-Tree입니다. RDMA와 GPUDirect RDMA로 커널·CPU를 우회하고, Fat-Tree는 임의의 두 노드 사이에 균일한 홉 수와 충분한 이등분 대역폭을 제공해 집합 통신 지연을 예측 가능하게 만듭니다.",
+    "explanation_en": "The standard design for minimal inter-node GPU latency is InfiniBand on a non-blocking Fat-Tree. RDMA and GPUDirect RDMA bypass the kernel and CPU, while Fat-Tree gives uniform hop counts and ample bisection bandwidth, making collective latency predictable."
+  },
+  {
+    "id": "v057",
+    "domain": "d2",
+    "type": "single",
+    "question": "A cluster administrator is preparing to update the firmware on a DGX H100 system, including the GPU tray (baseboard). What is the correct sequence of steps for a safe and successful firmware upgrade?",
+    "question_ko": "클러스터 관리자가 GPU 트레이(베이스보드)를 포함해 DGX H100 시스템의 펌웨어를 갱신하려 합니다. 안전하고 성공적인 펌웨어 업그레이드 단계 순서는?",
+    "choices": [
+      "Stop all GPU activity, update and reboot the BMC, update motherboard and tray components, perform a cold reset, and verify completion.",
+      "Update the BMC and skip the GPU tray and motherboard tray updates if the system appears healthy.",
+      "Update the GPU tray first, then the motherboard tray, and reboot the BMC after all updates are complete.",
+      "Perform a cold reset, stop all GPU activity, update and reboot the BMC, update motherboard and tray components, and verify completion."
+    ],
+    "choices_ko": [
+      "모든 GPU 작업 중지 → BMC 업데이트 및 재부팅 → 메인보드·트레이 구성 요소 업데이트 → 콜드 리셋 → 완료 확인",
+      "시스템이 정상으로 보이면 BMC만 업데이트하고 GPU 트레이와 메인보드 트레이 업데이트는 건너뛴다",
+      "GPU 트레이를 먼저 업데이트하고 메인보드 트레이를 갱신한 뒤 모든 업데이트 완료 후 BMC를 재부팅한다",
+      "콜드 리셋 → 모든 GPU 작업 중지 → BMC 업데이트 및 재부팅 → 메인보드·트레이 구성 요소 업데이트 → 완료 확인"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "펌웨어 업데이트는 BMC가 다른 구성 요소의 갱신을 중개하므로 BMC를 먼저 최신화하고 재부팅해야 합니다. 그 전에 GPU 워크로드를 중지해 장치가 사용 중이지 않게 하고, BMC 이후 메인보드와 GPU 트레이를 갱신한 다음, 콜드 리셋으로 이미지를 활성화하고 버전을 확인합니다. 콜드 리셋을 맨 앞에 두는 순서는 활성화 단계가 사라져 틀립니다.",
+    "explanation_en": "The BMC brokers updates for the other components, so it must be updated and rebooted first — after stopping GPU workloads so nothing is in use. Motherboard and GPU tray follow, then a cold reset activates the images and versions are verified. Putting the cold reset first leaves no activation step at the end."
+  },
+  {
+    "id": "v058",
+    "domain": "d2",
+    "type": "single",
+    "question": "A customer is designing an AI Factory for enterprise-scale deployments and wants redundancy and load balancing for the management and storage networks. Which feature should be implemented on the Ethernet switches?",
+    "question_ko": "한 고객이 엔터프라이즈 규모 AI 팩토리를 설계하면서 관리·스토리지 네트워크의 이중화와 부하 분산을 원합니다. 이더넷 스위치에 구현해야 할 기능은?",
+    "choices": [
+      "Use only one switch for all management and storage traffic.",
+      "MLAG for bonded interfaces across redundant switches.",
+      "Implement redundant switches with spanning tree protocol.",
+      "Disable VLANs and use unmanaged switches."
+    ],
+    "choices_ko": [
+      "관리·스토리지 트래픽 전부를 스위치 한 대로 처리한다.",
+      "이중화된 스위치에 걸쳐 본딩 인터페이스를 구성하는 MLAG를 사용한다.",
+      "스패닝 트리 프로토콜과 함께 이중화 스위치를 구성한다.",
+      "VLAN을 비활성화하고 언매니지드 스위치를 사용한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "MLAG는 서로 다른 두 스위치를 하나의 논리 스위치처럼 보이게 해, 서버가 두 스위치에 각각 연결된 링크를 하나의 본드로 묶어 동시에 사용할 수 있게 합니다. 그 결과 스위치 한 대가 죽어도 무중단이며 평상시에는 두 링크가 모두 트래픽을 나릅니다. STP는 이중 경로 중 하나를 차단하므로 부하 분산이 되지 않습니다.",
+    "explanation_en": "MLAG presents two physical switches as one logical peer so a server can bond uplinks to both and use them simultaneously. One switch can fail without an outage, and in normal operation both links carry traffic. STP, by contrast, blocks the redundant path, so it provides no load balancing."
+  },
+  {
+    "id": "v059",
+    "domain": "d3",
+    "type": "single",
+    "question": "After configuring the NGC CLI with ngc config set, a user receives \"Authentication failed\" errors when pulling containers. What step was most likely omitted?",
+    "question_ko": "`ngc config set`으로 NGC CLI를 구성한 뒤 컨테이너를 내려받을 때 \"Authentication failed\" 오류가 발생합니다. 누락되었을 가능성이 가장 높은 단계는?",
+    "choices": [
+      "Installing the CLI with apt-get instead of manual extraction.",
+      "Entering the API key during ngc config set or storing it in ~/.ngc/config.",
+      "Running sudo systemctl restart docker after configuration.",
+      "Setting --format_type=json to enable API interactions."
+    ],
+    "choices_ko": [
+      "수동 압축 해제 대신 apt-get으로 CLI를 설치하는 것",
+      "ngc config set 중 API 키를 입력하거나 ~/.ngc/config에 저장하는 것",
+      "구성 후 sudo systemctl restart docker를 실행하는 것",
+      "API 상호작용을 위해 --format_type=json을 설정하는 것"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NGC 인증의 유일한 자격 증명은 API 키입니다. `ngc config set`에서 키를 비워 두거나 잘못 입력하면 ~/.ngc/config에 유효한 키가 없어 레지스트리 인증이 실패합니다. 컨테이너 풀 시에는 `docker login nvcr.io`에도 사용자명 `$oauthtoken`과 동일한 API 키를 써야 합니다.",
+    "explanation_en": "The API key is the only credential NGC authentication uses. Leaving it blank or mistyping it during `ngc config set` means ~/.ngc/config holds no valid key and registry authentication fails. For container pulls, the same API key is used with `docker login nvcr.io` and the username `$oauthtoken`."
+  },
+  {
+    "id": "v060",
+    "domain": "d2",
+    "type": "single",
+    "question": "A network architect deploys a Spectrum Ethernet fabric for a RoCE-based AI cluster. During stress testing, distributed training performance fluctuates significantly because packet loss occurs whenever multiple training jobs execute simultaneously. Which network feature should be prioritized to improve communication consistency?",
+    "question_ko": "네트워크 아키텍트가 RoCE 기반 AI 클러스터를 위해 Spectrum 이더넷 패브릭을 배포했습니다. 스트레스 테스트에서 여러 학습 작업이 동시에 실행될 때마다 패킷 손실이 발생해 분산 학습 성능이 크게 요동칩니다. 통신 일관성을 높이기 위해 우선해야 할 네트워크 기능은?",
+    "choices": [
+      "Lossless Ethernet configuration with congestion management",
+      "Disabling RDMA on every interface",
+      "Increasing GPU memory allocation",
+      "Replacing all Top-of-Rack switches with PCIe switches"
+    ],
+    "choices_ko": [
+      "혼잡 관리를 포함한 무손실(lossless) 이더넷 구성",
+      "모든 인터페이스에서 RDMA 비활성화",
+      "GPU 메모리 할당 증가",
+      "모든 ToR 스위치를 PCIe 스위치로 교체"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "RoCE는 패킷 손실에 매우 취약합니다. 손실이 발생하면 RDMA 재전송이 일어나 성능이 급락하므로, PFC로 우선순위 큐에 백프레셔를 걸고 ECN/DCQCN으로 송신 속도를 조절하는 무손실 구성이 필수입니다. Spectrum-X는 이런 혼잡 제어를 패브릭 차원에서 제공합니다.",
+    "explanation_en": "RoCE is highly loss-sensitive: a dropped packet triggers RDMA retransmission and performance collapses. A lossless configuration — PFC back-pressure on the priority queue plus ECN/DCQCN rate control — is therefore required, and Spectrum-X provides this congestion control at fabric level."
+  }
+]

@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v041",
+    "domain": "d1",
+    "type": "single",
+    "question": "What command sequence is used to identify the exact name of the server that runs as the master SM in a multi-node fabric?",
+    "question_ko": "멀티노드 패브릭에서 마스터 SM으로 동작하는 서버의 정확한 이름을 확인하는 명령 순서는?",
+    "choices": [
+      "ibstat, then sminfo",
+      "sminfo, then smpquery ND",
+      "ibis, then ibsim",
+      "sminfo, then smpquery NI"
+    ],
+    "choices_ko": [
+      "ibstat 실행 후 sminfo",
+      "sminfo 실행 후 smpquery ND",
+      "ibis 실행 후 ibsim",
+      "sminfo 실행 후 smpquery NI"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "sminfo는 현재 활성 마스터 서브넷 매니저의 LID와 우선순위를 알려 줍니다. 그 LID를 대상으로 `smpquery ND <lid>`를 실행하면 NodeDescription, 즉 해당 노드의 호스트명이 반환되어 어느 서버가 마스터 SM인지 특정할 수 있습니다.",
+    "explanation_en": "sminfo reports the LID and priority of the active master subnet manager. Running `smpquery ND <lid>` against that LID returns the NodeDescription — the host name — identifying exactly which server runs the master SM."
+  },
+  {
+    "id": "v042",
+    "domain": "d4",
+    "type": "single",
+    "question": "A DGX server reports degraded performance and storage alerts. How would you use NVSM and nvidia-smi to troubleshoot both system and GPU issues?",
+    "question_ko": "DGX 서버가 성능 저하와 스토리지 경보를 보고합니다. NVSM과 nvidia-smi를 사용해 시스템과 GPU 문제를 함께 진단하려면?",
+    "choices": [
+      "Run nvsm collect-stats to gather logs, use lsblk to understand if there are storage problems, and nvidia-smi -q for detailed GPU information.",
+      "Use nvsm show health for a system health summary, nvsm show storage for storage issues, and nvidia-smi -q for detailed GPU information.",
+      "Start by issuing nvidia-smi -L to list GPUs, followed by nvsm --refresh to clear all alerts, and nvidia-smi -q for detailed GPU information.",
+      "Run nvsm reset to restore system health, then use nvidia-smi --fix for automatic GPU repairs and status recovery."
+    ],
+    "choices_ko": [
+      "nvsm collect-stats로 로그를 수집하고, lsblk로 스토리지 문제를 파악하며, nvidia-smi -q로 상세 GPU 정보를 확인한다.",
+      "nvsm show health로 시스템 상태 요약을, nvsm show storage로 스토리지 문제를, nvidia-smi -q로 상세 GPU 정보를 확인한다.",
+      "nvidia-smi -L로 GPU 목록을 확인하고, nvsm --refresh로 모든 경보를 초기화한 뒤, nvidia-smi -q로 상세 정보를 확인한다.",
+      "nvsm reset으로 시스템 상태를 복구하고 nvidia-smi --fix로 GPU를 자동 복구한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVSM은 DGX 플랫폼 계층(전원, 팬, 스토리지, 메모리)을, nvidia-smi는 GPU 계층(온도, 전력, 클럭, ECC, 스로틀링, 프로세스)을 담당합니다. `nvsm show health`로 전체 요약을 보고 `nvsm show storage`로 경보의 세부를 확인한 뒤 `nvidia-smi -q`로 GPU 상세를 보는 조합이 두 계층을 모두 덮습니다.",
+    "explanation_en": "NVSM covers the platform layer (power, fans, storage, memory) and nvidia-smi covers the GPU layer (temperature, power, clocks, ECC, throttling, processes). `nvsm show health` for the summary, `nvsm show storage` for the alert detail, and `nvidia-smi -q` for GPU detail covers both layers."
+  },
+  {
+    "id": "v043",
+    "domain": "d5",
+    "type": "single",
+    "question": "When updating the firmware on an NVLink switch transceiver, how can an engineer apply new firmware without interrupting the network?",
+    "question_ko": "NVLink 스위치 트랜시버의 펌웨어를 갱신할 때, 네트워크를 중단하지 않고 새 펌웨어를 적용하려면?",
+    "choices": [
+      "flint -d <device> --linkx --link_auto_update --activate",
+      "Physically disconnect and reconnect the transceiver.",
+      "mlxfwreset -d <device> reset --yes to reset the transceiver.",
+      "nv action reboot system to force immediate activation."
+    ],
+    "choices_ko": [
+      "flint -d <device> --linkx --link_auto_update --activate",
+      "트랜시버를 물리적으로 분리했다가 다시 연결한다.",
+      "mlxfwreset -d <device> reset --yes로 트랜시버를 리셋한다.",
+      "nv action reboot system으로 즉시 활성화를 강제한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "LinkX 케이블·트랜시버 펌웨어는 flint의 LinkX 옵션으로 스위치를 통해 갱신하며, auto-update와 activate 옵션을 쓰면 링크를 내리지 않고 새 이미지를 적용·활성화할 수 있습니다. 재장착이나 장치·시스템 리셋은 모두 링크 다운을 유발하는 파괴적 방법입니다.",
+    "explanation_en": "LinkX cable and transceiver firmware is updated through the switch with flint's LinkX options; auto-update plus activate applies and activates the image without bringing the link down. Reseating, device reset, or a system reboot all disrupt traffic."
+  },
+  {
+    "id": "v044",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator needs to install the NVIDIA Container Toolkit and then perform: update apt; run the install command; configure the Docker daemon to use the NVIDIA Container Runtime; restart the Docker daemon. What step should be taken first?",
+    "question_ko": "시스템 관리자가 NVIDIA Container Toolkit을 설치하며 apt 업데이트 → 설치 명령 실행 → Docker 데몬이 NVIDIA Container Runtime을 인식하도록 구성 → Docker 데몬 재시작 순으로 작업하려 합니다. 가장 먼저 해야 할 단계는?",
+    "choices": [
+      "Add the NVIDIA repository",
+      "Initialize NVIDIA Omniverse configuration",
+      "Stop the toolkit process",
+      "Install the SNAP package manager"
+    ],
+    "choices_ko": [
+      "NVIDIA 저장소 추가",
+      "NVIDIA Omniverse 구성 초기화",
+      "toolkit 프로세스 중지",
+      "SNAP 패키지 관리자 설치"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "apt는 등록된 저장소에서만 패키지를 찾습니다. 따라서 NVIDIA Container Toolkit 저장소와 GPG 키를 먼저 추가해야 `apt update`가 해당 패키지 목록을 받아오고 설치가 가능합니다. 저장소 추가 → apt update → 설치 → nvidia-ctk로 런타임 구성 → Docker 재시작이 공식 순서입니다.",
+    "explanation_en": "apt can only find packages in configured repositories, so the NVIDIA Container Toolkit repo and GPG key must be added first for `apt update` to see the package. The documented order is: add repo → apt update → install → configure the runtime with nvidia-ctk → restart Docker."
+  },
+  {
+    "id": "v045",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are preparing a Spectrum-based NVIDIA switch for integration into a production AI cluster and must confirm that all modules run approved firmware versions. Which step best meets best practices for firmware version consistency and cluster compliance?",
+    "question_ko": "프로덕션 AI 클러스터에 통합할 NVIDIA Spectrum 스위치를 준비하면서 모든 모듈이 승인된 펌웨어 버전으로 동작하는지 확인해야 합니다. 펌웨어 버전 일관성과 규정 준수를 위한 모범 사례에 가장 부합하는 단계는?",
+    "choices": [
+      "Use the show asic-version command to review firmware versions for all modules, then compare these against the documented approved versions.",
+      "Use the show inventory command to display component details and serial numbers, as this output includes all firmware versions.",
+      "Use the show version command to check the overall system version and assume all modules are updated if it matches the documentation.",
+      "Use the show interfaces status command to verify all ports are up and proceed if no interface errors are shown."
+    ],
+    "choices_ko": [
+      "show asic-version 명령으로 모든 모듈의 펌웨어 버전을 확인한 뒤 문서화된 승인 버전과 대조한다.",
+      "show inventory 명령으로 구성 요소 상세와 시리얼 번호를 표시한다. 이 출력에 모든 펌웨어 버전이 포함된다.",
+      "show version 명령으로 전체 시스템 버전을 확인하고, 문서와 일치하면 모든 모듈이 갱신된 것으로 간주한다.",
+      "show interfaces status 명령으로 모든 포트가 up인지 확인하고 오류가 없으면 진행한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "스위치의 OS 버전과 ASIC·모듈 펌웨어 버전은 서로 다른 값입니다. `show asic-version`은 ASIC 및 관련 모듈의 펌웨어 버전을 보여주므로, 이 값을 승인된 펌웨어 매트릭스와 대조해야 실제 버전 일관성을 확인할 수 있습니다.",
+    "explanation_en": "The switch OS version and the ASIC/module firmware versions are different things. `show asic-version` reports the ASIC and related module firmware, which is what must be compared against the approved firmware matrix to prove consistency."
+  },
+  {
+    "id": "v046",
+    "domain": "d2",
+    "type": "single",
+    "question": "Why is it important to provide a large, high-performance local cache (SSDs configured as RAID-0) for deep learning workloads on DGX systems?",
+    "question_ko": "DGX 시스템의 딥러닝 워크로드에 대용량 고성능 로컬 캐시(RAID-0 구성 SSD)를 제공하는 것이 중요한 이유는?",
+    "choices": [
+      "Using a local SSD cache in RAID-0 enables direct GPU access to files without host CPU involvement.",
+      "A local SSD cache allows users to increase the number of NFS threads on the server without impacting storage reliability.",
+      "A local SSD cache in RAID-0 ensures that most training data is read only once from the network, significantly reducing NFS traffic.",
+      "A local SSD cache in RAID-0 is necessary to provide redundancy in case one of the drives fails during long training runs."
+    ],
+    "choices_ko": [
+      "RAID-0 로컬 SSD 캐시는 호스트 CPU 개입 없이 GPU가 파일에 직접 접근하게 해 준다.",
+      "로컬 SSD 캐시는 스토리지 신뢰성에 영향을 주지 않고 서버의 NFS 스레드 수를 늘릴 수 있게 해 준다.",
+      "RAID-0 로컬 SSD 캐시는 대부분의 학습 데이터를 네트워크에서 한 번만 읽도록 해 NFS 트래픽을 크게 줄인다.",
+      "RAID-0 로컬 SSD 캐시는 긴 학습 중 드라이브 하나가 고장 날 경우를 대비한 이중화를 제공한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "딥러닝은 같은 데이터셋을 여러 에폭에 걸쳐 반복해서 읽습니다. 첫 에폭에서 네트워크 스토리지의 데이터를 로컬 SSD 캐시로 내려두면 이후 에폭은 로컬에서 읽으므로 NFS 트래픽과 지연이 크게 줄고 GPU에 데이터를 꾸준히 공급할 수 있습니다. RAID-0은 용량과 대역폭을 위한 선택이며 이중화와는 무관합니다.",
+    "explanation_en": "Deep learning re-reads the same dataset across many epochs. Staging it onto the local SSD cache during the first epoch lets later epochs read locally, cutting NFS traffic and latency and keeping the GPUs fed. RAID-0 is chosen for capacity and bandwidth, not redundancy."
+  },
+  {
+    "id": "v047",
+    "domain": "d4",
+    "type": "single",
+    "question": "On a DGX, a system administrator needs to monitor PSU, CPU utilization, GPU utilization, RAID, and memory utilization. What single NVIDIA tool should be used?",
+    "question_ko": "DGX에서 시스템 관리자가 PSU, CPU 사용률, GPU 사용률, RAID, 메모리 사용률을 모니터링해야 합니다. 단일 NVIDIA 도구로 무엇을 써야 하는가?",
+    "choices": [
+      "DCGM",
+      "MOFED",
+      "NVSM",
+      "SMI"
+    ],
+    "choices_ko": [
+      "DCGM",
+      "MOFED",
+      "NVSM",
+      "SMI"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NVSM(NVIDIA System Management)은 DGX 플랫폼 전체를 대상으로 하는 관리 도구로, 전원 공급 장치·팬·온도 같은 하드웨어 센서부터 CPU·메모리·스토리지(RAID)·GPU 상태까지 하나의 인터페이스에서 조회합니다. DCGM은 GPU 전용, nvidia-smi도 GPU 전용, MOFED는 네트워크 드라이버 스택입니다.",
+    "explanation_en": "NVSM is the DGX platform-wide management tool, surfacing PSU, fan, and thermal sensors along with CPU, memory, storage/RAID, and GPU status from one interface. DCGM and nvidia-smi are GPU-only, and MOFED is a networking driver stack."
+  },
+  {
+    "id": "v048",
+    "domain": "d3",
+    "type": "single",
+    "question": "On a host running Docker 19.03 or later with working NVIDIA drivers, a data scientist runs `docker run --rm nvidia/cuda:12.1-base nvidia-smi` and gets an error stating the device driver could not be selected with capabilities [[gpu]]. What will fix the problem?",
+    "question_ko": "NVIDIA 드라이버가 정상 동작하는 Docker 19.03 이상 호스트에서 데이터 과학자가 `docker run --rm nvidia/cuda:12.1-base nvidia-smi`를 실행하자 capabilities [[gpu]]로 장치 드라이버를 선택할 수 없다는 오류가 발생했습니다. 무엇으로 해결할 수 있는가?",
+    "choices": [
+      "The DOCA driver needs to be installed.",
+      "Add the argument \"--gpus all\" to the docker command.",
+      "Use an NGC TensorFlow container.",
+      "The NVIDIA driver should be re-installed."
+    ],
+    "choices_ko": [
+      "DOCA 드라이버를 설치해야 한다.",
+      "docker 명령에 \"--gpus all\" 인자를 추가한다.",
+      "NGC TensorFlow 컨테이너를 사용한다.",
+      "NVIDIA 드라이버를 재설치해야 한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Docker 19.03부터는 `--gpus` 플래그로 GPU를 요청해야 NVIDIA Container Toolkit이 장치와 드라이버 라이브러리를 컨테이너에 주입합니다. 플래그를 빼면 GPU 기능(capabilities [[gpu]])을 처리할 런타임이 선택되지 않아 예시와 같은 오류가 납니다. 호스트 드라이버는 정상이므로 재설치는 불필요합니다.",
+    "explanation_en": "Since Docker 19.03 you must request GPUs with the `--gpus` flag so the NVIDIA Container Toolkit injects the devices and driver libraries. Without it, no runtime is selected to satisfy capabilities [[gpu]], producing exactly this error. The host driver is fine, so reinstalling it is unnecessary."
+  },
+  {
+    "id": "v049",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator lost SSH connectivity to a cluster management node. It has been identified that a network is broken. Which network is it?",
+    "question_ko": "시스템 관리자가 클러스터 관리 노드로의 SSH 연결을 잃었습니다. 어떤 네트워크가 끊어진 것으로 확인되었습니다. 어느 네트워크인가?",
+    "choices": [
+      "In-band management",
+      "Storage",
+      "Compute",
+      "Out-of-band management"
+    ],
+    "choices_ko": [
+      "대역내(in-band) 관리",
+      "스토리지",
+      "컴퓨트",
+      "대역외(out-of-band) 관리"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "SSH는 호스트 OS의 네트워크 스택을 통해 동작하므로 대역내 관리 네트워크를 사용합니다. 이 경로가 끊기면 SSH 접속이 불가능해지지만, BMC는 대역외 네트워크에 있으므로 여전히 접근할 수 있습니다. 두 경로의 차이를 구분하는 것이 이 문제의 핵심입니다.",
+    "explanation_en": "SSH rides the host OS network stack, i.e. the in-band management network. If that path breaks, SSH fails while the BMC — which sits on the out-of-band network — remains reachable. The question tests exactly that distinction."
+  },
+  {
+    "id": "v050",
+    "domain": "d1",
+    "type": "single",
+    "question": "While bringing up the fabric, an administrator finds one nonoperational InfiniBand server. Its ibstat output shows: State: Active, Physical state: LinkUp, Link layer: Ethernet. What is the cause?",
+    "question_ko": "패브릭을 올리던 중 관리자가 동작하지 않는 InfiniBand 서버 하나를 발견했습니다. ibstat 출력은 State: Active, Physical state: LinkUp, Link layer: Ethernet 입니다. 원인은?",
+    "choices": [
+      "The HCA port is not part of the InfiniBand fabric.",
+      "The HCA port is not assigned a LID number.",
+      "The HCA port is faulty.",
+      "OpenSM is not running on the fabric."
+    ],
+    "choices_ko": [
+      "해당 HCA 포트가 InfiniBand 패브릭에 속해 있지 않다.",
+      "HCA 포트에 LID 번호가 할당되지 않았다.",
+      "HCA 포트가 고장 났다.",
+      "패브릭에서 OpenSM이 실행되고 있지 않다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "포트가 Active이고 물리 링크도 정상인데 Link layer가 Ethernet이면, 그 ConnectX 포트는 VPI 설정상 이더넷 모드로 동작 중이라는 뜻입니다. 이더넷 모드 포트는 InfiniBand 서브넷의 구성원이 아니므로 SM이 관리하지도, LID를 받지도 않습니다. 해결은 `mlxconfig ... LINK_TYPE_P1=1`로 포트를 IB 모드로 바꾸는 것입니다.",
+    "explanation_en": "Active with LinkUp but Link layer: Ethernet means the ConnectX port is configured (VPI) for Ethernet mode. An Ethernet-mode port is not a member of the InfiniBand subnet, so the SM neither manages it nor assigns it a LID. The fix is to set the port to IB mode, e.g. `mlxconfig ... LINK_TYPE_P1=1`."
+  }
+]

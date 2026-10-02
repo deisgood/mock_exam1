@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v031",
+    "domain": "d1",
+    "type": "single",
+    "question": "A 24-hour HPL burn-in fails with \"illegal value\" errors during the first iteration. Which initial troubleshooting step resolves this without compromising burn-in validity?",
+    "question_ko": "24시간 HPL 번인이 첫 번째 반복에서 \"illegal value\" 오류로 실패합니다. 번인의 유효성을 해치지 않으면서 이를 해결하는 최초 조치는?",
+    "choices": [
+      "Reduce test duration to 12 hours.",
+      "Switch from FP64 to FP32 precision.",
+      "Verify the matrix size is divisible by the block size.",
+      "Disable GPU affinity."
+    ],
+    "choices_ko": [
+      "테스트 시간을 12시간으로 줄인다.",
+      "FP64에서 FP32로 정밀도를 바꾼다.",
+      "행렬 크기가 블록 크기로 나누어떨어지는지 확인한다.",
+      "GPU 어피니티를 비활성화한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "첫 반복에서 바로 나오는 \"illegal value\"는 연산 중 발생한 하드웨어 오류가 아니라 HPL.dat 파라미터 정합성 문제입니다. N과 NB, 프로세스 그리드(P×Q)의 조합이 맞지 않으면 분해 단계에서 즉시 실패합니다. N을 NB의 배수로 맞추면 번인 시간·정밀도를 그대로 둔 채 문제를 해결할 수 있습니다.",
+    "explanation_en": "An \"illegal value\" on the very first iteration is a parameter-consistency problem in HPL.dat, not a runtime hardware fault. If N, NB, and the P×Q process grid do not line up, the factorization fails immediately. Making N a multiple of NB fixes it while preserving the intended burn-in duration and precision."
+  },
+  {
+    "id": "v032",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to validate 400G DAC cable signal integrity in a DGX cluster. Which Cable Validation Tool (CVT) metric best identifies marginal cables needing replacement?",
+    "question_ko": "엔지니어가 DGX 클러스터에서 400G DAC 케이블의 신호 무결성을 검증해야 합니다. 교체가 필요한 한계 상태(marginal) 케이블을 가장 잘 식별하는 CVT 지표는?",
+    "choices": [
+      "Effective BER above the documented threshold during a ≤6-hour monitoring window.",
+      "Transceiver model matching QSFP-DD specifications.",
+      "Temperature fluctuations > 5°C during validation.",
+      "Lane power variance < 3dB across all transceivers."
+    ],
+    "choices_ko": [
+      "6시간 이하 모니터링 구간에서 문서화된 임계값을 초과하는 Effective BER",
+      "QSFP-DD 사양에 부합하는 트랜시버 모델",
+      "검증 중 5°C를 초과하는 온도 변동",
+      "모든 트랜시버에 걸쳐 3dB 미만인 레인 전력 편차"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "CVT가 링크를 'Underperforming'으로 분류하는 기준은 비트 오류율입니다. 특히 Effective BER(FEC 정정 이후에도 남는 오류율)이 기준을 넘으면 FEC로 가려지지 않는 실제 신호 품질 저하를 뜻하므로 해당 케이블은 교체 대상입니다. 모델명·온도 변동·정상 범위의 전력 편차는 합격/불합격 판정 근거가 아닙니다.",
+    "explanation_en": "CVT flags a link as underperforming based on bit error rate. Effective BER — the error rate remaining after FEC correction — exceeding the threshold indicates real signal degradation that FEC can no longer hide, so the cable should be replaced. Model names, temperature swings, and in-range power variance are not pass/fail criteria."
+  },
+  {
+    "id": "v033",
+    "domain": "d1",
+    "type": "single",
+    "question": "What command is needed to measure BER (Bit Error Rate)?",
+    "question_ko": "BER(비트 오류율)을 측정하려면 어떤 명령이 필요한가?",
+    "choices": [
+      "mlxlink -d <device> -c -e",
+      "mlxconfig -d <device> q",
+      "mstflint -d <device> q full",
+      "ethtool -S <device>"
+    ],
+    "choices_ko": [
+      "mlxlink -d <device> -c -e",
+      "mlxconfig -d <device> q",
+      "mstflint -d <device> q full",
+      "ethtool -S <device>"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "BER을 보여 주는 도구는 MFT 패키지의 mlxlink입니다. 정확히는 `-c`(--show_counters)가 \"Physical Counters and BER Info\"를 출력해 Raw BER(FEC 이전)과 Effective BER(FEC 이후)을 함께 보여 줍니다. 참고: 덤프 원문의 보기에 붙은 `-e`는 --show_eye(아이 오프닝)로 BER 플래그가 아니며, 실제 조회는 `mlxlink -d <device> -p <port> -c`로 수행합니다. 보기 중 mlxlink는 이것뿐이므로 정답은 그대로 A입니다.",
+    "explanation_en": "BER is reported by mlxlink from the MFT package. The flag that matters is `-c` (--show_counters), which prints \"Physical Counters and BER Info\" including raw BER (pre-FEC) and effective BER (post-FEC). Note: the `-e` in the dump's option is --show_eye (eye opening), not a BER flag; the real invocation is `mlxlink -d <device> -p <port> -c`. mlxlink is still the only correct tool among the options."
+  },
+  {
+    "id": "v034",
+    "domain": "d1",
+    "type": "single",
+    "question": "During cluster validation, the Cable Validation Tool (CVT) reports \"Underperforming (BER)\" for an InfiniBand link. Which BER condition indicates a critical signal quality issue requiring cable replacement?",
+    "question_ko": "클러스터 검증 중 CVT가 어떤 InfiniBand 링크에 대해 \"Underperforming (BER)\"을 보고합니다. 케이블 교체가 필요한 치명적 신호 품질 문제를 나타내는 BER 조건은?",
+    "choices": [
+      "Raw BER worse than the physical-layer threshold (e.g. > 1e-6), or effective BER above the documented long-window threshold",
+      "Effective BER > 0 during the first 125 minutes of link operation",
+      "Temperature > 85 °C on the transceiver module",
+      "Rx power variance > 3dB between lanes"
+    ],
+    "choices_ko": [
+      "Raw BER이 물리 계층 임계값(예: 1e-6)보다 나쁘거나, Effective BER이 문서화된 장시간 측정 임계값을 초과",
+      "링크 동작 첫 125분 동안 Effective BER > 0",
+      "트랜시버 모듈 온도 85°C 초과",
+      "레인 간 Rx 전력 편차 3dB 초과"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "CVT의 판정은 두 축입니다. Raw BER은 FEC 이전의 물리 계층 품질로, 임계값을 넘으면 신호 자체가 나쁘다는 뜻입니다. Effective BER은 FEC가 정정하고도 남은 오류로, 여기서 임계값을 넘으면 상위 계층에 실제 데이터 오류와 재전송이 발생합니다. 둘 중 하나라도 초과하면 케이블·커넥터 점검 및 교체 대상입니다.",
+    "explanation_en": "CVT judges on two axes. Raw BER reflects pre-FEC physical quality — above threshold means the signal itself is poor. Effective BER is what remains after FEC, so exceeding it means real errors and retransmissions reach the upper layers. Either condition warrants cable inspection and likely replacement."
+  },
+  {
+    "id": "v035",
+    "domain": "d3",
+    "type": "single",
+    "question": "After a recent OS upgrade, you need to reinstall NVIDIA GPU and DOCA drivers to support both AI training and accelerated networking. What best practice ensures successful installation and full hardware capability?",
+    "question_ko": "최근 OS 업그레이드 후 AI 학습과 가속 네트워킹을 모두 지원하도록 NVIDIA GPU 드라이버와 DOCA 드라이버를 재설치해야 합니다. 설치 성공과 하드웨어 기능 전부를 보장하는 모범 사례는?",
+    "choices": [
+      "Use the default drivers provided by the Linux distribution, unless an installation fails during system boot.",
+      "Download and install only the specific versions of GPU and DOCA drivers listed as compatible with the current OS and hardware.",
+      "Install the latest available drivers directly from the NVIDIA website.",
+      "Apply legacy drivers for hardware released within the last two years to maintain maximum compatibility."
+    ],
+    "choices_ko": [
+      "부팅 중 설치가 실패하지 않는 한 리눅스 배포판 기본 드라이버를 사용한다.",
+      "현재 OS와 하드웨어에 호환된다고 명시된 특정 버전의 GPU·DOCA 드라이버만 내려받아 설치한다.",
+      "NVIDIA 웹사이트에서 최신 드라이버를 바로 설치한다.",
+      "최대 호환성을 위해 최근 2년 내 출시 하드웨어에 레거시 드라이버를 적용한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "GPU 드라이버, DOCA/OFED, 펌웨어, CUDA는 서로 지원 매트릭스로 묶여 있습니다. 임의로 최신이나 배포판 기본 버전을 쓰면 커널 모듈 빌드 실패, GPUDirect RDMA 비활성화, 기능 누락이 발생할 수 있습니다. 해당 OS 버전과 하드웨어에 대해 검증된 조합을 확인해 그 버전만 설치하는 것이 원칙입니다.",
+    "explanation_en": "GPU driver, DOCA/OFED, firmware, and CUDA are bound together by a support matrix. Picking the newest or the distro default can break kernel module builds, silently disable GPUDirect RDMA, or omit features. The rule is to install exactly the versions validated for this OS release and hardware."
+  },
+  {
+    "id": "v036",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator needs to verify HA functionality after configuring BCM. Which command confirms the active head node and failover readiness?",
+    "question_ko": "관리자가 BCM 구성 후 HA 기능을 검증해야 합니다. 활성 헤드 노드와 페일오버 준비 상태를 확인하는 명령은?",
+    "choices": [
+      "systemctl restart cmdaemon to force a failover test.",
+      "nvsm show health to validate GPU status on both head nodes.",
+      "ping <secondary-head-node-ip> to test basic connectivity.",
+      "cmha status to check HA status and active/standby roles."
+    ],
+    "choices_ko": [
+      "페일오버 테스트를 강제하기 위해 systemctl restart cmdaemon 실행",
+      "양쪽 헤드 노드의 GPU 상태를 확인하기 위해 nvsm show health 실행",
+      "기본 연결성 확인을 위해 ping <보조 헤드 노드 IP> 실행",
+      "HA 상태와 active/standby 역할을 확인하기 위해 cmha status 실행"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "BCM HA 상태 점검 명령은 `cmha status`입니다. 어느 헤드 노드가 active이고 어느 쪽이 passive인지, 공유 서비스(MySQL, cmdaemon, 파일 시스템 동기화 등)가 정상인지 요약해 주므로 페일오버 준비 상태를 한 번에 확인할 수 있습니다. 참고: 덤프 원문은 이 보기를 \"cmsh status\"로 적었으나 실제 BCM HA 점검 명령은 cmha입니다.",
+    "explanation_en": "`cmha status` is the BCM command for HA state: it reports which head node is active and which is passive, plus the health of shared services (MySQL, cmdaemon, filesystem sync), giving failover readiness at a glance. Note: the original dump printed this option as \"cmsh status\"; the actual HA command is cmha."
+  },
+  {
+    "id": "v037",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator is working on a DGX A100 and needs to start a CUDA job. The job fails and a cudaErrorSystemNotReady error is returned. What is the cause of this error?",
+    "question_ko": "시스템 관리자가 DGX A100에서 CUDA 작업을 시작하려 합니다. 작업이 실패하며 cudaErrorSystemNotReady 오류가 반환됩니다. 이 오류의 원인은?",
+    "choices": [
+      "A GPU fails to register with the fabric.",
+      "Fabric Manager is not completely done initializing.",
+      "There are too many running CUDA jobs.",
+      "CUDA is not properly installed."
+    ],
+    "choices_ko": [
+      "GPU가 패브릭 등록에 실패했다.",
+      "Fabric Manager의 초기화가 완전히 끝나지 않았다.",
+      "실행 중인 CUDA 작업이 너무 많다.",
+      "CUDA가 제대로 설치되지 않았다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVSwitch가 있는 DGX A100에서는 Fabric Manager가 NVLink/NVSwitch 패브릭을 구성한 뒤에야 GPU가 CUDA 작업을 받을 수 있습니다. 부팅 직후처럼 FM 초기화가 끝나기 전에 작업을 던지면 시스템이 아직 준비되지 않았다는 의미로 cudaErrorSystemNotReady를 반환합니다. `systemctl status nvidia-fabricmanager`로 상태를 확인하면 됩니다.",
+    "explanation_en": "On NVSwitch-based DGX A100 systems, GPUs can only accept CUDA work after Fabric Manager has configured the NVLink/NVSwitch fabric. Launching a job before FM finishes initializing (for example right after boot) returns cudaErrorSystemNotReady. Check `systemctl status nvidia-fabricmanager`."
+  },
+  {
+    "id": "v038",
+    "domain": "d1",
+    "type": "single",
+    "question": "An enterprise IT team has completed the physical installation of an AI factory with a Spectrum-X Ethernet network connected to all GPU servers. What is the recommended sequence of validation steps to ensure readiness for scalable AI workload deployment?",
+    "question_ko": "기업 IT 팀이 모든 GPU 서버에 Spectrum-X 이더넷 네트워크를 연결한 AI 팩토리의 물리 설치를 완료했습니다. 확장 가능한 AI 워크로드 배포 준비를 확인하기 위한 권장 검증 순서는?",
+    "choices": [
+      "Confirm switch and server firmware configuration, test link connectivity and port health, run network benchmarks, validate the software stack, then stage AI workload tests.",
+      "Perform application benchmarking, use performance logs to identify bottlenecks, update switch and server firmware, then tune the network with suitable performance tests.",
+      "Set up Active Directory, LDAP, role-based access controls and security configurations first, create users, then validate network or hardware performance.",
+      "Validate the software stack, test link connectivity and port health, run network benchmarks, run OSPF and ensure neighbors exchange route info, then stage AI workload tests."
+    ],
+    "choices_ko": [
+      "스위치·서버 펌웨어 구성 확인 → 링크 연결성과 포트 상태 점검 → 네트워크 벤치마크 → 소프트웨어 스택 검증 → AI 워크로드 단계 테스트",
+      "애플리케이션 벤치마크 수행 → 성능 로그로 병목 식별 → 스위치·서버 펌웨어 업데이트 → 적절한 성능 테스트로 네트워크 튜닝",
+      "Active Directory·LDAP·RBAC와 보안 설정을 먼저 구성 → 사용자 생성 → 네트워크·하드웨어 성능 검증",
+      "소프트웨어 스택 검증 → 링크 연결성과 포트 상태 점검 → 네트워크 벤치마크 → OSPF 실행 및 인접 라우터 경로 교환 확인 → AI 워크로드 단계 테스트"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "브링업 검증은 항상 아래에서 위로 올라갑니다. 먼저 펌웨어·설정 기준선을 맞추고, 물리 링크와 포트 상태를 확인한 뒤, 네트워크 성능(RoCE·대역폭·손실)을 측정하고, 그 위에서 소프트웨어 스택을 검증한 다음, 마지막으로 실제 AI 워크로드를 단계적으로 올립니다. 순서를 뒤집으면 상위 계층 측정값이 하위 계층 결함에 오염됩니다.",
+    "explanation_en": "Bring-up validation proceeds bottom-up: establish the firmware/configuration baseline, verify physical links and port health, measure network performance (RoCE, bandwidth, loss), validate the software stack on top, and only then stage real AI workloads. Reversing the order contaminates upper-layer measurements with lower-layer defects."
+  },
+  {
+    "id": "v039",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are validating the environment of an NVIDIA GPU-accelerated data center during post-deployment checks. Which action is essential to confirm that power and cooling are sufficient for stable operation of NVIDIA DGX H100 systems?",
+    "question_ko": "배포 후 점검에서 NVIDIA GPU 가속 데이터센터 환경을 검증하고 있습니다. DGX H100 시스템의 안정적 운영에 전원과 냉각이 충분한지 확인하는 데 필수적인 조치는?",
+    "choices": [
+      "Use NVSM to disable unused PCIe devices to reduce overall system heat output.",
+      "Review the system BIOS to ensure GPU overclocking is enabled for maximum performance.",
+      "Verify that each DGX system is connected to redundant, properly rated PDUs and that all power supplies report nominal input.",
+      "Confirm the system fans are running at 100% under all workloads to prevent overheating."
+    ],
+    "choices_ko": [
+      "전체 발열을 줄이기 위해 NVSM으로 사용하지 않는 PCIe 장치를 비활성화한다.",
+      "최대 성능을 위해 BIOS에서 GPU 오버클럭이 활성화되어 있는지 확인한다.",
+      "각 DGX가 정격에 맞는 이중화 PDU에 연결되어 있고 모든 전원 공급 장치가 정상 입력을 보고하는지 확인한다.",
+      "과열 방지를 위해 모든 워크로드에서 시스템 팬이 100%로 동작하는지 확인한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "DGX H100은 랙당 10kW 이상을 소비하므로 검증의 핵심은 '전력 공급 경로가 정격과 이중화를 만족하는가'입니다. 각 PSU가 서로 다른 PDU/회로에서 정상 입력을 받고 있어야 한쪽 경로 장애에도 시스템이 계속 동작합니다. 팬 100% 고정이나 오버클럭은 안정성 검증이 아니라 오히려 위험 요소입니다.",
+    "explanation_en": "A DGX H100 draws well over 10 kW per rack, so validation centers on whether the power delivery path is properly rated and redundant. Each PSU should draw nominal input from separate PDUs/circuits so the system survives losing one feed. Pinning fans at 100% or enabling overclocking is not a stability check."
+  },
+  {
+    "id": "v040",
+    "domain": "d1",
+    "type": "single",
+    "question": "For an NVIDIA Enterprise AI Factory with 256 GPUs, which storage solution characteristic is most critical to validate during scaling tests?",
+    "question_ko": "GPU 256개 규모의 NVIDIA Enterprise AI Factory에서 확장 테스트 시 검증이 가장 중요한 스토리지 특성은?",
+    "choices": [
+      "RAID rebuild times under disk failure.",
+      "Consistent per-node throughput ≥8 GiB/s.",
+      "Single-node write performance during idle clusters.",
+      "Maximum 4K random read IOPS exceeding 1 million."
+    ],
+    "choices_ko": [
+      "디스크 장애 시 RAID 재구성 시간",
+      "노드당 8 GiB/s 이상의 일관된 처리량",
+      "클러스터 유휴 시의 단일 노드 쓰기 성능",
+      "4K 랜덤 읽기 IOPS 100만 초과"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "확장 테스트의 질문은 '모든 노드가 동시에 학습 데이터를 끌어올 때도 필요한 대역폭이 유지되는가'입니다. 따라서 한 노드의 최고 기록이 아니라 전 노드가 동시 부하 상태에서 유지하는 노드당 지속 처리량이 핵심 지표입니다. 유휴 상태 단일 노드 성능은 최악의 경우를 전혀 보여주지 못합니다.",
+    "explanation_en": "Scaling tests answer one question: can every node sustain the required bandwidth while all of them pull training data at once? The metric that matters is consistent per-node throughput under full concurrency, not a single node's best case while the cluster is idle."
+  }
+]

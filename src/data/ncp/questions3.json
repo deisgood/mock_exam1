@@ -1,0 +1,242 @@
+[
+  {
+    "id": "n021",
+    "domain": "d1",
+    "type": "single",
+    "question": "During cluster deployment, the UFM Cable Validation Tool reports \"Wrong-neighbor\" errors on multiple InfiniBand links. What is the most efficient way to resolve this issue?",
+    "question_ko": "클러스터 배포 중에 UFM Cable Validation Tool이 여러 InfiniBand 링크에서 \"Wrong-neighbor\" 오류를 보고합니다. 이 문제를 해결하는 가장 효율적인 방법은 무엇인가?",
+    "choices": [
+      "Reboot all leaf switches to force LLDP rediscovery.",
+      "Replace all affected cables with higher-grade OM5 fiber optics.",
+      "Verify LLDP data against topology files and remediate.",
+      "Disable FEC on all switches to bypass neighbor validation."
+    ],
+    "choices_ko": [
+      "LLDP 재탐색을 강제하기 위해 모든 leaf switch를 재부팅한다.",
+      "영향을 받은 모든 케이블을 더 높은 등급의 OM5 광섬유로 교체한다.",
+      "LLDP 데이터를 topology 파일과 대조하여 검증하고 조치한다.",
+      "이웃(neighbor) 검증을 우회하기 위해 모든 스위치에서 FEC를 비활성화한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "대규모 InfiniBand 패브릭에서는 Adaptive Routing과 Fat-Tree 알고리즘이 올바르게 동작하려면 정확한 케이블링 토폴로지 유지가 필수입니다. \"Wrong-neighbor\" 오류는 UFM이 케이블이 마스터 토폴로지 맵(.csv 또는 .topology 파일)에 명시된 포트가 아닌 다른 포트에 연결되어 있음을 감지할 때 발생합니다. UFM은 LLDP 또는 Subnet Management 패킷으로 링크 양쪽 끝의 GUID를 식별합니다. 가장 효율적인 조치는 UFM이 제공하는 실시간 LLDP 데이터를 의도된 설계와 상호 대조하는 것입니다. 이를 통해 오류가 물리적 오배선(포트 뒤바뀜)인지 토폴로지 파일의 논리적 오류인지 식별할 수 있습니다. 스위치 재부팅은 물리적 패치 오류를 고치지 못하며, FEC 비활성화는 근본 라우팅 문제를 해결하지 못한 채 400G(NDR) 링크에서 치명적 신호 손실을 초래합니다. 오배선은 링크가 정상 Up이라 눈에 띄지 않고 NCCL 성능 저하로만 나타나므로 반드시 대조 검증해야 합니다.",
+    "explanation_en": "In large-scale InfiniBand fabrics, maintaining an exact cabling topology is mandatory for Adaptive Routing and Fat-Tree algorithms to function correctly. A \"Wrong-neighbor\" error occurs when UFM detects that a cable is connected to a port other than the one specified in the master topology map (often a .csv or .topology file). UFM uses LLDP or Subnet Management packets to identify the GUIDs on both ends of a link. The most efficient remediation is to cross-reference the live LLDP data provided by UFM with the intended design, which reveals whether the error is a physical mis-cabling (swapped ports) or a logical error in the topology file. Rebooting switches will not fix a physical patch error, and disabling FEC would lead to catastrophic signal loss on 400G (NDR) links without addressing the routing logic issue."
+  },
+  {
+    "id": "n022",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator installs NVIDIA GPU drivers on a DGX H100 system with UEFI Secure Boot enabled. After reboot, the drivers fail to load. What is the first action to resolve this issue?",
+    "question_ko": "관리자가 UEFI Secure Boot가 활성화된 DGX H100 시스템에 NVIDIA GPU 드라이버를 설치했습니다. 재부팅 후 드라이버 로드에 실패합니다. 이 문제를 해결하기 위한 첫 번째 조치는 무엇인가?",
+    "choices": [
+      "Disable Secure Boot permanently in BIOS/UEFI settings.",
+      "Delete /etc/X11/xorg.conf to force driver reconfiguration.",
+      "Enroll the Machine Owner Key (MOK) during system reboot and enter the recorded password.",
+      "Reinstall drivers using apt-get install nvidia-driver-550 without rebooting."
+    ],
+    "choices_ko": [
+      "BIOS/UEFI 설정에서 Secure Boot를 영구적으로 비활성화한다.",
+      "드라이버 재구성을 강제하기 위해 /etc/X11/xorg.conf를 삭제한다.",
+      "시스템 재부팅 중에 MOK(Machine Owner Key)를 등록(enroll)하고 기록해 둔 비밀번호를 입력한다.",
+      "재부팅 없이 apt-get install nvidia-driver-550을 사용하여 드라이버를 재설치한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "UEFI Secure Boot는 부팅 과정에서 디지털 서명된 코드만 실행되도록 보장하는 보안 표준입니다. NVIDIA GPU 드라이버에는 커널 모듈(nvidia.ko)이 포함되어 있으므로 시스템 펌웨어가 신뢰하는 키로 서명되어야 합니다. Secure Boot가 활성화된 DGX 시스템에 드라이버를 설치하면 설치 과정에서 고유한 MOK(Machine Owner Key)가 생성됩니다. 그러나 Linux 커널은 OS가 로드되기 전 Shim 수준에서 사용자가 수동으로 이 키를 인증하기 전까지는 해당 키를 신뢰하지 않습니다. 설치 후 첫 재부팅 시 시스템은 MOK Management 화면으로 진입하며, 관리자는 Enroll MOK을 선택하고 드라이버 설치 중 생성한 임시 비밀번호를 입력해야 합니다. 이를 수행하지 않으면 커널이 nvidia 모듈을 거부해 nvidia-smi에서 GPU 핸들을 확인할 수 없다는 오류가 발생합니다. Secure Boot를 비활성화하면 증상은 해결되지만 AI 인프라의 보안 태세를 훼손합니다.",
+    "explanation_en": "UEFI Secure Boot ensures only digitally signed code executes during boot. Since NVIDIA GPU drivers include kernel modules (nvidia.ko), they must be signed by a key trusted by the system's firmware. When drivers are installed on a DGX with Secure Boot active, the installation generates a unique Machine Owner Key (MOK). However, the kernel will not trust this key until the user manually authenticates it at the Shim level before the OS loads. Upon the first reboot, the system enters the MOK Management screen. The administrator must select \"Enroll MOK\" and enter the temporary password created during driver installation. Failing to do this results in the kernel rejecting the nvidia module, leading to an \"Unable to determine the device handle for GPU\" error in nvidia-smi. Disabling Secure Boot would resolve the symptom but violates the security posture of the AI infrastructure."
+  },
+  {
+    "id": "n023",
+    "domain": "d1",
+    "type": "single",
+    "question": "For a 48-hour NCCL burn-in test, which parameters ensure sustained fabric stress while detecting silent data corruption?",
+    "question_ko": "48시간 NCCL burn-in 테스트에서, 지속적인 패브릭 스트레스를 보장하면서 동시에 silent data corruption을 탐지하는 파라미터는 무엇인가?",
+    "choices": [
+      "broadcast_perf -b 4G -e 16G -w 160",
+      "all_reduce_perf -b 8G -e 32G -c 1000 -z 1 -G 1000",
+      "all_reduce_perf -b 8G -e 32G -z 1 -G 1000",
+      "reduce_scatter_perf -f 2 -g 8"
+    ],
+    "choices_ko": [
+      "broadcast_perf -b 4G -e 16G -w 160",
+      "all_reduce_perf -b 8G -e 32G -c 1000 -z 1 -G 1000",
+      "all_reduce_perf -b 8G -e 32G -z 1 -G 1000",
+      "reduce_scatter_perf -f 2 -g 8"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "nccl-tests는 GPU 클러스터 인터커넥트를 검증하는 표준 방법이며, all_reduce_perf는 모든 GPU가 전체 패브릭에 걸쳐 송신과 수신을 동시에 수행하므로 가장 부하가 큰 집합 통신입니다. 48시간 burn-in의 목표는 최대 대역폭 측정이 아니라 간헐적 하드웨어 결함과 silent data corruption(SDC)을 잡아내는 것입니다. 실제로 SDC를 탐지하는 플래그는 -c이며, 이는 --check에 대응해 결과 검증을 제어합니다. 즉 집합 통신의 계산 결과를 기대값과 비교하게 하므로 불량 트랜시버나 케이블로 인한 비트 반전이 불일치로 보고됩니다. 정답 보기는 -c를 명시적으로 지정한 유일한 보기입니다. 나머지 두 플래그는 흔히 오해되는 것과 의미가 다릅니다. -z는 --blocking <0/1>로 NCCL 블로킹 호출 모드를 선택하고, -G는 --cudagraph <num graph launches>로 CUDA Graph를 통한 실행 횟수를 지정합니다. 두 플래그 모두 검증을 활성화하지 않으며 실행 지속 시간을 제어하지도 않습니다. 지속 시간은 -n/--iters와 -w/--warmup_iters, 외부 반복 루프로 확보합니다. -b 8G -e 32G는 400G 링크를 포화시키는 대용량 메시지 스윕입니다. 엄밀히 -c의 기본값은 1이라 -c 없는 보기도 검증 자체는 수행되어 다소 모호하지만, 명시적 파라미터 기준으로는 -c를 지정한 보기가 의도된 정답입니다.",
+    "explanation_en": "The nccl-tests suite is the standard way to validate GPU cluster interconnects, and all_reduce_perf is the most demanding collective because every GPU both sends and receives across the full fabric. For a 48-hour burn-in the goal is not peak bandwidth but catching intermittent hardware faults and silent data corruption (SDC). The flag that actually detects SDC is -c, which maps to --check and controls result verification — it makes the test compare the collective's computed output against the expected value, so a bit flip caused by a marginal transceiver or cable is reported as a mismatch. The correct option is the only choice that specifies -c explicitly. Note the other two flags do not mean what is commonly assumed: -z is --blocking <0/1>, which selects NCCL blocking call mode, and -G is --cudagraph <num graph launches>. Neither enables checking, and neither is a duration control. Sustained runtime comes from -n/--iters and -w/--warmup_iters plus an external repeat loop. Strictly speaking -c defaults to 1, which makes the item slightly ambiguous, but by explicit parameters the -c option is intended."
+  },
+  {
+    "id": "n024",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator receives an alert about a potential hardware fault on an NVIDIA DGX A100. The GPU performance seems degraded, and the system fans are operating loudly. What step should be recommended to identify and troubleshoot the hardware fault?",
+    "question_ko": "시스템 관리자가 NVIDIA DGX A100의 잠재적 하드웨어 결함에 대한 경고를 받았습니다. GPU 성능이 저하된 것으로 보이며, 시스템 팬이 시끄럽게 작동하고 있습니다. 하드웨어 결함을 식별하고 문제를 해결하기 위해 권장해야 할 단계는 무엇인가?",
+    "choices": [
+      "Run a deep learning workload to stress test the GPUs and check whether the issue persists.",
+      "Check the NVIDIA System Management Interface (nvidia-smi) for GPU status and temperatures.",
+      "Power drain then restart the DGX and check if the performance degradation resolves.",
+      "Increase the fan speed to maximum and check whether the performance improves."
+    ],
+    "choices_ko": [
+      "GPU를 스트레스 테스트하기 위해 딥러닝 워크로드를 실행하고 문제가 지속되는지 확인한다.",
+      "GPU 상태와 온도를 확인하기 위해 NVIDIA System Management Interface(nvidia-smi)를 점검한다.",
+      "DGX의 전원을 완전히 방전(power drain)시킨 후 재시작하여 성능 저하가 해결되는지 확인한다.",
+      "팬 속도를 최대로 높이고 성능이 개선되는지 확인한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DGX 시스템이 높은 팬 속도와 성능 저하를 보일 때 이는 일반적으로 Thermal Throttling이 발생하고 있는 것입니다. A100이나 H100 같은 고성능 GPU는 안전 온도 임계값을 초과하면 자동으로 클럭 속도를 낮춥니다. 가장 먼저이자 가장 중요한 진단 단계는 nvidia-smi 실행입니다. 이 유틸리티는 GPU 온도, 전력 소비, Clocks Throttle Reasons에 대한 즉각적인 실시간 텔레메트리를 제공합니다. 출력을 검토하면 클럭 저하의 원인으로 Thermal이 표시되어 있는지 확인할 수 있고, 이를 통해 문제가 환경적인 것인지(공기 흐름 차단, hot aisle 온도) 하드웨어 특정적인 것인지(thermal interface 고장, 내부 팬 정지) 식별할 수 있습니다. 워크로드를 더 실행하는 것은 열을 악화시킬 뿐이며, 전원 방전은 진단 데이터를 제공하지 않는 최후의 수단입니다. nvidia-smi는 GPU 트레이에 대한 RMA가 필요한지 판단하는 데 필요한 증거 데이터를 제공합니다.",
+    "explanation_en": "When a DGX exhibits high fan speeds and performance degradation, it is typically engaging in Thermal Throttling. High-performance GPUs automatically reduce clock speeds if they exceed safe temperature thresholds. The first and most critical diagnostic step is to run nvidia-smi, which provides immediate real-time telemetry on GPU temperatures, power draw, and \"Clocks Throttle Reasons.\" Reviewing the output shows whether \"Thermal\" is listed as the reason for reduced clocks, identifying whether the issue is environmental (blocked airflow, hot aisle temperature) or hardware-specific (failed thermal interface, dead internal fan). Running more workloads would exacerbate the heat, while a power drain is a last resort that provides no diagnostic data."
+  },
+  {
+    "id": "n025",
+    "domain": "d3",
+    "type": "single",
+    "question": "During BCM cluster setup, an engineer must configure bonded network interfaces on DGX nodes for high availability. Which cmsh command sequence properly configures a bond0 interface with two physical NICs?",
+    "question_ko": "BCM 클러스터 설정 중, 엔지니어는 고가용성을 위해 DGX 노드에서 본딩된 네트워크 인터페이스를 구성해야 합니다. 두 개의 물리적 NIC로 bond0 인터페이스를 올바르게 구성하는 cmsh 명령 시퀀스는 무엇인가?",
+    "choices": [
+      "device use dgx001 ; interfaces add vlan vlan100 ; set parent bond0 ; set mode 1 ; set network internalnet",
+      "device use dgx001 ; interfaces add bond bond0 ; append interfaces enp225s0f1np1 enp97s0f1np1 ; set mode 1 ; set network internalnet",
+      "device use dgx001 ; interfaces set enp225s0f1np1 network internalnet ; interfaces set enp97s0f1np1 network internalnet",
+      "device use dgx001 ; interfaces delete enp225s0f1np1 ; interfaces delete enp97s0f1np1"
+    ],
+    "choices_ko": [
+      "device use dgx001 ; interfaces add vlan vlan100 ; set parent bond0 ; set mode 1 ; set network internalnet",
+      "device use dgx001 ; interfaces add bond bond0 ; append interfaces enp225s0f1np1 enp97s0f1np1 ; set mode 1 ; set network internalnet",
+      "device use dgx001 ; interfaces set enp225s0f1np1 network internalnet ; interfaces set enp97s0f1np1 network internalnet",
+      "device use dgx001 ; interfaces delete enp225s0f1np1 ; interfaces delete enp97s0f1np1"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BCM에서 관리 및 스토리지 트래픽은 흔히 NIC 본딩(Link Aggregation)을 통한 이중화를 필요로 합니다. cmsh는 노드 구성을 수정하기 위해 계층적 명령 구조를 사용합니다. 본드를 생성하려면 먼저 해당 노드의 인터페이스 구성으로 이동해야 하고(device use <node>), bond 유형의 새 인터페이스를 추가합니다(interfaces add bond bond0). 본드 객체가 생성된 후 append interfaces 명령으로 물리적 슬레이브 인터페이스를 연결하고, 마지막으로 본딩 모드(Active-Backup용 Mode 1 또는 LACP용 Mode 4)와 논리 네트워크 할당을 정의합니다. 물리 포트에 직접 네트워크를 할당하는 보기는 통합된 본드 IP 사용을 불가능하게 하고, VLAN을 먼저 추가하는 보기는 기반이 되는 본드가 확립되기 전에 시도하므로 잘못되었으며, 인터페이스를 삭제하는 보기는 본딩과 무관합니다. 이 구성은 단일 관리 케이블이나 스위치 포트가 장애를 일으켜도 컨트롤 플레인에 계속 접근할 수 있도록 보장합니다.",
+    "explanation_en": "In BCM, management and storage traffic often requires redundancy via NIC bonding (Link Aggregation). cmsh uses a hierarchical command structure to modify node configurations. To create a bond, the administrator must first navigate to the node's interface configuration (device use <node>), then add a new interface of type bond (interfaces add bond bond0). After the bond object is created, the physical slave interfaces must be associated with it using append interfaces. Finally, the bonding mode (Mode 1 for Active-Backup or Mode 4 for LACP) and the logical network assignment must be defined. Assigning networks directly to physical ports would prevent the use of a unified bond IP; adding a VLAN before the underlying bond exists is out of order; deleting interfaces is unrelated to bonding."
+  },
+  {
+    "id": "n026",
+    "domain": "d2",
+    "type": "single",
+    "question": "A systems engineer is updating firmware across a large DGX cluster using automation. What is the best practice for minimizing risk and ensuring cluster health during and after the process?",
+    "question_ko": "시스템 엔지니어가 자동화를 사용하여 대규모 DGX 클러스터 전반에 걸쳐 펌웨어를 업데이트하고 있습니다. 이 프로세스 중과 이후에 위험을 최소화하고 클러스터 상태를 보장하기 위한 모범 사례는 무엇인가?",
+    "choices": [
+      "Drain nodes from the scheduler, run pre-update diagnostics, update firmware in batches, and verify health post-update before scaling to the next batch.",
+      "To save time, simultaneously update all nodes in the cluster without draining or diagnostics.",
+      "Update nodes that have reported faults, leaving others on older firmware.",
+      "Drain nodes from the scheduler, update firmware in batches, skip diagnostics and verify health post-update before scaling to the next batch."
+    ],
+    "choices_ko": [
+      "스케줄러에서 노드를 drain 하고, 업데이트 전 진단을 실행하고, 배치 단위로 펌웨어를 업데이트한 후, 다음 배치로 확장하기 전에 업데이트 후 상태를 검증한다.",
+      "시간을 절약하기 위해 drain이나 진단 없이 클러스터의 모든 노드를 동시에 업데이트한다.",
+      "결함이 보고된 노드만 업데이트하고 나머지는 이전 펌웨어로 남겨둔다.",
+      "스케줄러에서 노드를 drain 하고, 배치 단위로 펌웨어를 업데이트하되 진단은 건너뛰고, 다음 배치로 확장하기 전에 업데이트 후 상태를 검증한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX 클러스터의 펌웨어 업데이트는 GPU 베이스보드, BMC, 마더보드 트레이, InfiniBand HCA 등 여러 민감한 구성 요소가 관련된 중요한 작업입니다. 프로덕션에서 배치 처리(Batching)는 단일 손상 펌웨어 이미지나 업데이트 실패가 AI 팩토리 전체를 마비시키는 것을 방지하는 업계 표준입니다. 이 프로세스는 활성 학습 작업이 중단되지 않도록 워크로드 스케줄러(Slurm 또는 Kubernetes)에서 노드를 drain하는 것으로 시작해야 합니다. nvsm show health 또는 dcgmi diag 같은 도구로 업데이트 전 진단을 실행하는 것은 기준선을 설정하고 변경 전에 하드웨어가 안정적인지 확인하는 데 매우 중요합니다. 제어된 배치로 펌웨어가 적용되면 시스템이 Healthy 상태로 복귀하고 모든 버전이 목표 매니페스트와 일치하는지 확인하는 업데이트 후 검증이 필요합니다. 이 롤링 업데이트 전략을 통해 특정 노드가 서비스로 복귀하지 못할 경우 자동화를 일시 중지할 수 있습니다. 진단을 건너뛰거나 노드를 서로 다른 버전으로 남겨두는 것은 구성 드리프트를 발생시켜 집합 통신 라이브러리에서 예측할 수 없는 성능으로 이어집니다.",
+    "explanation_en": "Updating firmware on a DGX cluster is a critical operation involving multiple sensitive components: the GPU baseboard, BMC, motherboard tray, and InfiniBand HCAs. In production, batching is the industry standard to prevent a single corrupted firmware image or update failure from taking down the entire AI factory. The process must begin with draining nodes in the workload scheduler (Slurm or Kubernetes) so no active training jobs are interrupted. Running pre-update diagnostics — using tools like nvsm show health or dcgmi diag — establishes a baseline and ensures the hardware is stable before applying changes. After firmware is applied in a controlled batch, post-update verification confirms the system returns to a Healthy state and all versions match the target manifest. Skipping diagnostics or leaving nodes on mismatched versions creates configuration drift, which leads to unpredictable performance in collective communication libraries."
+  },
+  {
+    "id": "n027",
+    "domain": "d4",
+    "type": "single",
+    "question": "One of the nodes in a cluster is not running as fast as the others and the system administrator needs to check the status of the GPUs on that system. What command should be used?",
+    "question_ko": "클러스터의 노드 중 하나가 다른 노드만큼 빠르게 동작하지 않아 시스템 관리자가 해당 시스템의 GPU 상태를 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "lspci | grep NVIDIA",
+      "nvidia-smi",
+      "nvidia-gpu-status",
+      "iblinkinfo"
+    ],
+    "choices_ko": [
+      "lspci | grep NVIDIA",
+      "nvidia-smi",
+      "nvidia-gpu-status",
+      "iblinkinfo"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "nvidia-smi(NVIDIA System Management Interface)는 NVIDIA GPU의 상태를 모니터링하고 관리하기 위한 기본 도구입니다. 노드가 동급 노드에 비해 지터를 보이거나 성능이 낮을 때 nvidia-smi는 병목 지점을 식별하는 데 필요한 세밀한 데이터를 제공합니다. GPU 사용률, 메모리 사용량, 그리고 가장 중요하게는 Clocks Throttle Reasons 같은 핵심 지표를 보고합니다. GPU가 전력 제한, 온도 문제, 또는 수정 불가능한 ECC 오류 같은 하드웨어 오류로 느리게 동작하면 nvidia-smi가 이 상태를 즉시 표시합니다. lspci는 GPU가 PCIe 버스에 물리적으로 보이는지 확인할 수는 있지만 운영 성능이나 상태에 관한 텔레메트리는 제공하지 못합니다. iblinkinfo는 InfiniBand 링크 상태만 모니터링하는 네트워크 수준 도구이며, nvidia-gpu-status는 존재하지 않는 명령입니다. AI 인프라에서 nvidia-smi는 GPU가 정상인지, 의도된 클럭 속도로 동작하는지 판단하기 위한 1차 진단 도구입니다.",
+    "explanation_en": "nvidia-smi is the primary tool for monitoring and managing the state of NVIDIA GPUs. When a node exhibits jitter or lower performance compared to its peers, nvidia-smi provides the granular data needed to identify the bottleneck. It reports GPU utilization percentages, memory usage, and, most importantly, \"Clocks Throttle Reasons.\" If a GPU is running slower due to power capping, thermal issues, or a hardware error such as an uncorrectable ECC error, nvidia-smi displays this immediately. While lspci can confirm the GPU is physically visible on the PCIe bus, it provides no telemetry about operational performance or health. iblinkinfo is a network-level tool that only monitors InfiniBand link states, and nvidia-gpu-status is not a real command."
+  },
+  {
+    "id": "n028",
+    "domain": "d3",
+    "type": "single",
+    "question": "A company has a registered NGC account and their server has NGC CLI installed. What step should be taken first to gain access to NGC?",
+    "question_ko": "한 회사가 등록된 NGC 계정을 보유하고 있고 서버에는 NGC CLI가 설치되어 있습니다. NGC에 접근하기 위해 가장 먼저 수행해야 할 단계는 무엇인가?",
+    "choices": [
+      "ngc config get",
+      "ngc init",
+      "ngc config set",
+      "ngc config update"
+    ],
+    "choices_ko": [
+      "ngc config get",
+      "ngc init",
+      "ngc config set",
+      "ngc config update"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NGC(NVIDIA GPU Cloud)는 AI에 최적화된 컨테이너, 사전 학습 모델, 특화 SDK를 위한 중앙 저장소입니다. 명령줄로 NGC 레지스트리와 상호작용하려면 ngc CLI가 사용자 계정으로 인증되어야 합니다. ngc config set이 이러한 자격 증명을 구성하기 위한 검증된 첫 단계입니다. 이 명령을 실행하면 사용자는 NGC 웹 포털에서 생성한 API Key를 입력하라는 프롬프트를 받습니다. 이 과정은 인증 토큰, 선호 조직(organization), 팀 설정을 저장하는 로컬 config 파일(일반적으로 ~/.ngc/config)을 생성합니다. ngc config set을 실행하지 않으면 CLI는 프라이빗 컨테이너를 pull 하거나 모델을 업로드하는 요청을 인증할 수 없습니다. ngc init은 현재 NGC CLI 아키텍처의 표준 구성 명령이 아니며, ngc config get은 이미 설정이 완료된 기존 구성을 조회할 때만 유용합니다. 참고로 컨테이너 레지스트리 로그인은 별도이며 사용자명은 리터럴 문자열 $oauthtoken, 비밀번호는 API 키입니다.",
+    "explanation_en": "NGC is the central repository for AI-optimized containers, pre-trained models, and SDKs. To interact with the NGC registry via the command line, the ngc CLI must be authenticated to the user's account. ngc config set is the verified first step to configure these credentials. When executed, the user is prompted for their API Key, generated from the NGC web portal. This creates a local config file (typically ~/.ngc/config) storing the authentication token, the preferred organization, and team settings. Without running ngc config set, the CLI cannot authenticate requests to pull private containers or upload models. ngc init is not a standard configuration command for the current NGC CLI, and ngc config get is only useful for viewing an existing configuration. Note that container registry login is separate: the username is the literal string $oauthtoken and the password is the API key."
+  },
+  {
+    "id": "n029",
+    "domain": "d3",
+    "type": "single",
+    "question": "A user encounters \"permission denied\" errors when running GPU-accelerated containers on a Secure Boot-enabled system. What resolves this?",
+    "question_ko": "사용자가 Secure Boot가 활성화된 시스템에서 GPU 가속 컨테이너를 실행할 때 \"permission denied\" 오류를 겪고 있습니다. 무엇으로 이를 해결할 수 있는가?",
+    "choices": [
+      "Enroll the MOK and sign NVIDIA kernel modules.",
+      "Reinstall Docker without the NVIDIA runtime.",
+      "Disable SELinux to relax unnecessary security policies.",
+      "Run Docker with sudo for elevated privileges."
+    ],
+    "choices_ko": [
+      "MOK를 등록(enroll)하고 NVIDIA 커널 모듈에 서명한다.",
+      "NVIDIA 런타임 없이 Docker를 재설치한다.",
+      "불필요한 보안 정책을 완화하기 위해 SELinux를 비활성화한다.",
+      "상승된 권한을 위해 sudo로 Docker를 실행한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "UEFI Secure Boot가 활성화된 시스템에서 Linux 커널은 로드되는 모든 커널 모듈에 대해 서명 검증 정책을 엄격히 적용합니다. NVIDIA 드라이버는 하드웨어와 NVIDIA Container Runtime 사이의 인터페이스를 제공하는 여러 모듈(nvidia.ko, nvidia-uvm.ko 등)로 구성됩니다. 이러한 모듈이 시스템 펌웨어가 신뢰하는 키로 서명되지 않으면 커널이 모듈 로드를 차단하고, 그 결과 컨테이너가 /dev/nvidiactl이나 GPU 디바이스 노드에 접근하려 할 때 Permission Denied 오류가 발생합니다. 호스트 보안을 훼손하지 않고 해결하려면 Machine Owner Key(MOK)를 사용해야 합니다. 이 키로 모듈에 서명하고, 키 자체를 부팅 과정에서 MOK 관리 인터페이스를 통해 시스템의 Secure Boot 데이터베이스에 등록해야 합니다. 이렇게 신뢰 체인이 확립되어야 드라이버가 동작합니다. SELinux를 비활성화하거나 sudo를 사용하는 것은 해결이 되지 않는데, 차단이 사용자 공간 권한 수준이 아니라 커널-펌웨어 인터페이스 수준에서 발생하고 있기 때문입니다.",
+    "explanation_en": "On systems with UEFI Secure Boot enabled, the Linux kernel strictly enforces signature verification for all loaded kernel modules. The NVIDIA driver consists of several modules (nvidia.ko, nvidia-uvm.ko) that provide the interface between hardware and the NVIDIA Container Runtime. If these modules are not signed by a key trusted by the firmware, the kernel blocks them from loading, leading to \"Permission Denied\" errors when the container attempts to access /dev/nvidiactl or the GPU device nodes. To resolve this without compromising host security, the administrator must use a Machine Owner Key (MOK): the modules must be signed with it, and the key must be enrolled into the system's Secure Boot database via the MOK management interface during boot. Disabling SELinux or using sudo will not resolve this, as the blockage happens at the kernel-firmware interface level, not at the user-space permission level."
+  },
+  {
+    "id": "n030",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to validate NVLink Switch functionality on a single DGX H100 system with 8 GPUs. Which NCCL test configuration correctly measures intra-node NVLink bandwidth?",
+    "question_ko": "엔지니어가 GPU 8개를 갖춘 단일 DGX H100 시스템에서 NVLink Switch 기능을 검증해야 합니다. 노드 내(intra-node) NVLink 대역폭을 올바르게 측정하는 NCCL 테스트 구성은 무엇인가?",
+    "choices": [
+      "NCCL_TESTS_SPLIT=\"AND 0x1\" ./all_reduce_perf -b 8 -e 16G -f 2 -g 8",
+      "./all_reduce_perf -b 8 -e 16G -f 2 -g 8",
+      "./broadcast_perf -b 8 -e 16G -f 2 -g 8",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 8 ./all_reduce_perf -b 8 -e 16G -f 2 -g 1"
+    ],
+    "choices_ko": [
+      "NCCL_TESTS_SPLIT=\"AND 0x1\" ./all_reduce_perf -b 8 -e 16G -f 2 -g 8",
+      "./all_reduce_perf -b 8 -e 16G -f 2 -g 8",
+      "./broadcast_perf -b 8 -e 16G -f 2 -g 8",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 8 ./all_reduce_perf -b 8 -e 16G -f 2 -g 1"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DGX H100 베이스보드의 8개 H100 SXM5 모듈은 4개의 NVSwitch 3.0 칩 전부에 연결되어, 어떤 GPU든 다른 어떤 GPU에도 NVLink 4 최대 속도로 도달하는 완전 논블로킹 크로스바를 이룹니다. 따라서 이 패브릭을 포화시키려면 8개 GPU 전체를 포함하는 단일 집합 통신을 커뮤니케이터 분할 없이 실행해야 하며, 이것이 정답 보기입니다. 모든 rank가 송신과 수신을 동시에 하는 all_reduce가 적합하고, -b 8 -e 16G -f 2 스윕은 지연 지배 구간과 대역폭 지배 구간을 모두 훑습니다. 정상적인 8-GPU H100 all_reduce의 busbw 상한은 통상 약 370~480 GB/s이며, 흔히 인용되는 900 GB/s는 GPU당 양방향 NVLink 총 대역폭이지 달성 가능한 busbw가 아닙니다. AND 0x1 보기는 split 구성처럼 보이지만 무효인데, split color가 MPI 프로세스 rank로부터 계산되므로 -g 8로 실행한 단일 프로세스는 rank가 하나뿐이라 분할이 일어나지 않고 조용히 정답 보기와 동일해집니다. broadcast는 일대다 집합 통신이라 rank당 이동 데이터가 훨씬 적어 크로스바를 포화시키지 못합니다. AND 0x7 + mpirun -g 1은 유효한 split이지만 각 그룹에 노드당 GPU 1개씩을 배치하는 구성으로, 노드 간 네트워크만 분리해 측정할 때 쓰는 것이라 이 문항의 요구와 정반대입니다.",
+    "explanation_en": "The eight H100 SXM5 modules on a DGX H100 baseboard connect to all four NVSwitch 3.0 chips, forming a fully non-blocking crossbar in which any GPU reaches any other at full NVLink 4 speed. Saturating that fabric therefore requires a single collective spanning all eight GPUs, with no communicator split at all. all_reduce is the right collective because every rank both sends and receives, and the -b 8 -e 16G -f 2 sweep exercises latency-bound and bandwidth-bound regimes alike. A healthy 8-GPU H100 all_reduce tops out around 370-480 GB/s of bus bandwidth; the widely quoted 900 GB/s is the aggregate bidirectional NVLink figure per GPU, not an achievable busbw. The AND 0x1 option looks like a split configuration but is inert: the split color is computed from the MPI process rank, and a single process launched with -g 8 has only one rank, so no split occurs. broadcast is a one-to-many collective that moves far less data per rank and cannot saturate the crossbar. AND 0x7 with mpirun -g 1 is a legitimate split, but it places one GPU per node in each group — the configuration for measuring the inter-node network in isolation, the opposite of what this question asks."
+  }
+]

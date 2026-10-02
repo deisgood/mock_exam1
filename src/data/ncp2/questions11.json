@@ -1,0 +1,243 @@
+[
+  {
+    "id": "v101",
+    "domain": "d4",
+    "type": "single",
+    "question": "After a firmware upgrade on a DGX H100, the administrator notices that one GPU is not detected by the system. Which troubleshooting step should be performed first to identify the root cause?",
+    "question_ko": "DGX H100의 펌웨어 업그레이드 후 관리자가 GPU 하나가 시스템에서 인식되지 않는 것을 발견했습니다. 근본 원인을 파악하기 위해 가장 먼저 수행해야 할 단계는?",
+    "choices": [
+      "Remove the GPU and replace it with a new one before any diagnostics.",
+      "Ignore the issue and proceed with production workloads if the other GPUs are operational.",
+      "Immediately re-run the firmware upgrade on all system components.",
+      "Review the firmware update logs and run nvsm show health to check for hardware or firmware errors on the affected GPU."
+    ],
+    "choices_ko": [
+      "진단에 앞서 해당 GPU를 제거하고 새 것으로 교체한다.",
+      "다른 GPU가 정상 동작한다면 문제를 무시하고 프로덕션 워크로드를 진행한다.",
+      "모든 시스템 구성 요소에 대해 펌웨어 업그레이드를 즉시 다시 수행한다.",
+      "펌웨어 업데이트 로그를 검토하고 nvsm show health를 실행해 해당 GPU의 하드웨어·펌웨어 오류를 확인한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "펌웨어 작업 직후 발생한 이상은 우선 그 작업의 기록에서 단서를 찾아야 합니다. 업데이트 로그로 어느 구성 요소가 실패했는지 확인하고, `nvsm show health`로 GPU·PCIe·전원 항목의 상태를 점검하면 펌웨어 활성화 실패인지 하드웨어 결함인지 구분할 수 있습니다. 증거 없이 교체하거나 전체 재플래싱을 하는 것은 위험합니다.",
+    "explanation_en": "A fault that appears right after a firmware operation should first be investigated through that operation's records. The update log shows which component failed, and `nvsm show health` reports GPU, PCIe, and power status, separating a failed firmware activation from a hardware fault. Replacing parts or reflashing everything without evidence is risky."
+  },
+  {
+    "id": "v102",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator needs to check the health of the DGX power supplies. What command should be used?",
+    "question_ko": "시스템 관리자가 DGX 전원 공급 장치(PSU)의 상태를 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "nvidia-smi -q | grep -i 'power draw'",
+      "nvsm show psus",
+      "lspci | grep -i psu",
+      "ipmitool sdr | grep PWR_SYSTEM"
+    ],
+    "choices_ko": [
+      "nvidia-smi -q | grep -i 'power draw'",
+      "nvsm show psus",
+      "lspci | grep -i psu",
+      "ipmitool sdr | grep PWR_SYSTEM"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`nvsm show psus`는 각 전원 공급 장치의 존재 여부, 상태(Healthy/Unhealthy), 입력 전원, 용량 등을 보고합니다. DGX 플랫폼 하드웨어를 다루는 NVSM이 PSU 정보를 제공하는 정규 경로입니다.",
+    "explanation_en": "`nvsm show psus` reports each power supply's presence, health, input status, and rating. NVSM is the DGX platform hardware tool and the canonical path to PSU information."
+  },
+  {
+    "id": "v103",
+    "domain": "d3",
+    "type": "single",
+    "question": "A data scientist needs to run a Jupyter notebook on specific GPU cards. What command should be used?",
+    "question_ko": "데이터 과학자가 특정 GPU 카드에서 Jupyter 노트북을 실행해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "docker run --gpus '\"device=UUID-ABCDEF,1\"' -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --dpu \"1,2\" -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --runtime=nvidia -dpu \"1,2\" -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --gpus all --limit-gpu '\"device=UUID-ABCDEF\"' -p 8888:8888 jupyter/scipy-notebook:2023-09-25"
+    ],
+    "choices_ko": [
+      "docker run --gpus '\"device=UUID-ABCDEF,1\"' -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --dpu \"1,2\" -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --runtime=nvidia -dpu \"1,2\" -p 8888:8888 jupyter/scipy-notebook:2023-09-25",
+      "docker run --gpus all --limit-gpu '\"device=UUID-ABCDEF\"' -p 8888:8888 jupyter/scipy-notebook:2023-09-25"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`--gpus`의 device 셀렉터는 GPU 인덱스와 UUID를 함께 받을 수 있습니다. 따라서 특정 카드를 UUID로, 다른 카드를 인덱스로 지정해 컨테이너에 노출할 수 있고, -p 8888:8888로 노트북 포트를 게시합니다.",
+    "explanation_en": "The `--gpus` device selector accepts both GPU indexes and UUIDs, so specific cards can be exposed by UUID and index together, while -p 8888:8888 publishes the notebook port."
+  },
+  {
+    "id": "v104",
+    "domain": "d2",
+    "type": "single",
+    "question": "A systems administrator is preparing a new DGX server for deployment. What is the most secure approach to configuring the BMC port during initial setup?",
+    "question_ko": "시스템 관리자가 새 DGX 서버 배포를 준비하고 있습니다. 초기 설정 중 BMC 포트를 구성하는 가장 안전한 방법은?",
+    "choices": [
+      "Enable remote access to the BMC over the internet using the default admin credentials for initial troubleshooting.",
+      "Leave the BMC port disconnected until the operating system is fully configured and in production.",
+      "Connect the BMC port to a dedicated, firewalled network and change the default admin credentials.",
+      "Connect the BMC port directly to the production network and retain default admin credentials for convenience."
+    ],
+    "choices_ko": [
+      "초기 문제 해결을 위해 기본 admin 자격 증명으로 인터넷을 통한 BMC 원격 접근을 활성화한다.",
+      "운영체제 구성이 완전히 끝나 프로덕션에 들어갈 때까지 BMC 포트를 연결하지 않는다.",
+      "BMC 포트를 전용 방화벽 보호 네트워크에 연결하고 기본 admin 자격 증명을 변경한다.",
+      "편의를 위해 BMC 포트를 프로덕션 네트워크에 직접 연결하고 기본 자격 증명을 유지한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "BMC는 전원 제어와 콘솔 접근이 가능한 특권 인터페이스입니다. 전용 관리 네트워크에 두고 방화벽으로 접근을 제한하며, 기본 자격 증명을 즉시 변경하는 것이 표준입니다. 연결을 미루는 것은 초기 구축 시 원격 복구 수단을 포기하는 것이므로 좋은 선택이 아닙니다.",
+    "explanation_en": "The BMC is a privileged interface with power control and console access. The standard is to place it on a dedicated management network behind a firewall and change the default credentials immediately. Leaving it disconnected forfeits the remote recovery path during bring-up."
+  },
+  {
+    "id": "v105",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator notices a DGX A100 has lost a power supply, but the system is still operating at full performance. What is the minimum number of power supplies needed for the system to operate at full redundancy?",
+    "question_ko": "시스템 관리자가 DGX A100의 전원 공급 장치 하나가 고장 났지만 시스템이 여전히 최대 성능으로 동작하는 것을 확인했습니다. 시스템이 완전한 이중화 상태로 동작하려면 최소 몇 개의 전원 공급 장치가 필요한가?",
+    "choices": [
+      "1",
+      "4",
+      "2",
+      "3"
+    ],
+    "choices_ko": [
+      "1",
+      "4",
+      "2",
+      "3"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DGX A100은 6개의 전원 공급 장치를 탑재하며, 최대 성능 운전에 필요한 최소 수는 4개입니다. 따라서 4개가 살아 있는 한 시스템은 정격 성능을 유지하며, 여분이 남아 있어야 추가 장애에도 견딜 수 있습니다.",
+    "explanation_en": "The DGX A100 ships with six power supplies and requires a minimum of four for full-performance operation. As long as four remain healthy the system runs at rated performance, with the remaining units providing the margin that tolerates further failures."
+  },
+  {
+    "id": "v106",
+    "domain": "d1",
+    "type": "single",
+    "question": "To validate bisectional bandwidth across two racks in a Spectrum-X Ethernet fabric, which NCCL test configuration isolates East-West traffic?",
+    "question_ko": "Spectrum-X 이더넷 패브릭에서 두 랙에 걸친 이등분 대역폭(bisectional bandwidth)을 검증하려면 어떤 NCCL 테스트 구성이 East-West 트래픽을 분리하는가?",
+    "choices": [
+      "Run without splits and analyze per-rack averages",
+      "NCCL_TESTS_SPLIT=\"MOD 2\" ./all_reduce_perf -g 8",
+      "NCCL_TESTS_SPLIT=\"DIV 8\" ./all_reduce_perf -g 1",
+      "NCCL_TESTS_SPLIT=\"OR 0x7\" ./all_reduce_perf -g 8"
+    ],
+    "choices_ko": [
+      "split 없이 실행하고 랙별 평균을 분석한다",
+      "NCCL_TESTS_SPLIT=\"MOD 2\" ./all_reduce_perf -g 8",
+      "NCCL_TESTS_SPLIT=\"DIV 8\" ./all_reduce_perf -g 1",
+      "NCCL_TESTS_SPLIT=\"OR 0x7\" ./all_reduce_perf -g 8"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "이등분 대역폭은 클러스터를 절반으로 나눴을 때 두 그룹 사이를 오가는 대역폭입니다. NCCL_TESTS_SPLIT=\"MOD 2\"는 랭크를 번갈아 두 그룹으로 나누므로, 랙 단위로 랭크가 배치된 환경에서 통신이 반드시 랙 경계를 넘게 만들어 East-West 경로만 측정할 수 있습니다.",
+    "explanation_en": "Bisection bandwidth is the bandwidth crossing a cut that splits the cluster in half. NCCL_TESTS_SPLIT=\"MOD 2\" assigns ranks alternately to two groups, so when ranks are laid out per rack the traffic must cross the rack boundary, isolating the East-West path."
+  },
+  {
+    "id": "v107",
+    "domain": "d5",
+    "type": "multiple",
+    "question": "You are configuring an East-West Spectrum-X fabric using SuperNIC. The BlueField-3 devices should be set to NIC mode with RoCE enabled. Which two commands are necessary? (Choose two.)",
+    "question_ko": "SuperNIC를 사용하는 East-West Spectrum-X 패브릭을 구성하고 있습니다. BlueField-3 장치를 RoCE가 활성화된 NIC 모드로 설정해야 합니다. 필요한 두 가지 명령은? (2개 선택)",
+    "choices": [
+      "sudo mlxconfig -d /dev/mst/<device> set DISABLE_SPECTRUM_X=1 to reduce overhead.",
+      "sudo mlxconfig -d /dev/mst/<device> set DPU_MODE=1 to set the BlueField-3 in DPU mode.",
+      "sudo mlxconfig -d /dev/mst/<device> set INTERNAL_CPU_OFFLOAD_ENGINE=1 to configure the SuperNIC to operate in NIC mode.",
+      "sudo mlxconfig -d /dev/mst/<device> set LINK_TYPE_P1=2 to enable Ethernet on the BlueField-3."
+    ],
+    "choices_ko": [
+      "오버헤드를 줄이기 위해 sudo mlxconfig -d /dev/mst/<device> set DISABLE_SPECTRUM_X=1",
+      "BlueField-3를 DPU 모드로 설정하기 위해 sudo mlxconfig -d /dev/mst/<device> set DPU_MODE=1",
+      "SuperNIC가 NIC 모드로 동작하도록 sudo mlxconfig -d /dev/mst/<device> set INTERNAL_CPU_OFFLOAD_ENGINE=1",
+      "BlueField-3에서 이더넷을 활성화하기 위해 sudo mlxconfig -d /dev/mst/<device> set LINK_TYPE_P1=2"
+    ],
+    "answer": [
+      2,
+      3
+    ],
+    "explanation": "SuperNIC로 쓰려면 두 가지가 필요합니다. 첫째, 내부 Arm CPU 오프로드 엔진 설정을 조정해 장치를 DPU 모드가 아닌 NIC 모드로 동작시키는 것, 둘째 포트 링크 타입을 이더넷(LINK_TYPE_P1=2)으로 설정해 RoCE 트래픽을 실을 수 있게 하는 것입니다(1=InfiniBand, 2=Ethernet).",
+    "explanation_en": "Two settings are required for SuperNIC operation: adjust the internal Arm CPU offload engine so the device runs as a NIC rather than in DPU mode, and set the port link type to Ethernet (LINK_TYPE_P1=2) so it can carry RoCE traffic (1 = InfiniBand, 2 = Ethernet)."
+  },
+  {
+    "id": "v108",
+    "domain": "d3",
+    "type": "single",
+    "question": "During a maintenance window, a system administrator needs to verify the CUDA version installed on an NVIDIA DGX server to ensure application compatibility. Which command could be used in the maintenance script?",
+    "question_ko": "유지보수 시간 동안 시스템 관리자가 애플리케이션 호환성 확인을 위해 NVIDIA DGX 서버에 설치된 CUDA 버전을 검증해야 합니다. 유지보수 스크립트에 사용할 수 있는 명령은?",
+    "choices": [
+      "dpkg -l | grep cuda",
+      "cat /bin/cuda/cuda.txt",
+      "nvidia-smi --query-cuda-version",
+      "nvcc-version"
+    ],
+    "choices_ko": [
+      "dpkg -l | grep cuda",
+      "cat /bin/cuda/cuda.txt",
+      "nvidia-smi --query-cuda-version",
+      "nvcc-version"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX OS는 우분투 기반이므로 `dpkg -l | grep cuda`로 설치된 CUDA 툴킷·런타임 패키지와 버전을 나열할 수 있습니다. 스크립트에서 파싱하기 좋은 형태이기도 합니다. 참고로 `nvcc --version`(하이픈 두 개, 공백 포함)은 컴파일러 버전을, `nvidia-smi`는 드라이버가 지원하는 CUDA 버전을 보여 주지만 보기에 주어진 형태는 모두 잘못된 문법입니다.",
+    "explanation_en": "DGX OS is Ubuntu-based, so `dpkg -l | grep cuda` lists the installed CUDA toolkit/runtime packages and their versions in a script-parsable form. Note that `nvcc --version` reports the compiler version and `nvidia-smi` shows the driver's supported CUDA version, but the forms given in the other options are invalid syntax."
+  },
+  {
+    "id": "v109",
+    "domain": "d2",
+    "type": "single",
+    "question": "An AI engineer compares two HGX server configurations. One uses only PCIe connections between GPUs, the other includes NVLink and NVSwitch. During large-scale model training, the second configuration consistently finishes epochs sooner despite identical GPUs and CPUs. Which architectural feature primarily accounts for this improvement?",
+    "question_ko": "AI 엔지니어가 두 가지 HGX 서버 구성을 비교합니다. 하나는 GPU 간 PCIe만 사용하고, 다른 하나는 NVLink와 NVSwitch를 포함합니다. 동일한 GPU와 CPU인데도 대규모 모델 학습에서 두 번째 구성이 일관되게 에폭을 더 빨리 끝냅니다. 이 개선을 주로 설명하는 아키텍처 특징은?",
+    "choices": [
+      "NVSwitch enables high-bandwidth, low-latency communication among all GPUs within the server.",
+      "PCIe automatically aggregates bandwidth across every GPU.",
+      "NVLink replaces system memory with GPU memory.",
+      "NVSwitch accelerates Ethernet routing between servers."
+    ],
+    "choices_ko": [
+      "NVSwitch가 서버 내 모든 GPU 간 고대역폭·저지연 통신을 가능하게 한다.",
+      "PCIe가 모든 GPU에 걸쳐 대역폭을 자동으로 합산한다.",
+      "NVLink가 시스템 메모리를 GPU 메모리로 대체한다.",
+      "NVSwitch가 서버 간 이더넷 라우팅을 가속한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "PCIe는 GPU들이 공유하는 계층 구조라 피어 투 피어 대역폭이 제한되고 홉이 늘어납니다. NVSwitch는 서버 안의 모든 GPU를 완전 연결 패브릭으로 묶어 임의의 GPU 쌍이 전 대역폭으로 통신하게 하므로, 기울기 동기화 같은 all-to-all 집합 통신 시간이 크게 줄어듭니다.",
+    "explanation_en": "PCIe is a shared hierarchy, limiting peer-to-peer bandwidth and adding hops. NVSwitch connects every GPU in the server through a full-bandwidth fabric so any GPU pair communicates at full rate, sharply reducing the time spent in all-to-all collectives such as gradient synchronization."
+  },
+  {
+    "id": "v110",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator receives an alert about a potential hardware fault on an NVIDIA DGX A100. GPU performance seems degraded and the system fans are operating loudly. What step should be recommended to identify and troubleshoot the fault?",
+    "question_ko": "시스템 관리자가 NVIDIA DGX A100의 하드웨어 결함 가능성에 대한 경보를 받았습니다. GPU 성능이 저하된 것으로 보이고 시스템 팬이 큰 소리로 동작합니다. 결함을 파악하고 해결하기 위해 권장할 단계는?",
+    "choices": [
+      "Run a deep learning workload to stress test the GPUs and check whether the issue persists.",
+      "Check the NVIDIA System Management Interface (nvidia-smi) for GPU status and temperatures.",
+      "Increase the fan speed to maximum and check whether performance improves.",
+      "Power drain and restart the DGX, then check if the performance degradation resolves."
+    ],
+    "choices_ko": [
+      "GPU를 스트레스 테스트하기 위해 딥러닝 워크로드를 실행하고 문제가 지속되는지 확인한다.",
+      "nvidia-smi로 GPU 상태와 온도를 확인한다.",
+      "팬 속도를 최대로 올리고 성능이 개선되는지 확인한다.",
+      "DGX를 방전 후 재시작하고 성능 저하가 해소되는지 확인한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "팬 소음 증가와 성능 저하가 동시에 나타나면 열 또는 전력 관련 스로틀링일 가능성이 큽니다. nvidia-smi는 GPU별 온도, 전력, 현재 클럭, 스로틀링 사유(Clocks Throttle Reasons), XID 오류를 바로 보여 주므로 원인을 좁히는 데 가장 빠릅니다. 부하를 더 주거나 재부팅하는 것은 증거를 수집하기 전의 성급한 조치입니다.",
+    "explanation_en": "Louder fans plus degraded performance usually points at thermal or power throttling. nvidia-smi immediately shows per-GPU temperature, power, current clocks, clock throttle reasons, and XID errors, which is the fastest way to narrow the cause. Adding load or rebooting before gathering evidence is premature."
+  }
+]

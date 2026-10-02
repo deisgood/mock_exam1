@@ -1,0 +1,22 @@
+# proj-mock-exam1 (nca-aiio-exam)
+
+node_modules/
+dist/
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+# 배포용 SSH 키·인증서가 실수로 올라가지 않도록
+*.pem
+*.key
+id_rsa*
+
+.DS_Store
+.vscode/
+.idea/
+.claude/settings.local.json
+
+
+.doc

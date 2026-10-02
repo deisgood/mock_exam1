@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v011",
+    "domain": "d3",
+    "type": "single",
+    "question": "A company has a registered NGC account and their server has the NGC CLI installed. What step should be taken first to gain access to NGC?",
+    "question_ko": "한 회사가 NGC 계정을 등록했고 서버에는 NGC CLI가 설치되어 있습니다. NGC에 접근하기 위해 가장 먼저 해야 할 단계는?",
+    "choices": [
+      "ngc config get",
+      "ngc config update",
+      "ngc config set",
+      "ngc init"
+    ],
+    "choices_ko": [
+      "ngc config get",
+      "ngc config update",
+      "ngc config set",
+      "ngc init"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NGC CLI 설치 후 첫 단계는 `ngc config set`입니다. 이 명령은 API 키, org, team, ACE, 출력 형식을 대화형으로 입력받아 ~/.ngc/config에 저장하며, 이 자격 증명이 있어야 레지스트리 조회와 컨테이너 풀이 가능합니다. get은 현재 설정 조회일 뿐이고 update/init은 NGC CLI 명령이 아닙니다.",
+    "explanation_en": "After installing the NGC CLI the first step is `ngc config set`, which interactively collects the API key, org, team, ACE, and output format and stores them in ~/.ngc/config. Without those credentials no registry listing or container pull will authenticate. `get` only displays current settings; `update` and `init` are not NGC CLI commands."
+  },
+  {
+    "id": "v012",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator is installing a GPU into a server and needs to avoid damaging the device. What item should be used?",
+    "question_ko": "시스템 관리자가 서버에 GPU를 설치하면서 장치 손상을 피하려 합니다. 무엇을 사용해야 하는가?",
+    "choices": [
+      "Anti-ESD strap",
+      "Gloves",
+      "Electric screwdriver",
+      "Protective film"
+    ],
+    "choices_ko": [
+      "정전기 방지(안티 ESD) 스트랩",
+      "장갑",
+      "전동 드라이버",
+      "보호 필름"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "GPU·DPU 같은 PCIe 카드는 정전기 방전(ESD)에 매우 취약합니다. 접지된 안티 ESD 손목 스트랩을 착용하면 작업자의 정전기가 기판으로 방전되는 것을 막아 즉시 고장이나 잠재 불량(latent failure)을 예방할 수 있습니다.",
+    "explanation_en": "PCIe cards such as GPUs and DPUs are highly sensitive to electrostatic discharge. A grounded anti-ESD wrist strap drains static from the technician so it cannot discharge into the board, preventing both immediate damage and latent failures."
+  },
+  {
+    "id": "v013",
+    "domain": "d1",
+    "type": "single",
+    "question": "During a 48-hour NeMo question-answering model burn-in test, GPU memory errors occur when processing large datasets. Which configuration strategy prevents Out-of-Memory (OOM) errors while maintaining processing efficiency?",
+    "question_ko": "48시간 NeMo 질의응답 모델 번인 테스트 중 대용량 데이터셋 처리 시 GPU 메모리 오류가 발생합니다. 처리 효율을 유지하면서 OOM(Out-of-Memory)을 예방하는 구성 전략은?",
+    "choices": [
+      "Increase files_per_partition to 1000 for larger batch processing.",
+      "Switch from FP16 to FP32 precision for numerical stability.",
+      "Disable add_filename for Parquet files to reduce metadata.",
+      "Set blocksize=\"1GB\" for data loading and enable RMM asynchronous allocation."
+    ],
+    "choices_ko": [
+      "더 큰 배치 처리를 위해 files_per_partition을 1000으로 늘린다.",
+      "수치 안정성을 위해 FP16에서 FP32로 정밀도를 바꾼다.",
+      "메타데이터를 줄이기 위해 Parquet 파일의 add_filename을 비활성화한다.",
+      "데이터 로딩 blocksize를 \"1GB\"로 설정하고 RMM 비동기 할당을 활성화한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "blocksize는 한 번에 메모리에 올라오는 파티션 크기를 제한해 피크 사용량을 통제합니다. 여기에 RAPIDS Memory Manager(RMM)의 비동기(풀) 할당을 켜면 할당·해제가 재사용 풀에서 일어나 단편화가 줄어듭니다. 두 설정을 함께 쓰면 처리량을 크게 희생하지 않으면서 OOM을 막을 수 있습니다.",
+    "explanation_en": "blocksize caps how much data lands in memory per partition, controlling peak usage, while RMM's asynchronous/pool allocator reuses memory and reduces fragmentation. Together they prevent OOM during large-dataset NeMo burn-in without materially cutting throughput."
+  },
+  {
+    "id": "v014",
+    "domain": "d1",
+    "type": "single",
+    "question": "During HPL execution on a DGX cluster, the benchmark fails with \"not enough memory\" errors despite sufficient physical RAM. Which HPL.dat parameter adjustment is most effective?",
+    "question_ko": "DGX 클러스터에서 HPL을 실행하던 중 물리 RAM이 충분한데도 \"not enough memory\" 오류로 벤치마크가 실패합니다. 가장 효과적인 HPL.dat 파라미터 조정은?",
+    "choices": [
+      "Reduce the problem size while maintaining the same block size.",
+      "Disable double-buffering via the BCAST parameter.",
+      "Set PMAP to 1 to enable process mapping.",
+      "Increase block size to 6144 to maximize GPU utilization."
+    ],
+    "choices_ko": [
+      "블록 크기는 유지한 채 문제 크기(N)를 줄인다.",
+      "BCAST 파라미터로 더블 버퍼링을 비활성화한다.",
+      "PMAP을 1로 설정해 프로세스 매핑을 활성화한다.",
+      "GPU 사용률을 최대화하기 위해 블록 크기를 6144로 늘린다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "HPL의 메모리 사용량은 대략 N²×8바이트로 문제 크기 N이 지배합니다. 물리 RAM이 남아 있어도 GPU 메모리나 프로세스별 할당 한도를 넘으면 실패하므로, 블록 크기(NB)는 그대로 두고 N을 줄이는 것이 가장 직접적이고 안전한 조정입니다. NB를 바꾸면 연산 블로킹 특성이 달라져 성능 비교의 일관성이 깨집니다.",
+    "explanation_en": "HPL's footprint is dominated by the problem size (roughly N²×8 bytes). Even with free host RAM, exceeding GPU memory or per-process limits causes the failure, so lowering N while keeping NB constant is the most direct fix. Changing NB would alter blocking behavior and break comparability of results."
+  },
+  {
+    "id": "v015",
+    "domain": "d3",
+    "type": "single",
+    "question": "After initial setup and health checks, the DGX H100 system administrator wants to verify that containers can access GPUs before running production workloads. Which method is recommended for this validation?",
+    "question_ko": "초기 설정과 상태 점검을 마친 DGX H100 관리자가 프로덕션 워크로드 실행 전에 컨테이너가 GPU에 접근할 수 있는지 확인하려 합니다. 권장되는 검증 방법은?",
+    "choices": [
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 systemctl",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 ls -la",
+      "sudo docker run --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi"
+    ],
+    "choices_ko": [
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 systemctl",
+      "sudo docker run --gpus all --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 ls -la",
+      "sudo docker run --rm nvcr.io/nvidia/cuda:12.1.1-base-ubuntu22.04 nvidia-smi"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "컨테이너 GPU 접근 검증의 표준 절차는 CUDA 베이스 이미지를 `--gpus all`로 실행해 컨테이너 안에서 nvidia-smi를 돌리는 것입니다. 이 한 줄로 드라이버, NVIDIA Container Toolkit, Docker 런타임 설정, 장치 주입이 모두 정상인지 확인됩니다. `--gpus`가 없으면 GPU가 주입되지 않아 실패합니다.",
+    "explanation_en": "The standard check is to run a CUDA base image with `--gpus all` and execute nvidia-smi inside it. A successful GPU table proves the driver, NVIDIA Container Toolkit, Docker runtime wiring, and device injection all work. Without `--gpus`, no devices are injected and the command fails."
+  },
+  {
+    "id": "v016",
+    "domain": "d3",
+    "type": "single",
+    "question": "A user wants to restrict a Docker container to use only GPUs 0 and 2. Which command achieves this?",
+    "question_ko": "사용자가 Docker 컨테이너를 GPU 0번과 2번만 사용하도록 제한하려 합니다. 어떤 명령이 이를 달성하는가?",
+    "choices": [
+      "docker run --device /dev/nvidia0,/dev/nvidia2 nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus \"device=0,2\" nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus all nvidia/cuda:12.1-base nvidia-smi -id=0,2",
+      "docker run -e NVIDIA_VISIBLE_DEVICES=0.2 nvidia/cuda:12.1-base nvidia-smi"
+    ],
+    "choices_ko": [
+      "docker run --device /dev/nvidia0,/dev/nvidia2 nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus \"device=0,2\" nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus all nvidia/cuda:12.1-base nvidia-smi -id=0,2",
+      "docker run -e NVIDIA_VISIBLE_DEVICES=0.2 nvidia/cuda:12.1-base nvidia-smi"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Docker 19.03 이후 GPU 선택은 `--gpus` 플래그의 device 셀렉터로 합니다. `--gpus \"device=0,2\"`는 인덱스 0과 2만 컨테이너에 주입하며, UUID나 MIG 인스턴스 ID도 같은 방식으로 지정할 수 있습니다.",
+    "explanation_en": "Since Docker 19.03, GPU selection uses the `--gpus` device selector: `--gpus \"device=0,2\"` injects only indexes 0 and 2. The same selector accepts UUIDs and MIG instance IDs."
+  },
+  {
+    "id": "v017",
+    "domain": "d4",
+    "type": "single",
+    "question": "An administrator runs a DGX health check and the report shows: \"Verify installed GPUs ... Unhealthy\" with the detail \"GPU at PCI address 07:00.0 is missing\". What insight can the system administrator gain regarding the DGX system's health?",
+    "question_ko": "관리자가 DGX 상태 점검을 실행하자 보고서에 \"Verify installed GPUs ... Unhealthy\"와 함께 \"PCI 주소 07:00.0의 GPU가 없음\"이라는 상세 내용이 표시되었습니다. 이 DGX 시스템의 상태에 대해 알 수 있는 것은?",
+    "choices": [
+      "The system has passed the hardware health check successfully.",
+      "A GPU driver upgrade has failed.",
+      "A GPU is missing on the DGX system.",
+      "A GPU tray upgrade failed."
+    ],
+    "choices_ko": [
+      "시스템이 하드웨어 상태 점검을 성공적으로 통과했다.",
+      "GPU 드라이버 업그레이드가 실패했다.",
+      "DGX 시스템에서 GPU 하나가 인식되지 않는다.",
+      "GPU 트레이 업그레이드가 실패했다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "점검 항목이 Unhealthy이고 특정 PCI 주소(07:00.0)의 GPU가 '없음'으로 보고되었다면, 시스템이 기대하는 GPU 중 하나를 열거하지 못한다는 뜻입니다. 원인은 카드 장착 불량, PCIe 링크 실패, GPU 자체 고장 등일 수 있으며 후속으로 lspci와 dmesg, 재장착 점검이 필요합니다.",
+    "explanation_en": "An Unhealthy result naming a specific PCI address as missing means the system cannot enumerate one of its expected GPUs. Causes include poor seating, a failed PCIe link, or a dead card; follow up with lspci, dmesg, and a reseat."
+  },
+  {
+    "id": "v018",
+    "domain": "d4",
+    "type": "single",
+    "question": "A single-node stress test fails during the PCIe bandwidth validation phase. Which troubleshooting step is recommended first?",
+    "question_ko": "단일 노드 스트레스 테스트가 PCIe 대역폭 검증 단계에서 실패합니다. 가장 먼저 권장되는 문제 해결 단계는?",
+    "choices": [
+      "Reseat the GPU, then rerun the test.",
+      "Reduce PCIe Gen4 to Gen3 speed in BIOS settings.",
+      "Reinstall NVIDIA drivers using apt-get install nvidia-driver-550.",
+      "Disable NVLink in BIOS to isolate PCIe performance."
+    ],
+    "choices_ko": [
+      "GPU를 재장착한 뒤 테스트를 다시 실행한다.",
+      "BIOS에서 PCIe Gen4를 Gen3 속도로 낮춘다.",
+      "apt-get install nvidia-driver-550으로 NVIDIA 드라이버를 재설치한다.",
+      "PCIe 성능을 분리하기 위해 BIOS에서 NVLink를 비활성화한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "PCIe 대역폭 미달은 링크 트레이닝이 기대 폭(x16)이나 속도(Gen4/Gen5)로 맺히지 않는 물리적 접점 문제인 경우가 가장 흔합니다. 재장착은 비용이 없고 되돌리기 쉬우며 가장 가능성 높은 원인을 즉시 제거하므로 첫 단계로 적절합니다. 이후 `lspci -vv`로 LnkSta의 실제 폭·속도를 확인합니다.",
+    "explanation_en": "A PCIe bandwidth shortfall usually means the link did not train to the expected width (x16) or speed (Gen4/Gen5) — typically a seating or contact issue. Reseating is free, reversible, and removes the most likely cause first; afterwards check LnkSta width/speed with `lspci -vv`."
+  },
+  {
+    "id": "v019",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator is installing DGX OS and needs to preserve existing configurations and data during installation. What option should be chosen?",
+    "question_ko": "시스템 관리자가 DGX OS를 설치하면서 기존 설정과 데이터를 보존하려 합니다. 어떤 옵션을 선택해야 하는가?",
+    "choices": [
+      "Backup",
+      "Upgrade",
+      "Reimage",
+      "Export"
+    ],
+    "choices_ko": [
+      "Backup",
+      "Upgrade",
+      "Reimage",
+      "Export"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DGX OS 설치 시 Upgrade는 기존 파일 시스템, 사용자 데이터, 설정을 유지한 채 운영체제 구성 요소만 갱신합니다. 반면 Reimage는 디스크를 새로 이미징하는 초기화 설치로 데이터가 사라지므로 보존이 필요할 때는 적절하지 않습니다.",
+    "explanation_en": "The Upgrade path updates the operating system in place while keeping the existing filesystem, user data, and configuration. Reimage performs a clean install that wipes the system, so it is not appropriate when data must be preserved."
+  },
+  {
+    "id": "v020",
+    "domain": "d3",
+    "type": "single",
+    "question": "An enterprise builds a Kubernetes-based AI platform using NVIDIA GPU Operator. After adding several new GPU nodes, administrators notice that NVIDIA drivers, container runtime components, and monitoring agents are installed automatically without manual intervention. Which capability of GPU Operator enables this behavior?",
+    "question_ko": "한 기업이 NVIDIA GPU Operator로 쿠버네티스 기반 AI 플랫폼을 구축했습니다. 새 GPU 노드를 추가하자 NVIDIA 드라이버, 컨테이너 런타임 구성 요소, 모니터링 에이전트가 수작업 없이 자동 설치되었습니다. 이를 가능하게 하는 GPU Operator의 기능은?",
+    "choices": [
+      "Automatic firmware flashing of GPUs",
+      "Lifecycle management of GPU software components through Kubernetes",
+      "Dynamic migration of virtual machines between GPU nodes",
+      "Automatic BIOS configuration for every worker node"
+    ],
+    "choices_ko": [
+      "GPU 펌웨어 자동 플래싱",
+      "쿠버네티스를 통한 GPU 소프트웨어 구성 요소의 수명주기 관리",
+      "GPU 노드 간 가상 머신의 동적 마이그레이션",
+      "모든 워커 노드의 BIOS 자동 설정"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "GPU Operator는 드라이버, NVIDIA Container Toolkit, Device Plugin, DCGM Exporter, Node Feature Discovery 등을 쿠버네티스 리소스(DaemonSet 등)로 정의해 배포·업그레이드·복구를 자동화합니다. 새 노드가 들어오면 레이블에 따라 동일 스택이 자동으로 설치되는 이유가 바로 이 수명주기 관리입니다.",
+    "explanation_en": "GPU Operator models the driver, NVIDIA Container Toolkit, device plugin, DCGM exporter, and Node Feature Discovery as Kubernetes resources (DaemonSets), automating install, upgrade, and repair. New nodes get the same stack automatically because of this lifecycle management."
+  }
+]

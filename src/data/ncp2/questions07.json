@@ -1,0 +1,242 @@
+[
+  {
+    "id": "v061",
+    "domain": "d1",
+    "type": "single",
+    "question": "After running a 24-hour stress test on a DGX node, which two key metrics should the administrator verify to ensure system stability?",
+    "question_ko": "DGX 노드에서 24시간 스트레스 테스트를 수행한 뒤, 시스템 안정성을 확인하기 위해 관리자가 점검해야 할 두 가지 핵심 지표는?",
+    "choices": [
+      "Total energy consumption and NVLink bandwidth.",
+      "SSD write endurance and RAM capacity.",
+      "Average CPU usage ≥80% and Docker container uptime.",
+      "No thermal throttling events and consistent GPU utilization ≥95% throughout the test."
+    ],
+    "choices_ko": [
+      "총 에너지 소비량과 NVLink 대역폭",
+      "SSD 쓰기 수명과 RAM 용량",
+      "평균 CPU 사용률 80% 이상과 Docker 컨테이너 가동 시간",
+      "열 스로틀링 이벤트 없음과 테스트 전 구간에서 95% 이상 유지되는 GPU 사용률"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "스트레스 테스트의 목적은 '장시간 최대 부하에서 성능이 떨어지지 않는가'를 보는 것입니다. GPU 사용률이 전 구간 높게 유지되면 워크로드가 실제로 계속 돌았다는 뜻이고, 스로틀링 이벤트가 없으면 전원·냉각이 그 부하를 감당했다는 뜻입니다. 두 지표가 함께 충족돼야 안정성이 확인됩니다.",
+    "explanation_en": "A stress test asks whether performance holds up under sustained full load. Consistently high GPU utilization proves the workload really ran throughout, and the absence of throttling events proves power and cooling sustained it. Both together establish stability."
+  },
+  {
+    "id": "v062",
+    "domain": "d3",
+    "type": "single",
+    "question": "A user needs to configure the NGC CLI to access resources across multiple organizations. What is the recommended command syntax?",
+    "question_ko": "사용자가 여러 조직(org)의 리소스에 접근하도록 NGC CLI를 구성해야 합니다. 권장되는 명령 구문은?",
+    "choices": [
+      "ngc config set --org org-name --ace ace-name",
+      "export NGC_CLI_ORG=org-name && ngc config set",
+      "ngc config list to manually edit the JSON configuration file.",
+      "ngc registry login --org org-name"
+    ],
+    "choices_ko": [
+      "ngc config set --org org-name --ace ace-name",
+      "export NGC_CLI_ORG=org-name && ngc config set",
+      "ngc config list로 JSON 구성 파일을 직접 편집",
+      "ngc registry login --org org-name"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NGC CLI의 컨텍스트(조직과 ACE)는 `ngc config set --org <org> --ace <ace>`로 지정합니다. 조직을 바꿔 가며 작업할 때는 이 명령으로 컨텍스트를 전환하거나, 개별 명령에 --org 옵션을 붙여 일회성으로 지정할 수 있습니다.",
+    "explanation_en": "The NGC CLI context (organization and ACE) is set with `ngc config set --org <org> --ace <ace>`. To work across organizations you switch context with this command, or pass --org on an individual command for a one-off override."
+  },
+  {
+    "id": "v063",
+    "domain": "d2",
+    "type": "single",
+    "question": "An administrator needs to add additional GPUs to an existing server. What server requirements should be checked before installing the new GPUs?",
+    "question_ko": "관리자가 기존 서버에 GPU를 추가로 설치하려 합니다. 설치 전에 확인해야 할 서버 요구사항은?",
+    "choices": [
+      "Sufficient storage, sufficient networking, adequate rack power, and compatible hardware.",
+      "Sufficient networking, water-cooled racks, adequate rack power, sufficient storage, and rack space.",
+      "Sufficient cooling in the data center, adequate rack power, compatible hardware, and PCIe slot allocation.",
+      "Sufficient CPU capacity, PCIe slot allocation, sufficient cooling in the data center, and rack space."
+    ],
+    "choices_ko": [
+      "충분한 스토리지, 충분한 네트워킹, 적절한 랙 전력, 호환 하드웨어",
+      "충분한 네트워킹, 수랭식 랙, 적절한 랙 전력, 충분한 스토리지, 랙 공간",
+      "데이터센터의 충분한 냉각, 적절한 랙 전력, 호환 하드웨어, PCIe 슬롯 할당",
+      "충분한 CPU 용량, PCIe 슬롯 할당, 데이터센터의 충분한 냉각, 랙 공간"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "GPU 추가는 물리·전기·열 요건이 핵심입니다. 서버가 해당 GPU를 지원하는 인증 플랫폼인지(호환 하드웨어), 여유 PCIe 슬롯과 레인·보조 전원 커넥터가 있는지, 랙 전력 여유가 있는지, 데이터센터 냉각이 늘어난 발열을 감당하는지를 확인해야 합니다. 스토리지·네트워크 용량은 GPU 장착 자체의 전제 조건이 아닙니다.",
+    "explanation_en": "Adding GPUs is a physical, electrical, and thermal question: is the server a supported platform for this GPU, are there free PCIe slots with enough lanes and auxiliary power, does the rack have power headroom, and can data center cooling absorb the extra heat. Storage and network capacity are not prerequisites for the installation itself."
+  },
+  {
+    "id": "v064",
+    "domain": "d2",
+    "type": "single",
+    "question": "An enterprise decides to build a high-performance Ethernet-based AI cluster instead of using InfiniBand. To achieve RDMA functionality with minimal CPU overhead, which technology should the network architect implement?",
+    "question_ko": "한 기업이 InfiniBand 대신 이더넷 기반 고성능 AI 클러스터를 구축하기로 했습니다. 최소한의 CPU 오버헤드로 RDMA 기능을 구현하려면 어떤 기술을 도입해야 하는가?",
+    "choices": [
+      "VXLAN",
+      "RoCE",
+      "MPLS",
+      "GRE"
+    ],
+    "choices_ko": [
+      "VXLAN",
+      "RoCE",
+      "MPLS",
+      "GRE"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RoCE(RDMA over Converged Ethernet)는 이더넷 위에서 RDMA를 구현해 커널과 CPU를 우회한 메모리 간 직접 전송을 제공합니다. 성능을 내려면 PFC·ECN 기반 무손실 구성이 필요합니다. VXLAN·MPLS·GRE는 오버레이/터널링 기술로 RDMA 기능과 무관합니다.",
+    "explanation_en": "RoCE implements RDMA over Ethernet, providing direct memory-to-memory transfers that bypass the kernel and CPU; it needs a lossless configuration (PFC/ECN) to perform. VXLAN, MPLS, and GRE are overlay/tunneling technologies unrelated to RDMA."
+  },
+  {
+    "id": "v065",
+    "domain": "d1",
+    "type": "single",
+    "question": "During East-West fabric validation on a 64-GPU cluster, an engineer runs all_reduce_perf and observes an algorithm bandwidth of 350 GB/s and a bus bandwidth of 656 GB/s. What does this indicate about the fabric performance?",
+    "question_ko": "64-GPU 클러스터의 East-West 패브릭 검증 중 엔지니어가 all_reduce_perf를 실행해 algorithm bandwidth 350 GB/s, bus bandwidth 656 GB/s를 관측했습니다. 패브릭 성능에 대해 무엇을 의미하는가?",
+    "choices": [
+      "Critical failure; bus bandwidth exceeds hardware capabilities",
+      "Suboptimal performance; algorithm bandwidth should match bus bandwidth",
+      "Inconclusive; rerun with point-to-point tests",
+      "Optimal performance; the result is consistent with a healthy NDR InfiniBand fabric"
+    ],
+    "choices_ko": [
+      "치명적 실패. bus bandwidth가 하드웨어 능력을 초과한다",
+      "성능 미흡. algorithm bandwidth가 bus bandwidth와 같아야 한다",
+      "판단 불가. 점대점(point-to-point) 테스트로 재실행해야 한다",
+      "최적 성능. 건강한 NDR InfiniBand 패브릭에 부합하는 결과다"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "NCCL 테스트에서 algbw는 애플리케이션이 체감하는 대역폭이고 busbw는 2(n−1)/n 보정 계수를 적용해 링크 부하로 환산한 값입니다. 정의상 busbw가 algbw보다 크며 둘이 같을 이유가 없습니다. 이 정도 수치는 건강한 패브릭과 GPUDirect RDMA 동작에 부합합니다. 다만 노드 내 NVLink 집계가 개입하는 실행에서는 busbw가 InfiniBand 부하를 과대평가할 수 있으므로, 최종 판단은 노드 간 실측 대역폭과 함께 보는 것이 좋습니다.",
+    "explanation_en": "In NCCL tests, algbw is the bandwidth the application sees while busbw applies the 2(n−1)/n correction to express link load; busbw is larger by definition and there is no reason for them to be equal. Numbers at this level are consistent with a healthy fabric and working GPUDirect RDMA. Caveat: when intra-node NVLink aggregation is involved, busbw can overstate the actual InfiniBand load, so confirm with measured inter-node bandwidth."
+  },
+  {
+    "id": "v066",
+    "domain": "d5",
+    "type": "single",
+    "question": "What is the maximum bandwidth supported by NVIDIA LinkX Direct Attach Copper (DAC) cables?",
+    "question_ko": "NVIDIA LinkX Direct Attach Copper(DAC) 케이블이 지원하는 최대 대역폭은?",
+    "choices": [
+      "100 Gbps",
+      "200 Gbps",
+      "50 Gbps",
+      "400 Gbps"
+    ],
+    "choices_ko": [
+      "100 Gbps",
+      "200 Gbps",
+      "50 Gbps",
+      "400 Gbps"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "NVIDIA LinkX DAC(수동 구리 직결) 케이블은 최대 400 Gbps(NDR/400GbE)까지 지원합니다. 구리 특성상 도달 거리는 수 미터로 짧지만, 전력 소모와 지연이 낮아 랙 내부의 고밀도 GPU 클러스터 연결에 적합합니다.",
+    "explanation_en": "NVIDIA LinkX passive DAC cables support up to 400 Gbps (NDR/400GbE). Copper limits reach to a few meters, but low power draw and low latency make DAC ideal for in-rack connections in dense GPU clusters."
+  },
+  {
+    "id": "v067",
+    "domain": "d4",
+    "type": "single",
+    "question": "During server maintenance, a system administrator is scripting an alert that notifies the team if free disk space falls below a threshold on an NVIDIA DGX server. Which command could be included in the maintenance script to check available disk space?",
+    "question_ko": "서버 유지보수 중 시스템 관리자가 NVIDIA DGX 서버의 여유 디스크 공간이 임계값 아래로 떨어지면 알림을 보내는 스크립트를 작성하고 있습니다. 사용 가능한 디스크 공간을 확인하기 위해 스크립트에 넣을 수 있는 명령은?",
+    "choices": [
+      "du -sh /home/*",
+      "df -h | grep '/var'",
+      "nvidia-smi --query-disk-space",
+      "lsof +L1"
+    ],
+    "choices_ko": [
+      "du -sh /home/*",
+      "df -h | grep '/var'",
+      "nvidia-smi --query-disk-space",
+      "lsof +L1"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "df는 파일 시스템 단위의 전체·사용·여유 용량을 보고하므로 임계값 비교에 적합합니다. `df -h | grep '/var'`처럼 감시할 마운트 지점을 골라 출력하면 스크립트에서 여유 공간을 파싱해 경보 조건을 판단할 수 있습니다. du는 디렉터리별 사용량 합계라 목적이 다릅니다.",
+    "explanation_en": "df reports total, used, and available space per filesystem, which is what a threshold check needs. Filtering to the mount point of interest (`df -h | grep '/var'`) lets the script parse available space and decide whether to alert. du sums directory usage, a different question."
+  },
+  {
+    "id": "v068",
+    "domain": "d1",
+    "type": "single",
+    "question": "You are performing storage validation for an H100-based cluster with the goal of ensuring the storage system is optimized for AI workloads. What should you focus on?",
+    "question_ko": "H100 기반 클러스터의 스토리지가 AI 워크로드에 최적화되어 있는지 검증하려 합니다. 무엇에 집중해야 하는가?",
+    "choices": [
+      "Verify total storage capacity matches the system specifications without running performance benchmarks.",
+      "Check that the storage system uses RAID levels optimized for redundancy, even if it sacrifices performance.",
+      "Test storage performance by transferring randomized files between nodes while monitoring transfer speed and error rates.",
+      "Validate high throughput and low latency by running application-specific benchmarks designed for AI workloads."
+    ],
+    "choices_ko": [
+      "성능 벤치마크 없이 총 용량이 시스템 사양과 일치하는지 확인한다.",
+      "성능을 희생하더라도 이중화에 최적화된 RAID 레벨로 구성되어 있는지 확인한다.",
+      "노드 간에 무작위 파일을 전송하며 전송 속도와 오류율을 모니터링해 성능을 테스트한다.",
+      "AI 워크로드용으로 설계된 애플리케이션 특화 벤치마크로 높은 처리량과 낮은 지연을 검증한다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "스토리지 검증의 목적은 '실제 학습이 GPU를 굶기지 않는가'입니다. 따라서 AI 데이터 로딩 패턴(대량 병렬 읽기, 체크포인트 쓰기, 다수 클라이언트 동시 접근)을 재현하는 애플리케이션 특화 벤치마크로 처리량과 지연을 측정해야 의미 있는 결론이 나옵니다.",
+    "explanation_en": "Storage validation exists to answer whether real training will starve the GPUs. That requires application-specific benchmarks that reproduce AI access patterns — massively parallel reads, checkpoint writes, many concurrent clients — measuring throughput and latency."
+  },
+  {
+    "id": "v069",
+    "domain": "d1",
+    "type": "single",
+    "question": "An InfiniBand administrator needs to run performance benchmarks on new devices added to the fabric. What tool should be used to check the latency?",
+    "question_ko": "InfiniBand 관리자가 패브릭에 새로 추가된 장치에서 성능 벤치마크를 실행해야 합니다. 지연(latency)을 확인하려면 어떤 도구를 사용해야 하는가?",
+    "choices": [
+      "tcpdump",
+      "ib_write_lat",
+      "perfmon",
+      "ibdiagnet"
+    ],
+    "choices_ko": [
+      "tcpdump",
+      "ib_write_lat",
+      "perfmon",
+      "ibdiagnet"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "perftest 패키지의 ib_write_lat은 두 노드 사이 RDMA Write의 지연을 측정합니다. 서버 쪽에서 `ib_write_lat`, 클라이언트 쪽에서 `ib_write_lat <server>`를 실행하면 최소·평균·99퍼센타일 지연이 출력됩니다. 대역폭 측정은 ib_write_bw/ib_read_bw를 씁니다.",
+    "explanation_en": "ib_write_lat from the perftest package measures RDMA Write latency between two nodes: run `ib_write_lat` on the server and `ib_write_lat <server>` on the client to get min/avg/99th-percentile latency. Bandwidth is measured with ib_write_bw / ib_read_bw."
+  },
+  {
+    "id": "v070",
+    "domain": "d2",
+    "type": "single",
+    "question": "An enterprise is deploying an AI Factory using the NVIDIA DGX BasePOD architecture. The infrastructure team must ensure high availability and efficient data transfer between compute nodes. Which network topology should they implement for the InfiniBand fabric?",
+    "question_ko": "한 기업이 NVIDIA DGX BasePOD 아키텍처로 AI 팩토리를 배포합니다. 인프라 팀은 컴퓨트 노드 간 고가용성과 효율적인 데이터 전송을 보장해야 합니다. InfiniBand 패브릭에 구현해야 할 네트워크 토폴로지는?",
+    "choices": [
+      "Single flat Ethernet network for all traffic.",
+      "Fat-Tree topology with rail-optimized design.",
+      "Star topology with all nodes connected to a single central switch.",
+      "Simple ring topology connecting all nodes in a loop."
+    ],
+    "choices_ko": [
+      "모든 트래픽에 단일 플랫 이더넷 네트워크",
+      "rail-optimized 설계의 Fat-Tree 토폴로지",
+      "모든 노드를 중앙 스위치 하나에 연결하는 스타 토폴로지",
+      "모든 노드를 고리로 연결하는 단순 링 토폴로지"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "DGX BasePOD의 컴퓨트 패브릭은 rail-optimized Fat-Tree입니다. 각 노드의 n번째 HCA를 같은 번호의 리프 스위치(rail)에 모으면 NCCL 집합 통신이 같은 rail 안에서 완결되어 홉과 경합이 줄고, Fat-Tree 구조가 비과부하 이등분 대역폭과 다중 경로 이중화를 제공합니다.",
+    "explanation_en": "The DGX BasePOD compute fabric is a rail-optimized Fat-Tree. Attaching each node's nth HCA to the same-numbered leaf switch (rail) lets NCCL collectives complete within a rail, cutting hops and contention, while the Fat-Tree provides non-blocking bisection bandwidth and multi-path redundancy."
+  }
+]

@@ -1,0 +1,240 @@
+[
+  {
+    "id": "v161",
+    "domain": "d5",
+    "type": "single",
+    "question": "A systems administrator needs to provide an AI workload environment for a developer. Which vGPU profile type should the administrator choose?",
+    "question_ko": "시스템 관리자가 개발자에게 AI 워크로드 환경을 제공해야 합니다. 어떤 vGPU 프로파일 유형을 선택해야 하는가?",
+    "choices": [
+      "C-series",
+      "Q-series",
+      "A-series",
+      "B-series"
+    ],
+    "choices_ko": [
+      "C 시리즈",
+      "Q 시리즈",
+      "A 시리즈",
+      "B 시리즈"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "vGPU 프로파일의 끝 문자는 용도를 나타냅니다. C 시리즈(예: a100-20c)는 컴퓨트 전용으로 AI·딥러닝·데이터 과학·HPC 워크로드를 위한 프로파일입니다. Q는 전문 그래픽(Quadro/RTX vWS), B는 가상 데스크톱(vPC), A는 앱 스트리밍(vApps)용입니다.",
+    "explanation_en": "The trailing letter of a vGPU profile encodes its purpose. C-series (for example a100-20c) is compute-only, intended for AI, deep learning, data science, and HPC. Q is professional graphics (vWS), B is virtual desktops (vPC), and A is application streaming (vApps)."
+  },
+  {
+    "id": "v162",
+    "domain": "d3",
+    "type": "single",
+    "question": "A user encounters \"permission denied\" errors when running GPU-accelerated containers on a Secure Boot-enabled system. What resolves this?",
+    "question_ko": "Secure Boot가 활성화된 시스템에서 GPU 가속 컨테이너를 실행할 때 \"permission denied\" 오류가 발생합니다. 무엇으로 해결하는가?",
+    "choices": [
+      "Disable SELinux to relax unnecessary security policies.",
+      "Reinstall Docker without the NVIDIA runtime.",
+      "Enroll the MOK and ensure the NVIDIA kernel modules are signed.",
+      "Run Docker with sudo for elevated privileges."
+    ],
+    "choices_ko": [
+      "불필요한 보안 정책을 완화하기 위해 SELinux를 비활성화한다.",
+      "NVIDIA 런타임 없이 Docker를 재설치한다.",
+      "MOK를 등록하고 NVIDIA 커널 모듈이 서명되도록 한다.",
+      "권한 상승을 위해 sudo로 Docker를 실행한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Secure Boot 환경에서 서명되지 않은 NVIDIA 커널 모듈은 로드가 차단됩니다. 모듈이 없으면 컨테이너 런타임이 GPU 장치와 드라이버 라이브러리를 주입하지 못해 접근 거부처럼 보이는 오류가 납니다. MOK를 등록해 서명된 모듈을 신뢰시키면 해결됩니다.",
+    "explanation_en": "Under Secure Boot, unsigned NVIDIA kernel modules are blocked from loading. Without the modules, the container runtime cannot inject GPU devices and driver libraries, which surfaces as permission-denied style failures. Enrolling the MOK so the signed modules are trusted fixes it."
+  },
+  {
+    "id": "v163",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to install a GPU/DPU in a server. The server has a free PCIe slot, enough free PCIe lanes, and enough room for the card. Which procedure should be followed?",
+    "question_ko": "시스템 관리자가 서버에 GPU/DPU를 설치해야 합니다. 서버에는 여유 PCIe 슬롯과 충분한 PCIe 레인, 카드가 들어갈 공간이 있습니다. 어떤 절차를 따라야 하는가?",
+    "choices": [
+      "Ensure the server has enough power. Keep the server up and running with cables attached. Wear an ESD bracelet.",
+      "Ensure the server has enough power. Verify cable compatibility with the server platform. Power the server down to remove cables safely. Do not wear an ESD bracelet.",
+      "Ensure the server has enough power. Verify cable compatibility with the server platform. Power the server down to remove cables safely. Wear an ESD bracelet.",
+      "Ensure the server has enough power. Power the server down to remove cables safely. Wear an ESD bracelet."
+    ],
+    "choices_ko": [
+      "서버 전력이 충분한지 확인한다. 케이블이 연결된 채 서버를 켜 둔 상태로 작업한다. ESD 밴드를 착용한다.",
+      "서버 전력이 충분한지 확인한다. 서버 플랫폼과 케이블 호환성을 확인한다. 케이블을 안전하게 제거하기 위해 서버를 끈다. ESD 밴드는 착용하지 않는다.",
+      "서버 전력이 충분한지 확인한다. 서버 플랫폼과 케이블 호환성을 확인한다. 케이블을 안전하게 제거하기 위해 서버를 끈다. ESD 밴드를 착용한다.",
+      "서버 전력이 충분한지 확인한다. 케이블을 안전하게 제거하기 위해 서버를 끈다. ESD 밴드를 착용한다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "올바른 절차는 네 가지를 모두 만족해야 합니다. 전력 여유 확인, 보조 전원 케이블 등 플랫폼 호환성 확인, 전원 차단 후 작업, ESD 밴드 착용입니다. 전원이 켜진 상태로 작업하거나 ESD 보호를 생략한 보기는 안전 원칙 위반입니다.",
+    "explanation_en": "The correct procedure satisfies all four points: confirm power headroom, verify platform cable compatibility (including auxiliary power connectors), power the server down before working, and wear an ESD strap. Options that keep the server powered or skip ESD protection violate basic safety rules."
+  },
+  {
+    "id": "v164",
+    "domain": "d1",
+    "type": "single",
+    "question": "Running 'ibdiagnet' today produces a summary with warning and error counts across several test stages. What is the first action that should be taken to further analyze the errors?",
+    "question_ko": "오늘 'ibdiagnet'을 실행하자 여러 테스트 단계에 걸쳐 경고와 오류 개수가 담긴 요약이 출력되었습니다. 오류를 더 분석하기 위해 가장 먼저 취해야 할 조치는?",
+    "choices": [
+      "Run ibdiagnet again with additional options to generate more detailed reports.",
+      "Run ibstat.",
+      "Inspect the 'ibdiagnet2.pm' file.",
+      "Restart the master SM."
+    ],
+    "choices_ko": [
+      "더 상세한 보고서를 생성하도록 추가 옵션과 함께 ibdiagnet을 다시 실행한다.",
+      "ibstat을 실행한다.",
+      "'ibdiagnet2.pm' 파일을 확인한다.",
+      "마스터 SM을 재시작한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "ibdiagnet의 기본 출력은 단계별 경고·오류 '개수'만 보여 주는 요약입니다. 어떤 링크, 어떤 카운터가 문제인지 알려면 카운터 리셋 후 재측정, 링크 폭·속도 점검, 상세 리포트 생성 같은 추가 옵션을 주고 다시 실행해야 합니다. 생성된 리포트 파일들을 읽는 것은 그다음 단계입니다.",
+    "explanation_en": "ibdiagnet's default output is a summary of warning and error counts per stage. To learn which links and counters are at fault you rerun it with additional options — counter reset and re-measure, link width/speed checks, detailed report generation. Reading the generated report files comes after that."
+  },
+  {
+    "id": "v165",
+    "domain": "d3",
+    "type": "single",
+    "question": "After upgrading NVIDIA GPU Operator, Kubernetes reports all worker nodes as Ready, but newly created GPU workloads remain Pending. GPUs are healthy and visible to the operating system. Which troubleshooting step should be performed first?",
+    "question_ko": "NVIDIA GPU Operator를 업그레이드한 뒤 쿠버네티스는 모든 워커 노드를 Ready로 보고하지만, 새로 생성한 GPU 워크로드는 Pending 상태에 머물러 있습니다. GPU는 정상이며 운영체제에서도 보입니다. 가장 먼저 수행해야 할 문제 해결 단계는?",
+    "choices": [
+      "Verify that the NVIDIA Device Plugin pods are running successfully on the GPU nodes.",
+      "Replace every GPU driver with an earlier version immediately.",
+      "Increase CPU requests for every application pod.",
+      "Disable the Kubernetes scheduler and assign pods manually."
+    ],
+    "choices_ko": [
+      "GPU 노드에서 NVIDIA Device Plugin 파드가 정상 동작 중인지 확인한다.",
+      "모든 GPU 드라이버를 즉시 이전 버전으로 교체한다.",
+      "모든 애플리케이션 파드의 CPU 요청량을 늘린다.",
+      "쿠버네티스 스케줄러를 비활성화하고 파드를 수동으로 배정한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "OS가 GPU를 보는데 쿠버네티스가 스케줄하지 못한다면, 문제는 하드웨어가 아니라 자원 광고 계층입니다. 업그레이드 후 Device Plugin 데몬셋이 제대로 재시작되지 않았거나 버전 불일치로 실패했을 수 있으므로 해당 파드의 상태와 로그를 먼저 확인하고, `kubectl describe node`로 allocatable에 GPU가 보이는지 대조합니다.",
+    "explanation_en": "If the OS sees the GPUs but Kubernetes cannot schedule them, the problem is the resource-advertisement layer rather than hardware. After an upgrade the Device Plugin DaemonSet may have failed to restart or hit a version mismatch, so check those pods' status and logs and confirm GPUs appear under allocatable in `kubectl describe node`."
+  },
+  {
+    "id": "v166",
+    "domain": "d5",
+    "type": "single",
+    "question": "An infrastructure engineer is preparing a new AI cluster that relies on NVIDIA switches and high-speed optical transceivers. Why is it critical to confirm and align the firmware version on all switch transceivers prior to production?",
+    "question_ko": "인프라 엔지니어가 NVIDIA 스위치와 고속 광 트랜시버를 사용하는 새 AI 클러스터를 준비하고 있습니다. 프로덕션 투입 전에 모든 스위치 트랜시버의 펌웨어 버전을 확인하고 일치시키는 것이 중요한 이유는?",
+    "choices": [
+      "To ensure stability, bandwidth, and compatibility across the cluster, avoiding link issues and performance loss.",
+      "To guarantee that hardware inventory tools can report serial numbers and manufacturer codes for asset management.",
+      "To allow the network operating system to automatically discover all connected transceivers with heterogeneous firmware."
+    ],
+    "choices_ko": [
+      "클러스터 전반의 안정성·대역폭·호환성을 보장해 링크 문제와 성능 저하를 예방하기 위해",
+      "하드웨어 인벤토리 도구가 자산 관리를 위해 시리얼 번호와 제조사 코드를 보고할 수 있도록 보장하기 위해",
+      "네트워크 운영체제가 이기종 펌웨어를 가진 모든 트랜시버를 자동으로 검색할 수 있도록 하기 위해"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "트랜시버 펌웨어는 링크 트레이닝, FEC 동작, 신호 튜닝에 관여합니다. 버전이 섞이면 특정 조합에서만 링크 플랩이나 BER 상승이 나타나는 재현 어려운 장애가 생기고, 대규모 학습 중 성능이 간헐적으로 무너집니다. 그래서 프로덕션 전에 지원되는 동일 버전으로 정렬하는 것이 표준 절차입니다.",
+    "explanation_en": "Transceiver firmware participates in link training, FEC behavior, and signal tuning. Mixed versions produce hard-to-reproduce failures — link flaps or elevated BER on particular combinations — that break performance intermittently during large training runs. Aligning on a supported version before production is the standard practice."
+  },
+  {
+    "id": "v167",
+    "domain": "d1",
+    "type": "single",
+    "question": "A cluster administrator needs to validate transceiver firmware versions across 200 ports using UFM. Which GUI-based method provides a consolidated view?",
+    "question_ko": "클러스터 관리자가 UFM을 사용해 200개 포트의 트랜시버 펌웨어 버전을 검증해야 합니다. 통합된 화면을 제공하는 GUI 기반 방법은?",
+    "choices": [
+      "Use the \"Topology\" view to visually inspect cable icons.",
+      "Navigate to \"Devices\" > select a switch > \"Cables\" tab to see ASIC firmware and transceiver versions.",
+      "Export all switch logs and grep for \"FW Version\".",
+      "Run mlxlink -d lid-<LID> -m on each port manually."
+    ],
+    "choices_ko": [
+      "\"Topology\" 뷰에서 케이블 아이콘을 시각적으로 확인한다.",
+      "\"Devices\"로 이동해 스위치를 선택한 뒤 \"Cables\" 탭에서 ASIC 펌웨어와 트랜시버 버전을 확인한다.",
+      "모든 스위치 로그를 내보내 \"FW Version\"을 grep 한다.",
+      "각 포트에서 mlxlink -d lid-<LID> -m을 수동으로 실행한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "UFM의 장치 상세 화면에는 케이블/트랜시버 정보를 포트별 표로 보여 주는 탭이 있습니다. 여기서 각 포트의 케이블 종류, 길이, 시리얼, 펌웨어 버전을 한 번에 훑어볼 수 있으므로 200개 포트도 스크롤만으로 비교할 수 있습니다. 포트마다 CLI를 실행하는 방식과 대비됩니다.",
+    "explanation_en": "UFM's device detail view includes a tab that lists cable/transceiver information per port — type, length, serial, firmware version — in one table, so 200 ports can be compared by scrolling instead of running a CLI command per port."
+  },
+  {
+    "id": "v168",
+    "domain": "d5",
+    "type": "single",
+    "question": "You are evaluating the integration of NVIDIA BlueField DPUs into your data center's storage architecture to optimize AI workloads. Which benefit directly results from this integration?",
+    "question_ko": "AI 워크로드 최적화를 위해 데이터센터 스토리지 아키텍처에 NVIDIA BlueField DPU를 통합하는 방안을 검토하고 있습니다. 이 통합에서 직접적으로 얻는 이점은?",
+    "choices": [
+      "Elimination of latency issues in data processing tasks.",
+      "Enhanced I/O performance with NVMe storage access speeds.",
+      "Reduced CPU load by offloading data processing tasks to the DPU.",
+      "Unlimited scalability by adding more DPUs without architectural changes."
+    ],
+    "choices_ko": [
+      "데이터 처리 작업의 지연 문제 완전 제거",
+      "NVMe 스토리지 접근 속도로 향상된 I/O 성능",
+      "데이터 처리 작업을 DPU로 오프로드해 CPU 부하 감소",
+      "아키텍처 변경 없이 DPU만 추가하면 되는 무제한 확장성"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "BlueField를 스토리지 경로에 넣으면 NVMe-oF 타깃 처리, 암호화, 압축, 이레이저 코딩 같은 작업이 DPU에서 수행됩니다. 호스트 CPU는 이 작업에서 해방되어 AI 워크로드에 더 많은 코어를 쓸 수 있으며, 이것이 가장 직접적이고 확실한 이점입니다.",
+    "explanation_en": "Placing BlueField in the storage path moves NVMe-oF target handling, encryption, compression, and erasure coding onto the DPU. The host CPU is freed from that work and can devote more cores to AI workloads — the most direct and reliable benefit."
+  },
+  {
+    "id": "v169",
+    "domain": "d4",
+    "type": "single",
+    "question": "An InfiniBand server stops working and 'ibstat' shows: State: Initializing, Physical state: LinkUp, Base lid: 0, SM lid: 0. What is the cause of the issue?",
+    "question_ko": "InfiniBand 서버가 동작을 멈췄고 'ibstat' 출력은 State: Initializing, Physical state: LinkUp, Base lid: 0, SM lid: 0 입니다. 문제의 원인은?",
+    "choices": [
+      "The HCA port is faulty.",
+      "There is no running subnet manager (SM) in the fabric.",
+      "The cable is disconnected.",
+      "The neighboring switch port is faulty."
+    ],
+    "choices_ko": [
+      "HCA 포트가 고장 났다.",
+      "패브릭에 실행 중인 서브넷 매니저(SM)가 없다.",
+      "케이블이 분리되어 있다.",
+      "인접 스위치 포트가 고장 났다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Physical state가 LinkUp이면 케이블과 포트의 물리 연결은 정상입니다. 그러나 State가 Initializing에 머물고 LID가 0이라면 서브넷 매니저가 포트를 Active로 승격시키지 않았다는 뜻입니다. SM이 실행 중이 아니거나 도달하지 못하는 상황이 전형적인 원인입니다.",
+    "explanation_en": "Physical state LinkUp means the cable and port are electrically fine. But State stuck at Initializing with LID 0 means no subnet manager has promoted the port to Active — typically because the SM is not running or is unreachable."
+  },
+  {
+    "id": "v170",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator is responsible for managing an NVIDIA SuperPOD and wants to verify that all systems are in a healthy state. What should the administrator do?",
+    "question_ko": "시스템 관리자가 NVIDIA SuperPOD를 관리하며 모든 시스템이 정상 상태인지 확인하려 합니다. 어떻게 해야 하는가?",
+    "choices": [
+      "Use vendor-provided tools to verify hardware health and set up proper alerting.",
+      "Check the data center manually for indicator LEDs on the hardware.",
+      "Check the hardware on a regular basis by powering down the servers.",
+      "Contact the NVIDIA sales team."
+    ],
+    "choices_ko": [
+      "벤더가 제공하는 도구로 하드웨어 상태를 검증하고 적절한 경보를 설정한다.",
+      "데이터센터에서 하드웨어의 표시등을 직접 눈으로 확인한다.",
+      "정기적으로 서버 전원을 내려 하드웨어를 점검한다.",
+      "NVIDIA 영업팀에 문의한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "SuperPOD 규모에서는 수작업 점검이 불가능합니다. NVSM, DCGM, BCM, UFM 같은 도구로 GPU·플랫폼·패브릭 상태를 중앙에서 수집하고 임계값 기반 경보를 걸어 두면, 사람이 찾아다니지 않아도 이상 징후가 먼저 보고됩니다.",
+    "explanation_en": "At SuperPOD scale manual inspection is impossible. Tools such as NVSM, DCGM, BCM, and UFM collect GPU, platform, and fabric health centrally, and threshold-based alerting surfaces anomalies before anyone has to go looking."
+  }
+]

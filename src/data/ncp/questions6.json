@@ -1,0 +1,222 @@
+[
+  {
+    "id": "n051",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are validating the environment of an NVIDIA GPU-accelerated data center during post-deployment checks. Which one action is essential to confirm that power and cooling are sufficient for the stable operation of NVIDIA DGX H100 systems?",
+    "question_ko": "배포 후 점검 과정에서 NVIDIA GPU 가속 데이터센터의 환경을 검증하고 있습니다. NVIDIA DGX H100 시스템의 안정적 운영을 위해 전원과 냉각이 충분한지 확인하는 데 필수적인 조치는 무엇인가?",
+    "choices": [
+      "Confirm the system fans are running at 100% under all workloads to prevent overheating.",
+      "Review the system BIOS to ensure GPU overclocking is enabled for maximum performance.",
+      "Use NVSM to disable unused PCIe devices to reduce overall system heat output.",
+      "Verify that each DGX system is connected to redundant, properly rated PDUs and that all power supplies are reporting nominal input."
+    ],
+    "choices_ko": [
+      "과열 방지를 위해 모든 워크로드에서 시스템 팬이 100%로 동작하는지 확인한다.",
+      "최대 성능을 위해 GPU 오버클러킹이 활성화되어 있는지 시스템 BIOS를 검토한다.",
+      "NVSM을 사용하여 사용하지 않는 PCIe 장치를 비활성화하여 전체 시스템 발열을 줄인다.",
+      "각 DGX 시스템이 이중화된, 적절한 정격의 PDU에 연결되어 있는지, 그리고 모든 전원 공급 장치가 정상(nominal) 입력을 보고하는지 검증한다."
+    ],
+    "answer": [3],
+    "explanation": "DGX H100 같은 고밀도 AI 인프라의 안정적 운영에는 전원·발열 사양의 엄격한 준수가 요구됩니다. 단일 DGX H100은 피크 부하에서 최대 10.2kW를 소비할 수 있습니다. 따라서 가장 필수적인 검증은 전기적인 인프라-대-서버 인계 지점이 정상인지 확인하는 것입니다. 여기에는 차단기를 트립시키지 않고 전류 요구를 감당할 수 있는 이중화 PDU에 연결되어 있는지 검증하는 작업이 포함됩니다. NVSM으로 6개 PSU가 모두 정상 작동하며 정상 입력 전압(일반적으로 200V~240V)을 받고 있는지 확인해야 합니다. PSU가 최적 이하 입력이나 Loss of Redundancy를 보고하면 무거운 학습 중 시스템이 throttling 하거나 예기치 않게 종료될 수 있습니다. 팬이 항상 100%로 동작하는 것은 오히려 비효율적이거나 실패한 냉각 정책을 나타내는데, 팬은 발열 상태에 따라 동적으로 조절되어야 하기 때문입니다. 오버클러킹은 엔터프라이즈 DGX에서 지원되거나 권장되지 않으며, PCIe 장치 비활성화는 검증이 아니라 구성 변경입니다.",
+    "explanation_en": "Stable operation of high-density AI infrastructure like the DGX H100 requires strict adherence to power and thermal specifications. A single DGX H100 can draw up to 10.2kW under peak load. Therefore, the most essential validation step is ensuring the electrical infrastructure-to-server handoff is healthy. This involves verifying that the system is connected to redundant PDUs capable of handling the amperage requirements without tripping breakers. Using NVSM, an administrator must check that all six power supplies are functional and receiving nominal input voltage (typically 200V-240V). If a PSU reports sub-optimal input or a Loss of Redundancy, the system may throttle performance or shut down unexpectedly during a heavy training run. Fans running at 100% at all times would actually indicate an inefficient or failed cooling policy, as fans should scale dynamically. Overclocking is not supported or recommended for enterprise DGX systems, and disabling PCIe devices is a configuration change, not a validation."
+  },
+  {
+    "id": "n052",
+    "domain": "d5",
+    "type": "single",
+    "question": "You are evaluating the integration of NVIDIA BlueField DPUs into your data center's storage architecture to optimize AI workloads. Which of the following benefits directly results from this integration?",
+    "question_ko": "AI 워크로드를 최적화하기 위해 데이터센터의 스토리지 아키텍처에 NVIDIA BlueField DPU를 통합하는 방안을 평가하고 있습니다. 다음 중 이러한 통합으로부터 직접적으로 얻어지는 이점은 무엇인가?",
+    "choices": [
+      "Unlimited scalability by adding more DPUs without architectural changes.",
+      "Elimination of latency issues in data processing tasks.",
+      "Reduced CPU load by offloading data processing tasks to DPUs.",
+      "Enhanced I/O performance with NVMe storage access speeds."
+    ],
+    "choices_ko": [
+      "아키텍처 변경 없이 DPU를 추가함으로써 얻는 무제한 확장성.",
+      "데이터 처리 작업에서 지연(latency) 문제의 완전한 제거.",
+      "데이터 처리 작업을 DPU로 오프로드함으로써 얻는 CPU 부하 감소.",
+      "NVMe 스토리지 접근 속도를 통한 향상된 I/O 성능."
+    ],
+    "answer": [2],
+    "explanation": "NVIDIA BlueField DPU는 전통적으로 호스트 CPU 사이클을 상당히 소모하는 인프라 작업을 오프로드하고 가속하며 격리하도록 설계되었습니다. 현대 AI 스토리지 아키텍처에서 NVMe-over-Fabrics 타깃 에뮬레이션, 하드웨어 가속 암호화, 데이터 압축 같은 작업은 CPU를 극도로 많이 사용합니다. BlueField DPU를 스토리지 패브릭에 통합하면 이러한 인프라 작업이 DPU의 전용 Arm 코어와 하드웨어 가속 엔진에서 처리됩니다. 이는 호스트 CPU 부하를 줄여 해당 코어들이 애플리케이션 로직과 GPU에 데이터를 공급하는 일에 집중하게 합니다. DPU가 I/O 성능을 향상시키고 지연을 줄이기는 하지만 그것들은 오프로딩이라는 근본적 아키텍처 전환에서 파생되는 간접적 이점입니다. 또 지연 문제의 '완전한 제거'나 '무제한 확장성'은 어떤 기술도 제공하지 못하는 절대 표현이라 오답입니다. NVIDIA DOCA 및 BlueField 문서가 언급하는 직접적 일차 이점은 호스트 CPU 리소스의 회수입니다.",
+    "explanation_en": "NVIDIA BlueField Data Processing Units are designed to offload, accelerate, and isolate infrastructure tasks that traditionally consume significant host CPU cycles. In modern AI storage architectures, tasks such as NVMe-over-Fabrics target emulation, hardware-accelerated encryption, and data compression are extremely CPU-intensive. By integrating BlueField DPUs into the storage fabric, these infrastructure tasks are handled by the DPU's dedicated Arm cores and hardware acceleration engines. This reduces the load on the host CPU, freeing those cores to focus on application logic and feeding the GPUs. While DPUs do enhance I/O performance and reduce latency, those are indirect benefits of the fundamental architectural shift of offloading. Claims of eliminating latency entirely or providing unlimited scalability are absolute statements no technology delivers. The direct, primary benefit cited in NVIDIA's DOCA and BlueField documentation is the reclamation of host CPU resources."
+  },
+  {
+    "id": "n053",
+    "domain": "d1",
+    "type": "single",
+    "question": "To validate bisectional bandwidth across two racks in a Spectrum-X Ethernet fabric with 8 GPUs per node, which NCCL test configuration isolates East-West traffic?",
+    "question_ko": "노드당 GPU 8개인 Spectrum-X Ethernet 패브릭에서 두 랙에 걸친 bisectional bandwidth를 검증하려고 할 때, East-West 트래픽을 분리해 내는 NCCL 테스트 구성은 무엇인가?",
+    "choices": [
+      "NCCL_TESTS_SPLIT=\"OR 0x7\" mpirun -np 32 ./all_reduce_perf -g 1",
+      "Run without splits and analyze per-rack averages.",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 32 ./all_reduce_perf -g 1",
+      "NCCL_TESTS_SPLIT=\"MOD 2\" mpirun -np 32 ./all_reduce_perf -g 1"
+    ],
+    "choices_ko": [
+      "NCCL_TESTS_SPLIT=\"OR 0x7\" mpirun -np 32 ./all_reduce_perf -g 1",
+      "split 없이 실행하고 랙별 평균을 분석한다.",
+      "NCCL_TESTS_SPLIT=\"AND 0x7\" mpirun -np 32 ./all_reduce_perf -g 1",
+      "NCCL_TESTS_SPLIT=\"MOD 2\" mpirun -np 32 ./all_reduce_perf -g 1"
+    ],
+    "answer": [2],
+    "explanation": "nccl-tests README는 split color를 MPI 프로세스 rank의 함수로 정의하며, 8-GPU 시스템에서 AND 0x7(= MOD 8)이 노드당 GPU 1개씩을 담은 8개의 병렬 커뮤니케이터를 만든다고 명시합니다. 어떤 그룹도 같은 노드에 두 rank를 갖지 않으므로 NVLink는 완전히 우회되고 모든 데이터가 leaf 및 spine 스위치를 통과합니다. 이것이 문항이 요구하는 East-West 격리입니다. mpirun 하에 GPU당 rank 1개(-g 1)로 실행하는 것이 필수인데, color가 프로세스 rank에서 유도되기 때문입니다. OR 0x7(= DIV 8)은 정확히 반대로 각 노드의 8개 rank를 하나의 그룹으로 뭉쳐 모든 트래픽을 해당 노드의 NVLink 도메인 안에 가둡니다. MOD 2는 rank를 홀짝으로 나눠 16개씩 두 그룹을 만들지만 각 그룹이 여전히 모든 노드에 GPU 4개씩을 보유하므로 노드 내부 트래픽이 측정에 섞여 어느 계층도 격리되지 않습니다. split 없이 실행하는 것은 애초에 구성이라 할 수 없고 사후에 랙별 평균을 내도 두 계층을 분리할 수 없습니다. 또한 보고 대역폭은 그룹당 값이므로 집계 수치와 비교할 때는 그룹 수를 곱해야 합니다.",
+    "explanation_en": "The nccl-tests README defines the split color as a function of the MPI process rank, and states that on 8-GPU systems AND 0x7 — equivalently MOD 8 — produces eight parallel communicators each holding one GPU per node. No group contains two ranks on the same node, so NVLink is bypassed entirely and every byte crosses the leaf and spine switches. That is precisely the East-West isolation the question asks for. Running one rank per GPU under mpirun is mandatory, because the color derives from the process rank. OR 0x7 (equivalently DIV 8) is the exact inverse: it collapses each node's eight ranks into one group, confining all traffic to that node's NVLink domain. MOD 2 partitions ranks by parity into two groups of sixteen, but each group still holds four GPUs on every node, so intra-node NVLink traffic remains mixed in. Running unsplit is not a configuration at all — it blends both layers and per-rack averaging cannot separate them afterward. Note also that reported bandwidth is per group, so the eight concurrent groups must be multiplied out when comparing against an aggregate figure."
+  },
+  {
+    "id": "n054",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to verify the current firmware versions of all components (ATF, BSP, NIC, UEFI) on a BlueField-3 DPU's BMC. Which Redfish API command provides this information?",
+    "question_ko": "엔지니어가 BlueField-3 DPU의 BMC에서 모든 구성 요소(ATF, BSP, NIC, UEFI)의 현재 펌웨어 버전을 확인해야 합니다. 이 정보를 제공하는 Redfish API 명령은 무엇인가?",
+    "choices": [
+      "mlxconfig -d <dev> q",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareList",
+      "mstflint -d <PCI_ID> query full",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory"
+    ],
+    "choices_ko": [
+      "mlxconfig -d <dev> q",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareList",
+      "mstflint -d <PCI_ID> query full",
+      "curl -k -u root:<password> -X GET https://<DPU-BMC-IP>/redfish/v1/UpdateService/FirmwareInventory"
+    ],
+    "answer": [3],
+    "explanation": "최신 NVIDIA BlueField DPU에는 out-of-band 관리를 위한 업계 표준 Redfish API를 지원하는 통합 BMC가 포함되어 있습니다. mlxconfig나 mstflint 같은 CLI 도구는 호스트 OS에서 NIC 펌웨어를 확인할 수 있지만, ARM Trusted Firmware(ATF), Board Support Package(BSP), DPU의 UEFI 부트로더 같은 BMC 고유 구성 요소는 쉽게 조회할 수 없습니다. Redfish 표준은 하드웨어 인벤토리를 위한 공통 URI를 규정하며, FirmwareInventory 엔드포인트가 DPU 상의 모든 펌웨어 제어 가능 구성 요소에 대한 버전 정보를 담은 JSON 객체를 가져오는 올바른 RESTful 경로입니다. 이는 스테이징 단계에서 DPU가 올바른 Golden Image 버전인지 검증하기 위해 자동화된 데이터센터 관리 시스템이 선호하는 방식입니다. FirmwareList는 이 데이터를 위한 표준 Redfish URI가 아닙니다. 참고로 자동화와 펌웨어 업데이트 문맥에서는 IPMI가 아니라 항상 Redfish가 답입니다.",
+    "explanation_en": "Modern NVIDIA BlueField DPUs include an integrated Baseboard Management Controller that supports the industry-standard Redfish API for out-of-band management. While CLI tools like mlxconfig or mstflint can be used from the host OS to check NIC firmware, they cannot easily query BMC-specific components like the ARM Trusted Firmware (ATF), the Board Support Package (BSP), or the UEFI bootloader of the DPU. The Redfish standard specifies a common URI for hardware inventory. The FirmwareInventory endpoint is the correct RESTful path to retrieve a comprehensive JSON object containing versioning details for all firmware-controllable components on the DPU. This is the preferred method for automated data center management systems to verify that DPUs are at the correct golden image version. FirmwareList is not a standard Redfish URI for this data. Note that in automation and firmware-update contexts, the answer is always Redfish rather than IPMI."
+  },
+  {
+    "id": "n055",
+    "domain": "d4",
+    "type": "single",
+    "question": "Why is it important to provide a large and high-performance local cache (using SSDs configured as RAID-0) for deep learning workloads on DGX systems?",
+    "question_ko": "DGX 시스템의 딥러닝 워크로드를 위해 크고 고성능인 로컬 캐시(RAID-0으로 구성된 SSD 사용)를 제공하는 것이 중요한 이유는 무엇인가?",
+    "choices": [
+      "Local SSD cache allows users to increase the number of NFS threads on the server without impacting storage reliability.",
+      "Using local SSD cache in RAID-0 enables direct GPU access to files without host CPU involvement, further boosting performance.",
+      "Local SSD cache in RAID-0 is necessary to provide redundancy in case one of the drives fails during long training runs.",
+      "A local SSD cache in RAID-0 ensures that most training data is read only once from the network, significantly reducing NFS traffic."
+    ],
+    "choices_ko": [
+      "로컬 SSD 캐시는 스토리지 신뢰성에 영향을 주지 않으면서 서버의 NFS 스레드 수를 늘릴 수 있게 해 준다.",
+      "RAID-0의 로컬 SSD 캐시를 사용하면 호스트 CPU 개입 없이 GPU가 파일에 직접 접근할 수 있어 성능이 더욱 향상된다.",
+      "RAID-0의 로컬 SSD 캐시는 장시간 학습 중 드라이브 하나가 고장날 경우를 대비한 이중화를 제공하기 위해 필요하다.",
+      "RAID-0의 로컬 SSD 캐시는 대부분의 학습 데이터가 네트워크로부터 단 한 번만 읽히도록 보장하여 NFS 트래픽을 크게 줄여 준다."
+    ],
+    "answer": [3],
+    "explanation": "딥러닝 학습은 데이터셋을 여러 번 반복(epoch)합니다. 32노드 클러스터가 매 epoch마다 중앙 NFS 서버에서 동일 데이터셋을 가져온다면 incast 트래픽으로 네트워크와 스토리지 패브릭이 병목이 됩니다. DGX 내부의 고속 NVMe 드라이브를 (이중화가 아니라 최대 성능을 위해) RAID-0으로 구성하면 로컬 캐시를 구현할 수 있습니다. 첫 epoch에서 데이터를 원격 스토리지에서 가져오면서 동시에 로컬 SSD에 기록하고, 이후 모든 epoch에서는 로컬 RAID-0 어레이에서 직접 읽습니다. 이는 NFS 트래픽과 네트워크 혼잡을 크게 줄여 학습이 로컬 NVMe의 최대 속도로 진행되게 합니다. 이중화라는 보기는 틀렸는데 RAID-0은 이중화를 전혀 제공하지 않으며, 드라이브가 고장나면 캐시는 손실되지만 데이터는 여전히 주 스토리지에 존재합니다. GPU 직접 접근은 GPUDirect Storage라는 별개 기술이고, NFS 스레드 수 증가도 로컬 캐시의 목적이 아닙니다.",
+    "explanation_en": "Deep learning training involves iterating over a dataset many times (epochs). If a 32-node cluster pulls the same dataset from a central NFS server for every epoch, the network and storage fabric quickly become a bottleneck due to incast traffic. By using the high-speed NVMe drives internal to a DGX (configured in RAID-0 for maximum performance, not redundancy), the system implements a local cache. During the first epoch, data is pulled from remote storage and simultaneously written to the local SSDs. For all subsequent epochs, the training framework reads directly from the local RAID-0 array. This significantly reduces NFS traffic and network congestion, allowing training to proceed at the full speed of local NVMe storage. The redundancy option is incorrect because RAID-0 provides no redundancy; if a drive fails the cache is lost, but the data still exists on primary storage. Direct GPU access refers to GPUDirect Storage, a separate technology, and increasing NFS thread counts is not the purpose of a local cache."
+  },
+  {
+    "id": "n056",
+    "domain": "d4",
+    "type": "single",
+    "question": "After NCCL burn-in reports \"transport retry count exceeded,\" which corrective action addresses the underlying fabric issue?",
+    "question_ko": "NCCL burn-in 테스트가 \"transport retry count exceeded\"를 보고한 후, 근본적인 패브릭 문제를 해결하는 시정 조치는 무엇인가?",
+    "choices": [
+      "Switch from Ring to Tree algorithms via NCCL_ALGO=TREE",
+      "Reduce message size to decrease network utilization",
+      "Increase NCCL_IB_TIMEOUT to tolerate longer latencies",
+      "Inspect InfiniBand link quality metrics (BER, symbol errors) and replace faulty cables"
+    ],
+    "choices_ko": [
+      "NCCL_ALGO=TREE를 통해 Ring 알고리즘에서 Tree 알고리즘으로 전환한다",
+      "네트워크 사용률을 낮추기 위해 메시지 크기를 줄인다",
+      "더 긴 지연을 허용하도록 NCCL_IB_TIMEOUT을 늘린다",
+      "InfiniBand 링크 품질 지표(BER, symbol errors)를 검사하고 결함 있는 케이블을 교체한다"
+    ],
+    "answer": [3],
+    "explanation": "InfiniBand 기반 AI 클러스터에서 transport retry count exceeded는 패브릭 물리 계층 불안정을 나타내는 중대한 지표입니다. NCCL이 노드 간 GPU 사이에서 데이터를 옮길 때 InfiniBand의 Reliable Connection(RC) 전송에 의존하는데, 신호 무결성 문제로 패킷이 손상되거나 손실되면 하드웨어가 재전송을 시도합니다. 실패한 재전송 횟수가 하드웨어 정의 Retry Count를 초과하면 연결이 끊어지고 이 오류가 보고됩니다. 타임아웃을 늘리는 것 같은 소프트웨어적 우회책은 증상을 잠시 가릴 뿐 고장나고 있는 물리 부품을 고치지 못합니다. 검증된 절차는 ibqueryerrors, ibdiagnet, mlxlink 같은 도구로 링크 품질 지표를 검사하는 것이며, 특히 높은 BER과 Symbol Errors를 봅니다. 이러한 오류는 보통 오염된 광 커넥터, 제대로 장착되지 않은 트랜시버, 200G/400G 속도에 필요한 신호 대 잡음비를 유지하지 못하는 한계 DAC 케이블에서 발생합니다. 알고리즘 변경이나 메시지 크기 축소도 근본 원인을 건드리지 못합니다.",
+    "explanation_en": "In an InfiniBand-based AI cluster, \"transport retry count exceeded\" is a critical indicator of physical layer instability within the fabric. When NCCL moves data between GPUs across nodes, it relies on the Reliable Connection (RC) transport of InfiniBand. If a packet is corrupted or lost due to signal integrity issues, the hardware attempts to retransmit. If failed retransmissions exceed the hardware-defined retry count, the connection is torn down and NCCL reports this error. Software workarounds like increasing timeouts may mask the symptom briefly but do not fix the root cause: a failing physical component. The verified procedure is to use tools like ibqueryerrors, ibdiagnet, or mlxlink to inspect link quality metrics, specifically high Bit Error Rates and symbol errors. These are typically caused by dirty fiber connectors, poorly seated transceivers, or marginal DAC cables that cannot maintain the signal-to-noise ratio required for 200G or 400G speeds. Changing the collective algorithm or shrinking messages likewise fails to address the root cause."
+  },
+  {
+    "id": "n057",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system engineer needs to set the vGPU scheduling behavior for all GPUs to share the scheduling equally with the default time slice length. What command should be used?",
+    "question_ko": "시스템 엔지니어가 모든 GPU의 vGPU 스케줄링 동작을 기본 time slice 길이로 스케줄링을 균등하게 공유하도록 설정해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"",
+      "esxcli graphics module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"",
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=FRL=0x01\"",
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x00\""
+    ],
+    "choices_ko": [
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"",
+      "esxcli graphics module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x01\"",
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=FRL=0x01\"",
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwords=RmPVMRL=0x00\""
+    ],
+    "answer": [0],
+    "explanation": "VMware ESXi에 NVIDIA vGPU를 배포할 때 드라이버는 여러 VM 간에 GPU 물리 리소스를 공유하는 방식을 결정하는 스케줄링 정책들을 제공합니다. 기본 동작은 대개 Best Effort 스케줄러이지만, 모든 사용자에게 예측 가능한 성능이 요구되는 환경에서는 Equal Share 스케줄러가 선호됩니다. 이 스케줄러는 각 vGPU에 물리 GPU 엔진의 동일한 time slice를 부여합니다. 구성은 호스트 부팅 시 nvidia 커널 드라이버에 전달되는 모듈 매개변수로 관리되며, 해당 레지스트리 키는 RmPVMRL입니다. 모든 GPU에 적용하려면 NVreg_RegistryDwords를 쓰고(특정 GPU만이면 NVreg_RegistryDwordsPerDevice), RmPVMRL=0x01이 Equal Share 스케줄러를 활성화합니다. 0x00은 기본 동작으로 되돌립니다. 설정이 재부팅 후에도 유지되고 드라이버 스택 전역에 적용되도록 system module parameters set을 사용해야 하며, graphics 하위 명령은 이 용도의 올바른 문법이 아닙니다. FRL은 Frame Rate Limiter 관련 키로 스케줄링 정책과 다릅니다.",
+    "explanation_en": "When deploying NVIDIA vGPU on VMware ESXi, the driver provides several scheduling policies determining how GPU physical resources are shared among multiple virtual machines. The default behavior is often the Best Effort scheduler, but for environments requiring predictable performance across all users, the Equal Share scheduler is preferred. This scheduler gives each vGPU an equal time slice of the physical GPU's engines. The configuration is managed via module parameters passed to the nvidia kernel driver during host boot, and the specific registry key is RmPVMRL. To apply to all GPUs you use NVreg_RegistryDwords (for select GPUs it would be NVreg_RegistryDwordsPerDevice), and RmPVMRL=0x01 enables the Equal Share scheduler. 0x00 reverts to the default behavior. It is critical to use system module parameters set so the setting persists across reboots and applies globally; the graphics subcommand is not correct syntax for this. FRL relates to the Frame Rate Limiter, not the scheduling policy."
+  },
+  {
+    "id": "n058",
+    "domain": "d2",
+    "type": "single",
+    "question": "As the infrastructure lead for an NVIDIA AI Factory deployment, you have just uploaded the latest supported firmware packages to your DGX system. Which sequence best guarantees that all relevant components are correctly running updated firmware?",
+    "question_ko": "NVIDIA AI Factory 배포의 인프라 리드로서, 방금 최신 지원 펌웨어 패키지를 DGX 시스템에 업로드했습니다. 모든 관련 구성 요소가 업데이트된 펌웨어로 올바르게 동작하도록 가장 잘 보장하는 순서는 무엇인가?",
+    "choices": [
+      "Perform a software-driven restart on the operating system of every compute node, then use advanced tools to check firmware status, and reissue update commands if any firmware appears inactive afterward.",
+      "Execute a single AC power cycle on the DGX after the update process, then reset the software stack and verify status using diagnostic commands on each node.",
+      "Initiate a cold power cycle on all node trays to activate firmware, follow with a DGX reboot procedure, and use the management interface to finish activating CPLD firmware on the host.",
+      "Initiate a cold power cycle on the system to activate firmware for components, reset the BMC using the recommended command, and perform an AC power cycle to ensure EROT and CPLD firmware is activated."
+    ],
+    "choices_ko": [
+      "모든 컴퓨트 노드의 운영체제에 소프트웨어 기반 재시작을 수행한 뒤, 고급 도구로 펌웨어 상태를 확인하고, 비활성 상태로 보이는 펌웨어가 있으면 업데이트 명령을 다시 실행한다.",
+      "업데이트 과정 후 DGX에 AC 전원 사이클을 한 번 실행한 뒤, 소프트웨어 스택을 재설정하고 각 노드에서 진단 명령으로 상태를 확인한다.",
+      "펌웨어를 활성화하기 위해 모든 노드 트레이에 cold power cycle을 시작하고, 이어서 DGX 재부팅 절차를 수행한 뒤, 관리 인터페이스로 호스트의 CPLD 펌웨어 활성화를 마무리한다.",
+      "구성 요소의 펌웨어를 활성화하기 위해 시스템에 cold power cycle을 시작하고, 권장 명령으로 BMC를 재설정한 뒤, EROT 및 CPLD 펌웨어가 활성화되도록 AC 전원 사이클을 수행한다."
+    ],
+    "answer": [3],
+    "explanation": "DGX 시스템 업데이트는 CPLD, FPGA, EROT(Electrically Resilient Root of Trust) 모듈 등 다수의 프로그래머블 로직 장치가 포함되어 다층적입니다. 이러한 저수준 구성 요소 상당수는 단순한 OS 재부팅으로 업데이트할 수 없습니다. NVIDIA 공식 절차는 새 이미지를 하드웨어에 commit하기 위해 특정 순서를 요구합니다. 먼저 업데이트 유틸리티(nvfwupd 등)가 이미지를 플래시 메모리에 기록합니다. 이를 활성화하려면 하드웨어가 새로 기록된 플래시 블록에서 다시 로드하도록 강제하는 cold power cycle이 필요합니다. 또한 BMC가 전원 켜기 시퀀스를 조율하고 EROT를 모니터링하므로 새 구성 요소 버전과 상태를 동기화하려면 BMC를 재설정해야 합니다. 마지막으로 AC power cycle은 전력 공급 컨트롤러와 CPLD 같은 standby 전원 구성 요소까지 완전한 하드웨어 리셋을 거치도록 보장합니다. 이 단계를 건너뛰면 OS는 새 버전을 보고하지만 하드웨어는 배후에서 계속 오래된 코드를 실행하는 불일치가 발생합니다.",
+    "explanation_en": "Updating an NVIDIA DGX system is a multi-layered process because the system contains numerous programmable logic devices, including CPLDs, FPGAs, and the EROT (Electrically Resilient Root of Trust) modules. Many of these low-level components cannot be updated via a simple operating system reboot. NVIDIA's official procedure requires a specific sequence to commit the new images to hardware. First, the update utility (such as nvfwupd) writes the images to flash memory. To activate them, a cold power cycle is necessary to force the hardware to reload from the newly written flash blocks. Furthermore, because the BMC orchestrates the power-on sequence and monitors the EROT, it must be reset to synchronize its state with the new component versions. Finally, an AC power cycle ensures that even standby-power components, such as power delivery controllers and CPLDs, undergo a full hardware reset. Skipping these steps results in mismatched firmware versions, where the OS reports one version while the hardware continues running old code."
+  },
+  {
+    "id": "n059",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator is configuring node categories in BCM for a DGX BasePOD cluster. They need to group all NVIDIA DGX H200 nodes under a dedicated category for GPU-accelerated workloads. Which approach aligns with NVIDIA's recommended BCM practices?",
+    "question_ko": "관리자가 DGX BasePOD 클러스터를 위해 BCM에서 노드 카테고리를 구성하고 있습니다. GPU 가속 워크로드를 위한 전용 카테고리 아래에 모든 NVIDIA DGX H200 노드를 그룹화해야 합니다. NVIDIA가 권장하는 BCM 실무 관행에 부합하는 접근 방식은 무엇인가?",
+    "choices": [
+      "Assign nodes to the \"login\" category to simplify Slurm integration.",
+      "Create a new \"dgx-h200\" category, assign all DGX H200 nodes to it.",
+      "Use the existing \"dgxnodes\" category without modification, as it is preconfigured for all DGX systems.",
+      "Avoid categories and configure each DGX node individually via CLI."
+    ],
+    "choices_ko": [
+      "Slurm 통합을 단순화하기 위해 노드들을 \"login\" 카테고리에 할당한다.",
+      "새로운 \"dgx-h200\" 카테고리를 만들고 모든 DGX H200 노드를 여기에 할당한다.",
+      "기존 \"dgxnodes\" 카테고리를 수정 없이 사용한다. 이는 모든 DGX 시스템에 대해 사전 구성되어 있기 때문이다.",
+      "카테고리를 사용하지 않고 각 DGX 노드를 CLI를 통해 개별적으로 구성한다."
+    ],
+    "answer": [1],
+    "explanation": "BCM은 노드 그룹에 구성, 소프트웨어 이미지, 보안 정책을 적용하기 위한 기본 조직 단위로 카테고리를 사용합니다. 이기종 클러스터에서, 혹은 대규모 동종 클러스터에서조차 서로 다른 하드웨어 세대(DGX H100 대 H200)를 위한 별도 카테고리를 만드는 것이 모범 사례입니다. 전용 dgx-h200 카테고리를 생성하면 H200의 HBM3e 메모리와 Hopper 아키텍처 업데이트에 최적화된 특정 커널 파라미터, 드라이버 버전, 특화 소프트웨어 패키지를 적용할 수 있습니다. 일반적인 dgxnodes 카테고리를 쓰면 클러스터 전체에 영향을 주지 않으면서 하드웨어 일부에 롤링 업그레이드를 수행하거나 새 드라이버를 테스트하기 어려워집니다. 카테고리화는 Slurm과의 세밀한 통합도 가능하게 해 partition 정의가 BCM 카테고리에 직접 매핑됩니다. 노드를 개별 구성하는 방식은 규모가 커지면 관리가 불가능하고 구성 드리프트를 유발하며, login 카테고리는 컴퓨트 노드용이 아닙니다.",
+    "explanation_en": "NVIDIA Base Command Manager uses categories as the primary organizational unit for applying configurations, software images, and security policies to groups of nodes. In a heterogeneous cluster — or even a large homogeneous one — creating specific categories for different hardware generations (like DGX H100 vs. H200) is a best practice. By creating a dedicated dgx-h200 category, the administrator can apply specific kernel parameters, driver versions, and specialized software packages optimized for the H200's HBM3e memory and Hopper architecture updates. Using a generic dgxnodes category makes it difficult to perform rolling upgrades or test new drivers on a subset of hardware without impacting the entire cluster. Categorizing nodes also allows granular integration with Slurm, enabling partition definitions that map directly to BCM categories. Configuring each node individually becomes unmanageable at scale and creates configuration drift, and the login category is not intended for compute nodes."
+  },
+  {
+    "id": "n060",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are leading a project to enhance the energy efficiency of a data center that heavily relies on AI workloads. NVIDIA suggests moving beyond traditional metrics like Power Usage Effectiveness (PUE) to better capture the efficiency of modern data centers. Which strategy should you prioritize?",
+    "question_ko": "AI 워크로드에 크게 의존하는 데이터센터의 에너지 효율을 개선하는 프로젝트를 이끌고 있습니다. NVIDIA는 현대 데이터센터의 효율성을 더 잘 포착하기 위해 PUE(Power Usage Effectiveness) 같은 전통적 지표를 넘어설 것을 제안합니다. 어떤 전략을 우선시해야 하는가?",
+    "choices": [
+      "Use Power Usage Effectiveness as the primary metric while supplementing it with additional measures of useful work done per unit of energy.",
+      "Use watts used as the primary measure of efficiency, as it accurately reflects the power input at any given time.",
+      "Develop benchmarks tailored to specific workloads, such as MLPerf for AI applications, to better understand energy use in real-world scenarios.",
+      "Focus on integrating kilowatt-hours into existing metrics to better reflect the actual energy used for productive work."
+    ],
+    "choices_ko": [
+      "Power Usage Effectiveness를 주요 지표로 사용하되, 에너지 단위당 수행된 유용한 작업량에 대한 추가 측정치로 이를 보완한다.",
+      "사용된 와트(watts)를 효율성의 주요 척도로 사용한다. 이는 임의의 시점에서의 전력 입력을 정확히 반영하기 때문이다.",
+      "실제 시나리오에서의 에너지 사용을 더 잘 이해하기 위해, AI 애플리케이션용 MLPerf와 같이 특정 워크로드에 맞춘 벤치마크를 개발한다.",
+      "생산적인 작업에 실제로 사용된 에너지를 더 잘 반영하기 위해 기존 지표에 킬로와트시(kWh)를 통합하는 데 집중한다."
+    ],
+    "answer": [2],
+    "explanation": "PUE 같은 전통적 데이터센터 지표는 IT 부하 대비 냉각과 전력 공급에서 얼마나 많은 에너지가 낭비되는지만 측정할 뿐, 그 IT 부하가 자신의 작업을 얼마나 효율적으로 수행하는지에 대해서는 아무것도 말해 주지 않습니다. AI Factory에서 효율성은 와트당 수행된 AI 학습 또는 추론의 양으로 정의하는 것이 적절합니다. NVIDIA는 이를 정량화하기 위해 MLPerf 같은 워크로드별 벤치마크 사용을 옹호합니다. MLPerf는 표준화된 AI 작업을 완료하는 데 필요한 시간과 에너지를 측정합니다. 이러한 벤치마크를 우선시하면 서로 다른 하드웨어 아키텍처(A100 대 H100)나 소프트웨어 최적화(FP8 대 FP16)의 에너지 효율을 비교할 수 있습니다. 예를 들어 H100이 이전 세대보다 피크 전력이 높더라도 학습 작업을 훨씬 빠르게 완료하므로 작업당 총 소비 에너지는 현저히 낮아집니다. 와트나 kWh만 보는 보기는 투입 에너지만 세고 산출을 세지 않으며, PUE를 여전히 주요 지표로 두는 보기는 문항이 요구하는 '넘어선다'에 부합하지 않습니다.",
+    "explanation_en": "Traditional data center metrics like PUE only measure how much energy is wasted by cooling and power delivery relative to the IT load; they say nothing about how efficiently that IT load performs its task. In an AI Factory, efficiency is better defined by the amount of AI training or inference performed per watt. NVIDIA advocates for workload-specific benchmarks, such as MLPerf, to quantify this. MLPerf measures the time and energy required to complete standardized AI tasks. By prioritizing these benchmarks, an organization can compare the energy efficiency of different hardware architectures (A100 vs. H100) or software optimizations (FP8 vs. FP16). For example, even if an H100 system draws more peak power than an older system, completing a training job far faster results in significantly lower total energy consumed per job. Options based on watts or kilowatt-hours alone count energy input without counting useful output, and keeping PUE as the primary metric does not satisfy the question's requirement to move beyond it."
+  }
+]

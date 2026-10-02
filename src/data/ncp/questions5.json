@@ -1,0 +1,234 @@
+[
+  {
+    "id": "n041",
+    "domain": "d2",
+    "type": "single",
+    "question": "A customer has just completed the first boot of their DGX system and is prompted to create an administrative user. What is the correct approach for setting up this user to ensure secure BMC and GRUB access?",
+    "question_ko": "한 고객이 방금 DGX 시스템의 첫 부팅을 완료했고 관리자 사용자를 생성하라는 메시지를 받았습니다. 안전한 BMC 및 GRUB 액세스를 보장하기 위해 이 사용자를 설정하는 올바른 접근 방식은 무엇인가?",
+    "choices": [
+      "Create separate usernames for BMC and GRUB to maximize flexibility.",
+      "Skip the creation of a new user and retain the default admin account for BMC and GRUB access.",
+      "Create a unique, strong, lower-case username and password that will be used for both BMC and GRUB access, avoiding default or weak credentials.",
+      "Use \"sysadmin\" as the username and a simple password for ease of management."
+    ],
+    "choices_ko": [
+      "유연성을 극대화하기 위해 BMC와 GRUB에 대해 별도의 사용자 이름을 생성한다.",
+      "새 사용자 생성을 건너뛰고 BMC 및 GRUB 액세스를 위해 기본 admin 계정을 그대로 유지한다.",
+      "기본 자격 증명이나 취약한 자격 증명을 피하고, BMC와 GRUB 액세스 모두에 사용할 고유하고 강력한 소문자 사용자 이름과 비밀번호를 생성한다.",
+      "관리 편의를 위해 사용자 이름으로 \"sysadmin\"을, 비밀번호로 단순한 값을 사용한다."
+    ],
+    "answer": [2],
+    "explanation": "DGX 시스템의 초기 first boot 설정에서 설치 마법사는 기본 관리자 사용자를 생성하도록 요구합니다. 이 계정은 로컬 OS 로그인뿐 아니라 BMC(Baseboard Management Controller)와 GRUB 부트로더 액세스를 제공하도록 동기화되기 때문에 중요합니다. NVIDIA 모범 사례는 고유하고 강력한 비밀번호 사용을 의무화합니다. 소문자 사용자 이름은 다양한 인증 서비스 전반의 호환성을 보장하는 표준 Linux 관례입니다. 첫 부팅 시 이를 올바르게 설정하면 out-of-band 관리(BMC)와 pre-boot 구성(GRUB)이 무단 액세스로부터 보호됩니다. 기본 자격 증명에 의존하거나 취약한 비밀번호를 쓰는 것은 AI 인프라에서 심각한 보안 위험인데, BMC는 전원·펌웨어·원격 콘솔에 대한 상위 수준 제어 권한을 갖기 때문입니다.",
+    "explanation_en": "During the initial first boot setup of a DGX system, the installation wizard requires creation of a primary administrative user. This account is pivotal because it is used not only for local OS login but is also synchronized to provide access to the Baseboard Management Controller (BMC) and the GRUB bootloader. NVIDIA best practices mandate the use of a unique, strong password. Using a lower-case username is a standard Linux convention that ensures compatibility across authentication services. By setting this up correctly during first boot, out-of-band management (via BMC) and pre-boot configuration (via GRUB) are protected from unauthorized access. Relying on default credentials or weak passwords is a significant security risk, as the BMC often has high-level control over power, firmware, and remote console access."
+  },
+  {
+    "id": "n042",
+    "domain": "d1",
+    "type": "single",
+    "question": "During East-West fabric validation on a 64-GPU cluster (8 nodes x 8 GPUs, one NDR 400G HCA per GPU), an engineer runs all_reduce_perf at large message sizes and observes an algorithm bandwidth of 178 GB/s and a bus bandwidth of 350 GB/s. What does this indicate?",
+    "question_ko": "64-GPU 클러스터(8노드 × 8 GPU, GPU당 NDR 400G HCA 1장)에서 East-West 패브릭 검증 중, 엔지니어가 all_reduce_perf를 대용량 메시지로 실행하여 algorithm bandwidth 178 GB/s, bus bandwidth 350 GB/s를 관측했습니다. 이것이 의미하는 바는 무엇인가?",
+    "choices": [
+      "An error in the test; algorithm bandwidth and bus bandwidth should match.",
+      "Expected behavior; for all_reduce, busbw = algbw x 2(n-1)/n, so bus bandwidth is always higher, and bus bandwidth is the metric used to validate fabric performance.",
+      "An invalid measurement; bus bandwidth exceeds the per-GPU NDR link rate of 50 GB/s.",
+      "Inconclusive; algorithm bandwidth alone is sufficient, so bus bandwidth can be ignored."
+    ],
+    "choices_ko": [
+      "테스트 오류다. algorithm bandwidth와 bus bandwidth는 일치해야 한다.",
+      "예상된 동작이다. all_reduce에서 busbw = algbw × 2(n-1)/n 이므로 bus bandwidth가 항상 더 높으며, 패브릭 성능 판정은 bus bandwidth로 한다.",
+      "무효한 측정이다. bus bandwidth가 GPU당 NDR 링크 속도 50 GB/s를 초과한다.",
+      "결론을 내릴 수 없다. algorithm bandwidth만으로 충분하므로 bus bandwidth는 무시해도 된다."
+    ],
+    "answer": [1],
+    "explanation": "nccl-tests가 보고하는 두 대역폭 수치는 고정된 공식으로 연결되어 있습니다. bus bandwidth는 algorithm bandwidth에 공식을 적용해 산출되며, 이를 통해 rank 수와 무관하게 하드웨어 피크 대역폭과 직접 비교할 수 있습니다. ring/tree all_reduce의 계수는 2(n-1)/n 입니다. 제시된 수치는 정합합니다. 350 ÷ 178 = 1.966 ≈ 2 × 63/64 = 1.969. 'algbw와 busbw가 일치해야 한다'는 보기는 틀렸는데, n이 2 이상이면 두 값은 절대 같아질 수 없고 그 비율은 결함이 아니라 집합통신 알고리즘의 정의이기 때문입니다. '단일 링크 속도를 넘으므로 무효'라는 보기도 틀렸습니다. 계층적 all_reduce에서는 NVLink 구간이 수치에 포함되므로 GPU당 네트워크 라인레이트를 초과하는 것이 정상입니다. 'algbw만으로 충분하다'는 보기도 틀렸는데, algbw는 rank 수에 따라 변하므로 하드웨어 사양과 직접 비교할 수 없고 하드웨어 검증은 busbw로 하기 때문입니다.",
+    "explanation_en": "nccl-tests reports two bandwidth figures that are linked by a fixed formula. Bus bandwidth is derived by applying a formula to the algorithm bandwidth so that inter-GPU communication speed can be compared against hardware peak bandwidth independently of the number of ranks used. For ring and tree all_reduce, that factor is 2(n-1)/n. The numbers here are self-consistent: 350 / 178 = 1.966, approximately 2 x 63/64 = 1.969. The option claiming the two values should match is wrong: they can never be equal for n >= 2, and the ratio is a property of the collective algorithm, not a defect. The option calling it invalid because it exceeds a single link's rate is also wrong — in hierarchical all_reduce the NVLink segment is folded into the number, so exceeding the per-GPU network line rate is normal. The option dismissing busbw is wrong because algorithm bandwidth varies with rank count and therefore cannot be compared directly to hardware specifications; hardware validation uses busbw."
+  },
+  {
+    "id": "n042b",
+    "domain": "d1",
+    "type": "single",
+    "question": "On an 8-node x 8-GPU H100 cluster (NVLink 4 intra-node, one NDR 400G HCA per GPU), all_reduce_perf reports a bus bandwidth of 656 GB/s. The engineer concludes that the NDR InfiniBand fabric is operating at line rate. What is wrong with this conclusion?",
+    "question_ko": "8노드 × 8 GPU H100 클러스터(노드 내 NVLink 4, GPU당 NDR 400G HCA 1장)에서 all_reduce_perf 결과 bus bandwidth가 656 GB/s로 보고되었습니다. 엔지니어는 \"NDR InfiniBand 패브릭이 라인레이트로 동작 중\"이라고 결론지었습니다. 이 판단의 문제점은 무엇인가?",
+    "choices": [
+      "Nothing; 656 GB/s is the aggregate line rate of 8 NDR rails.",
+      "Bus bandwidth is compared against the per-GPU link rate (NDR is about 50 GB/s), not an aggregate. A figure of 656 GB/s reflects the NVLink segment dominating the measurement and is not evidence about the IB fabric.",
+      "Algorithm bandwidth, not bus bandwidth, should be compared to link rate.",
+      "The result is only valid if message sizes reach 8 GB or larger."
+    ],
+    "choices_ko": [
+      "문제없다. 656 GB/s는 8개 NDR 레일의 합산 라인레이트다.",
+      "bus bandwidth는 합산값이 아니라 GPU당 링크 속도(NDR 약 50 GB/s)와 비교하는 지표다. 656 GB/s는 NVLink 구간이 측정을 지배한 결과이며 IB 패브릭에 대한 증거가 되지 못한다.",
+      "bus bandwidth가 아니라 algorithm bandwidth를 링크 속도와 비교해야 한다.",
+      "메시지 크기가 8 GB 이상일 때만 유효한 결과다."
+    ],
+    "answer": [1],
+    "explanation": "보정 계수와 NVLink·InfiniBand 간의 큰 속도 차이 때문에, 최종 bus bandwidth 값이 실제 하드웨어 대역폭을 정확히 반영하지 못할 수 있습니다. NVLink와 InfiniBand가 함께 개입하는 실행에서 busbw는 InfiniBand 부하를 과대평가합니다. NVLS 알고리즘에서는 노드 내 집계가 일어나므로 2(n-1)/n 계수가 실제 하드웨어 병목에 대응하지 않는다는 점이 알려져 있습니다. 따라서 멀티노드 실행에서 busbw가 매우 높다는 사실만으로 E/W 패브릭이 건강하다고 결론지을 수 없습니다. 네트워크 경로를 분리 검증하려면 NCCL_DEBUG=INFO로 실제 전송 경로를 확인하고, 레일별 ib_write_bw로 교차 검증해야 합니다. busbw를 합산 라인레이트와 비교하는 보기는 지표의 정의를 오해한 것이고, algbw를 링크 속도와 비교하라는 보기는 rank 수 의존성 때문에 성립하지 않으며, 메시지 크기 조건만 붙이는 보기는 계층 혼합이라는 본질을 비켜갑니다.",
+    "explanation_en": "Because of the correction factor and the large speed difference between NVLink and InfiniBand, the resulting bus bandwidth may not accurately reflect true hardware bandwidth — in runs involving both NVLink and InfiniBand, busbw can overestimate the load on InfiniBand. This is a documented issue: with NVLS, intra-server aggregation means the 2(n-1)/n factor no longer maps to the hardware bottleneck. So a very high busbw on a multi-node run is not proof that the East-West fabric is healthy. To isolate the network path, use NCCL_DEBUG=INFO to confirm the transport, and cross-check with ib_write_bw per rail. Comparing busbw to an aggregate line rate misreads the metric's definition; comparing algbw to link rate fails because of its rank-count dependence; and adding only a message-size condition sidesteps the actual issue of mixed layers."
+  },
+  {
+    "id": "n043",
+    "domain": "d1",
+    "type": "single",
+    "question": "A cluster administrator needs to validate transceiver firmware versions across 200 ports using UFM. Which GUI-based method provides a consolidated view?",
+    "question_ko": "클러스터 관리자가 UFM을 사용하여 200개 포트 전반의 트랜시버 펌웨어 버전을 검증해야 합니다. 어떤 GUI 기반 방법이 통합된 뷰를 제공하는가?",
+    "choices": [
+      "Navigate to \"Devices\" > select a switch > \"Cables\" tab to see ASIC firmware and transceiver versions.",
+      "Use \"Topology\" view to visually inspect cable icons.",
+      "Run mlxlink -d lid-<LID> -m on each port manually.",
+      "Export all switch logs and grep for \"FW Version\"."
+    ],
+    "choices_ko": [
+      "\"Devices\"로 이동 > 스위치 선택 > \"Cables\" 탭에서 ASIC 펌웨어 및 트랜시버 버전을 확인한다.",
+      "\"Topology\" 뷰를 사용하여 케이블 아이콘을 시각적으로 점검한다.",
+      "각 포트에서 수동으로 mlxlink -d lid-<LID> -m을 실행한다.",
+      "모든 스위치 로그를 내보낸 후 \"FW Version\"을 grep한다."
+    ],
+    "answer": [0],
+    "explanation": "대규모 AI 패브릭을 관리하려면 물리 계층에 대한 중앙집중식 가시성이 필요합니다. NVIDIA Unified Fabric Manager(UFM)는 InfiniBand 네트워크를 위한 포괄적 Dashboard를 제공합니다. 패브릭 전반의 기능 동등성과 안정성을 보장하는 데 중요한 트랜시버 펌웨어를 확인하려면 UFM Enterprise GUI를 사용합니다. Devices 섹션에서 특정 스위치를 선택하면 Cables 탭이 사용 중인 모든 포트에 대한 텔레메트리를 집계해 보여줍니다. 이 뷰는 제조사, 부품 번호, 그리고 트랜시버(LinkX) 또는 AOC의 펌웨어 버전을 표시합니다. 200개 이상 포트에 대해 수동 CLI 쿼리를 반복하는 것보다 훨씬 효율적이며, Topology 뷰의 아이콘 육안 점검이나 로그 grep은 버전 정보를 구조적으로 제공하지 않습니다. 트랜시버 전반의 균일한 펌웨어는 Adaptive Routing과 Congestion Control이 400G/200G 패브릭 전체에서 일관되게 작동하도록 보장합니다.",
+    "explanation_en": "Managing a large-scale AI fabric requires centralized visibility into the physical layer. The NVIDIA Unified Fabric Manager (UFM) provides a comprehensive dashboard for InfiniBand networks. To check transceiver firmware — critical for feature parity and stability across the fabric — the administrator uses the UFM Enterprise GUI. By navigating to the Devices section and selecting a specific switch, the Cables tab aggregates telemetry for every occupied port. This view displays the manufacturer, part number, and the specific firmware version of the transceivers (LinkX) or Active Optical Cables. This consolidated view is far more efficient than manual CLI queries for 200+ ports, and neither visually inspecting topology icons nor grepping exported logs provides structured version data."
+  },
+  {
+    "id": "n044",
+    "domain": "d3",
+    "type": "single",
+    "question": "You're tasked with updating both NVIDIA GPU drivers and DOCA drivers on a set of servers used for AI workloads. The environment previously had an older driver stack and custom kernel modules. What is the most important step to successfully upgrade the drivers without causing conflicts?",
+    "question_ko": "AI 워크로드에 사용되는 서버들에서 NVIDIA GPU 드라이버와 DOCA 드라이버를 모두 업데이트하는 임무를 맡았습니다. 해당 환경에는 이전에 구버전 드라이버 스택과 커스텀 커널 모듈이 있었습니다. 충돌 없이 드라이버를 성공적으로 업그레이드하기 위한 가장 중요한 단계는 무엇인가?",
+    "choices": [
+      "Update the GPU driver leaving the DOCA and OFED drivers unchanged as long as they are detecting the hardware properly.",
+      "Validate the driver version post-install since the fresh install will overwrite the legacy drivers.",
+      "Keep the older driver running alongside the new version in case you need to roll back the upgrade.",
+      "Uninstall all existing GPU and DOCA-related drivers and associated kernel modules before the new install."
+    ],
+    "choices_ko": [
+      "DOCA 및 OFED 드라이버가 하드웨어를 제대로 감지하고 있는 한 그대로 두고 GPU 드라이버만 업데이트한다.",
+      "새 설치가 레거시 드라이버를 덮어쓰게 되므로 설치 후에 드라이버 버전을 검증한다.",
+      "업그레이드를 롤백해야 할 경우에 대비해 구버전 드라이버를 새 버전과 함께 계속 실행 상태로 유지한다.",
+      "새로 설치하기 전에 기존의 모든 GPU 및 DOCA 관련 드라이버와 연관된 커널 모듈을 제거한다."
+    ],
+    "answer": [3],
+    "explanation": "NVIDIA AI 인프라는 GPU 드라이버와 DOCA(InfiniBand용 OFED 스택 포함) 드라이버가 긴밀히 결합된 스택에 의존합니다. 구버전에서 업그레이드할 때 이전 설치의 잔여물이나 커스텀 커널 모듈이 버전 불일치 또는 심볼 오류를 유발해 새 드라이버가 로드되지 않게 할 수 있습니다. 검증된 모범 사례는 클린 설치입니다. 기존 드라이버를 완전히 제거하고(apt-get purge 또는 .run 파일의 --uninstall 플래그) 커널 모듈이 메모리에서 제거되었는지 확인하는 작업이 포함됩니다. 이는 레거시 nvidia.ko와 새 버전 간 충돌을 방지합니다. 시스템이 깨끗해진 후에 새 DOCA와 GPU 드라이버를 서로 맞춰진 세트로 설치하면 GPUDirect RDMA 같은 기능이 레거시 구성 파일의 방해 없이 올바르게 작동합니다. 참고로 패키지 방식과 runfile 방식을 혼용하면 충돌하므로 제거 후 한 방식으로 통일해야 하며, 드라이버 업그레이드 시 Fabric Manager도 같은 버전으로 함께 올려야 합니다.",
+    "explanation_en": "NVIDIA AI infrastructure relies on a tightly coupled stack involving the GPU driver and the DOCA drivers, which include the OFED stack for InfiniBand. When upgrading from an older version, residue from previous installations or custom kernel modules can cause version mismatches or symbol errors, preventing the new drivers from loading. The verified best practice is a clean installation: completely uninstalling the existing drivers (using apt-get purge or the .run file's --uninstall flag) and ensuring kernel modules are removed from memory. This prevents conflict between the legacy nvidia.ko and the new version. Once the system is clean, the new DOCA and GPU drivers can be installed as a matched set, ensuring features like GPUDirect RDMA function correctly. Note also that mixing package and runfile installation methods causes conflicts, and Fabric Manager must be upgraded to match the driver version."
+  },
+  {
+    "id": "n045",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator is installing a GPU into a server and needs to avoid damaging the device. What item should be used?",
+    "question_ko": "시스템 관리자가 서버에 GPU를 설치하고 있으며 장치가 손상되지 않도록 해야 합니다. 어떤 물품을 사용해야 하는가?",
+    "choices": ["Anti-ESD strap", "Gloves", "Protective film", "Electric screwdriver"],
+    "choices_ko": ["Anti-ESD strap(정전기 방지 스트랩)", "장갑", "보호 필름", "전동 드라이버"],
+    "answer": [0],
+    "explanation": "H100이나 A100 같은 고성능 NVIDIA GPU는 정전기 방전(ESD)에 매우 민감합니다. 사람이 느끼지도 못하는 정전기 스파크(3,000볼트 미만)만으로도 GPU 다이 내부의 미세 회로나 HBM 모듈을 영구 손상시킬 수 있습니다. Anti-ESD strap(손목 스트랩)은 서버 내부 부품을 다루는 모든 기술자에게 필수적인 안전 물품입니다. 기술자를 접지시켜 신체에 축적된 정전기가 하드웨어를 만지기 전에 안전하게 방전되도록 합니다. 장갑은 날카로운 모서리로부터 보호해 줄 수는 있지만 ESD-safe 등급이 아닌 한 ESD를 방지하지 못합니다. 전동 드라이버는 과도한 조임이나 기계적 스트레스를 방지하기 위해 민감한 부품에는 일반적으로 권장되지 않습니다. 따라서 ESD strap이 물리적 설치 과정에서 고가 AI 하드웨어의 초기 고장(infant mortality)을 방지하는 가장 중요한 도구입니다.",
+    "explanation_en": "High-performance NVIDIA GPUs such as the H100 or A100 are highly sensitive to Electrostatic Discharge (ESD). A static spark a human cannot even feel (less than 3,000 volts) is enough to permanently damage the microscopic circuits within the GPU die or the HBM modules. An anti-ESD strap (or wrist strap) is the mandatory safety item for any technician handling internal server components. It grounds the technician, ensuring any static charge built up on their body is safely dissipated before touching the hardware. While gloves might protect against sharp edges, they do not prevent ESD unless specifically rated as ESD-safe. Using an electric screwdriver is generally discouraged for sensitive components to prevent over-tightening or mechanical stress."
+  },
+  {
+    "id": "n046",
+    "domain": "d3",
+    "type": "single",
+    "question": "After configuring NGC CLI with ngc config set, a user receives \"Authentication failed\" errors when pulling containers. What step was most likely omitted?",
+    "question_ko": "ngc config set으로 NGC CLI를 구성한 후, 사용자가 컨테이너를 가져올 때 \"Authentication failed\" 오류를 받습니다. 어떤 단계가 누락되었을 가능성이 가장 높은가?",
+    "choices": [
+      "Installing the CLI with apt-get instead of manual extraction.",
+      "Entering the API key during ngc config set or storing it in ~/.ngc/config.",
+      "Setting --format_type=json to enable API interactions.",
+      "Running sudo systemctl restart docker after configuration."
+    ],
+    "choices_ko": [
+      "수동 추출 대신 apt-get으로 CLI를 설치한 것.",
+      "ngc config set 중에 API 키를 입력하거나 ~/.ngc/config에 저장하는 것.",
+      "API 상호작용을 활성화하기 위해 --format_type=json을 설정하는 것.",
+      "구성 후 sudo systemctl restart docker를 실행하는 것."
+    ],
+    "answer": [1],
+    "explanation": "NGC CLI는 AI 자산을 관리하는 도구이지만 비공개 또는 제한된 레지스트리에 액세스하려면 유효한 인증 핸드셰이크가 필요합니다. ngc config set을 실행하면 대화형 설정이 시작되며 가장 핵심적인 요구 사항은 NGC 포털에서 생성된 고유 API Key입니다. 이 키를 누락하거나 만료된 키를 제공하면 로컬 구성 파일(~/.ngc/config)이 불완전하거나 유효하지 않게 되어 docker pull 또는 ngc registry image 명령 실행 시 즉시 Authentication failed 오류가 발생합니다. 이 키는 사용자의 조직 및 팀 권한을 식별하는 자격 증명 역할을 합니다. 새 런타임 인식을 위해 서비스 재시작이 필요할 수 있는 Docker 구성과 달리 NGC CLI 인증은 순수하게 애플리케이션 수준이며, API 토큰을 포함한 올바른 형식의 구성 파일 존재에 의존합니다. 따라서 구성을 다시 실행하고 API 키가 정확히 입력되었는지 확인하는 것이 표준 해결 방법입니다. 참고로 NGC CLI는 패키지가 아니라 압축 파일을 풀어 PATH에 등록하는 방식이며, 레지스트리 로그인 시 사용자명은 리터럴 $oauthtoken입니다.",
+    "explanation_en": "The NGC CLI is a critical tool for managing AI assets, but it requires a valid authentication handshake to access private or restricted registries. When a user runs ngc config set, the utility initiates an interactive setup where the primary requirement is a unique API Key generated from the NGC portal. If the user omits this key or provides an expired one, the local configuration file (~/.ngc/config) will be incomplete or invalid, leading to immediate \"Authentication failed\" errors during docker pull or ngc registry image commands. This key acts as the credential identifying the user's organization and team permissions. Unlike Docker configuration, which might require a service restart to recognize a new runtime, NGC CLI authentication is purely application-level; it relies on the presence of a properly formatted configuration file containing the API token. Note also that the NGC CLI is installed by extracting an archive and adding it to PATH, not via a package manager, and that registry login uses the literal username $oauthtoken."
+  },
+  {
+    "id": "n047",
+    "domain": "d3",
+    "type": "multiple",
+    "question": "A team is installing the NVIDIA Run:ai control plane on a Kubernetes cluster. Which two options are most critical to validate before proceeding? (Choose two)",
+    "question_ko": "한 팀이 Kubernetes 클러스터에 NVIDIA Run:ai control plane을 설치하고 있습니다. 진행하기 전에 검증해야 할 가장 중요한 두 가지 항목은 무엇인가? (2개 선택)",
+    "choices": [
+      "Helm is installed on the installer machine.",
+      "Ensure Kubernetes is running on the cluster.",
+      "All cluster nodes have NVIDIA GPUs installed.",
+      "NTP is disabled to simplify time synchronization."
+    ],
+    "choices_ko": [
+      "설치 담당 머신에 Helm이 설치되어 있다.",
+      "클러스터에서 Kubernetes가 실행 중인지 확인한다.",
+      "모든 클러스터 노드에 NVIDIA GPU가 설치되어 있다.",
+      "시간 동기화를 단순화하기 위해 NTP가 비활성화되어 있다."
+    ],
+    "answer": [0, 1],
+    "explanation": "NVIDIA Run:ai는 Kubernetes 환경 내에서 GPU 자원 할당을 최적화하도록 설계된 오케스트레이션 플랫폼입니다. Run:ai는 클라우드 네이티브이기 때문에 control plane과 worker agent가 Kubernetes 리소스로 배포됩니다. 따라서 절대적인 첫 전제 조건은 서비스를 호스팅할 실행 중인 Kubernetes 클러스터입니다. 둘째로 Run:ai는 복잡한 설치 차트, 배포, 서비스 구성을 관리하기 위해 Kubernetes 패키지 관리자인 Helm을 사용합니다. 관리용 머신에 Helm이 없으면 설치 스크립트가 실행에 실패합니다. GPU 보유는 worker 노드의 궁극적 목표이지만 control plane 자체는 모든 GPU 하드웨어가 물리적으로 존재하기 전에도 설치할 수 있습니다. NTP 비활성화는 결코 권장되지 않으며, 오히려 정확한 시간 동기화는 Run:ai와 Kubernetes가 사용하는 TLS 인증서와 로깅에 필수적입니다.",
+    "explanation_en": "NVIDIA Run:ai is an orchestration platform designed to optimize GPU resource allocation within Kubernetes environments. Because Run:ai is cloud-native, its control plane and worker agents are deployed as Kubernetes resources. Therefore the absolute first prerequisite is a running Kubernetes cluster to host the services. Secondly, Run:ai utilizes Helm, the package manager for Kubernetes, to manage its complex installation charts, deployments, and service configurations. Without Helm installed on the administrative machine, the installation scripts will fail to execute. While having GPUs is the ultimate goal for the worker nodes, the control plane itself can be installed before all GPU hardware is physically present. Disabling NTP is never recommended; accurate time synchronization is vital for the TLS certificates and logging used by Run:ai and Kubernetes."
+  },
+  {
+    "id": "n048",
+    "domain": "d2",
+    "type": "single",
+    "question": "Your company is planning to expand its AI capabilities significantly over the next five years. To future-proof your storage infrastructure, you need a solution that can scale in both capacity and performance. Which strategy best ensures that your storage infrastructure remains adaptable to future AI demands?",
+    "question_ko": "귀사는 향후 5년간 AI 역량을 대폭 확장할 계획입니다. 스토리지 인프라를 미래에 대비하려면 용량과 성능 모두에서 확장 가능한 솔루션이 필요합니다. 다음 전략 중 스토리지 인프라가 미래의 AI 요구에 계속 적응할 수 있도록 가장 잘 보장하는 것은 무엇인가?",
+    "choices": [
+      "Deploy an all-flash array and remove data tiering to reduce latency.",
+      "Implement a single-tier cloud storage solution to leverage cloud scalability.",
+      "Use a hybrid cloud model combining scalable cloud resources with on-premises infrastructure.",
+      "Implement an on-premises block storage system with periodic hardware upgrades."
+    ],
+    "choices_ko": [
+      "all-flash array를 배포하고 지연 시간을 줄이기 위해 데이터 티어링을 제거한다.",
+      "클라우드 확장성을 활용하기 위해 단일 계층 클라우드 스토리지 솔루션을 구현한다.",
+      "확장 가능한 클라우드 자원과 온프레미스 인프라를 결합한 하이브리드 클라우드 모델을 사용한다.",
+      "주기적인 하드웨어 업그레이드를 동반한 온프레미스 블록 스토리지 시스템을 구현한다."
+    ],
+    "answer": [2],
+    "explanation": "AI 스토리지를 미래에 대비시키려면 학습의 막대한 처리량 요구와 데이터 레이크의 방대한 용량 요구 사이 균형을 맞춰야 합니다. 하이브리드 클라우드 모델이 가장 적응력이 뛰어난 전략인데, 고성능·저지연의 hot 데이터를 온프레미스(DGX 클러스터 근처)에 유지하면서 cold 아카이브 데이터나 갑작스러운 컴퓨팅 수요 급증에는 클라우드 스토리지의 탄력적 확장성을 활용할 수 있기 때문입니다. 이 모델은 데이터 티어링을 지원하여 활성 데이터셋은 GPU 메모리를 포화시키기 위해 NVMe 기반 로컬 병렬 파일 시스템에 위치하고, 오래된 데이터셋은 더 저렴한 클라우드 오브젝트 스토리지로 마이그레이션됩니다. all-flash array는 빠르지만 클라우드 통합 티어링 전략이 없다면 멀티 페타바이트 AI 데이터 레이크에서는 비용이 감당하기 어려워지고, 티어링 제거는 오히려 확장성을 해칩니다. 단일 계층 클라우드는 학습 데이터 공급의 지연 요구를 충족하기 어렵고, 온프레미스 블록 스토리지만으로는 비정형 대용량 확장에 한계가 있습니다. 하이브리드는 경직된 하드웨어 업그레이드 주기에 묶이지 않고 5년에 걸쳐 새 기술을 채택할 아키텍처적 유연성을 제공합니다.",
+    "explanation_en": "Future-proofing AI storage requires balancing the massive throughput needs of training with the vast capacity needs of data lakes. A hybrid cloud model is the most adaptable strategy because it allows organizations to maintain high-performance, low-latency hot data on-premises (near the DGX clusters) while leveraging the elastic, near-infinite scalability of cloud storage for cold archival data or sudden bursts in compute demand. This model supports data tiering, where active datasets live on NVMe-based local parallel file systems to saturate GPU memory, and older datasets migrate to lower-cost cloud object storage. While an all-flash array is fast, it can become cost-prohibitive for multi-petabyte AI data lakes without a cloud-integrated tiering strategy, and removing tiering harms scalability. A single-tier cloud solution struggles to meet the latency requirements of training data feeds, and on-premises block storage alone has limits for unstructured capacity growth."
+  },
+  {
+    "id": "n049",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator noticed a failure on a DGX H100 server. After a reboot, only the BMC is available. What could be the reason for this behavior?",
+    "question_ko": "시스템 관리자가 DGX H100 서버에서 장애를 발견했습니다. 재부팅 후에는 BMC만 사용 가능한 상태입니다. 이러한 동작의 원인은 무엇일 수 있는가?",
+    "choices": [
+      "The network card has no link / connection.",
+      "A boot disk has failed.",
+      "Multiple GPUs have failed.",
+      "There are more than two failed power supplies."
+    ],
+    "choices_ko": [
+      "네트워크 카드에 링크/연결이 없다.",
+      "부팅 디스크가 고장났다.",
+      "여러 개의 GPU가 고장났다.",
+      "두 개를 초과하는 전원 공급 장치가 고장났다."
+    ],
+    "answer": [3],
+    "explanation": "NVIDIA DGX H100/H200 User Guide의 전원 사양에는 \"the system only boots if at least three PSUs are operational. If fewer than three PSUs are operational, only the BMC is available.\"(PSU가 최소 3개 정상일 때만 시스템이 부팅되며, 정상 PSU가 3개 미만이면 BMC만 사용할 수 있다)라는 문장이 그대로 있습니다. 문제의 \"재부팅 후 BMC만 사용 가능하다\"는 표현은 이 문장에서 온 것이므로 원인은 스토리지가 아니라 전원 공급 장치 손실입니다. DGX H100은 6개 PSU를 N+N(4+2) 이중화로 구성하며, 정상 PSU 수가 부족하면 호스트에 전원이 인가되지 않고 standby 전원으로 동작하는 BMC만 접근 가능해집니다. 부팅 디스크는 RAID-1로 구성된 M.2 NVMe 한 쌍이므로 한 개가 고장나도 부팅이 계속되며, 설령 어레이가 파손되더라도 호스트는 정상적으로 전원이 켜지고 BMC KVM으로 UEFI 셸이나 no bootable device 화면을 볼 수 있습니다. 이는 BMC만 사용 가능한 상태와 거리가 멉니다. GPU 고장은 GPU 개수가 줄어든 상태를 만들 뿐 OS 부팅을 막지 않고, 데이터 네트워크 링크 단절은 호스트 전원이나 부팅에 영향을 주지 않습니다.",
+    "explanation_en": "The NVIDIA DGX H100/H200 User Guide states in its power specifications that \"the system only boots if at least three PSUs are operational. If fewer than three PSUs are operational, only the BMC is available.\" The question's phrasing is taken directly from that sentence, so the intended cause is loss of power supplies, not storage. The DGX H100 ships with six PSUs in an N+N (4+2) redundant configuration; when too few remain functional the host is never powered on at all, and only the BMC, which runs on standby power, stays reachable. The boot volume is a pair of M.2 NVMe drives in RAID-1, so a single drive failure still boots, and even if the array were destroyed the host would power on normally and the administrator would see the UEFI shell or a \"no bootable device\" screen through the BMC KVM — far more than \"only the BMC\". A failed GPU merely yields a degraded GPU count and does not stop the OS from booting, and a dead data-network link affects neither host power nor boot."
+  },
+  {
+    "id": "n050",
+    "domain": "d1",
+    "type": "single",
+    "question": "After running a 24-hour stress test on a DGX node, which two key metrics should the administrator verify to ensure system stability?",
+    "question_ko": "DGX 노드에서 24시간 스트레스 테스트를 실행한 후, 관리자는 시스템 안정성을 확인하기 위해 어떤 두 가지 핵심 지표를 검증해야 하는가?",
+    "choices": [
+      "Average CPU usage >80% and Docker container uptime.",
+      "No thermal throttling events and consistent GPU utilization >95% throughout the test.",
+      "SSD write endurance and RAM capacity.",
+      "Total energy consumption and NVLink bandwidth."
+    ],
+    "choices_ko": [
+      "평균 CPU 사용률 >80% 및 Docker 컨테이너 가동 시간.",
+      "thermal throttling 이벤트가 없을 것, 그리고 테스트 전체 기간 동안 일관된 GPU 사용률 >95%.",
+      "SSD 쓰기 내구성(write endurance) 및 RAM 용량.",
+      "총 에너지 소비량 및 NVLink 대역폭."
+    ],
+    "answer": [1],
+    "explanation": "24시간 스트레스 테스트(HPL이나 NCCL 사용)는 DGX 시스템의 발열 및 전기적 한계를 밀어붙이도록 설계되어 있습니다. Pass를 확인하려면 하드웨어가 성능 저하 없이 목표를 유지했는지 확인해야 합니다. 일관된 GPU 사용률 95% 초과는 워크로드가 전체 기간 동안 연산 코어를 성공적으로 포화시켰음을 확인해 줍니다. 결정적으로 thermal throttling 이벤트가 없다는 점(nvidia-smi -q -d PERFORMANCE로 검증)은 냉각 솔루션이 해당 환경에 적합함을 보장합니다. throttling이 발생했다면 GPU가 자기 보호를 위해 속도를 낮춘 것이며 냉각 장애나 환경적 발열 문제 가능성을 나타냅니다. 전력 소비와 CPU 사용률도 흥미로운 지표이지만 극한 AI 학습 부하에서 안정성을 나타내는 주요 지표는 아닙니다. SSD 쓰기 내구성과 RAM 용량은 정적 사양이라 스트레스 테스트 결과가 아닙니다. 시스템 안정성은 하드웨어 수준 개입이나 속도 저하 없이 최고 속도로 무기한 실행할 수 있는 능력으로 정의됩니다.",
+    "explanation_en": "A 24-hour stress test (using tools like HPL or NCCL) is designed to push the thermal and electrical limits of a DGX system. To verify a pass, the administrator must ensure the hardware maintained its performance targets without degradation. Consistent GPU utilization above 95% confirms the workload successfully saturated the compute cores for the entire duration. Crucially, the absence of thermal throttling events (verified via nvidia-smi -q -d PERFORMANCE) ensures the system's cooling solution is adequate for the environment; if throttling occurred, the GPUs slowed down to protect themselves, indicating a potential cooling failure or environmental heat issue. While power consumption and CPU usage are interesting, they are not the primary indicators of stability under extreme AI training loads. SSD write endurance and RAM capacity are static specifications, not stress-test outcomes."
+  }
+]

@@ -1,0 +1,243 @@
+[
+  {
+    "id": "v001",
+    "domain": "d5",
+    "type": "single",
+    "question": "A research organization deploys NVIDIA BlueField DPUs in an AI cluster to improve infrastructure efficiency. Shortly after deployment, administrators observe that CPU utilization on compute nodes decreases during storage and network-intensive workloads while GPU utilization remains unchanged. Which DPU capability most directly explains this improvement?",
+    "question_ko": "한 연구 기관이 인프라 효율을 높이기 위해 AI 클러스터에 NVIDIA BlueField DPU를 배포했습니다. 배포 직후 관리자들은 스토리지·네트워크 집약적 워크로드에서 컴퓨트 노드의 CPU 사용률이 감소한 반면 GPU 사용률은 그대로임을 관찰했습니다. 이 개선을 가장 직접적으로 설명하는 DPU 기능은 무엇인가?",
+    "choices": [
+      "Executing CUDA kernels on behalf of GPUs",
+      "Offloading infrastructure services such as networking, storage, and security from the host CPU",
+      "Increasing GPU memory capacity through memory pooling",
+      "Replacing the InfiniBand fabric with PCIe communication"
+    ],
+    "choices_ko": [
+      "GPU를 대신해 CUDA 커널을 실행한다",
+      "네트워킹·스토리지·보안 같은 인프라 서비스를 호스트 CPU에서 오프로드한다",
+      "메모리 풀링으로 GPU 메모리 용량을 늘린다",
+      "InfiniBand 패브릭을 PCIe 통신으로 대체한다"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BlueField DPU는 자체 Arm 코어와 하드웨어 가속기로 네트워킹, 스토리지 가상화, 암호화, 방화벽, 텔레메트리 같은 '인프라 작업'을 호스트 CPU 대신 처리합니다. 그 결과 CPU는 애플리케이션 실행에만 집중하게 되어 사용률이 내려가고, 연산 자체는 여전히 GPU가 담당하므로 GPU 사용률은 변하지 않습니다. 이 문제의 증상(스토리지·네트워크 부하 구간에서 CPU만 감소)은 오프로드의 전형적인 신호입니다.",
+    "explanation_en": "BlueField DPUs run infrastructure functions — networking, storage virtualization, encryption, firewalling, telemetry — on their own Arm cores and accelerators instead of the host CPU. That frees CPU cycles for application code while compute continues on the GPUs, which is exactly the pattern observed: CPU utilization drops during I/O-heavy phases while GPU utilization is unchanged."
+  },
+  {
+    "id": "v002",
+    "domain": "d2",
+    "type": "single",
+    "question": "A system administrator needs to improve the performance of MPI operations and use SHARP. Which items should be offloaded?",
+    "question_ko": "시스템 관리자가 MPI 연산 성능을 개선하기 위해 SHARP를 사용하려 합니다. 무엇을 오프로드해야 하는가?",
+    "choices": [
+      "Operations to the system CPU",
+      "Collective operations from the CPU to the switch network",
+      "Packets from the switch into system memory",
+      "IDS/IPS operations to the switch network"
+    ],
+    "choices_ko": [
+      "연산을 시스템 CPU로",
+      "집합 통신(collective) 연산을 CPU에서 스위치 네트워크로",
+      "패킷을 스위치에서 시스템 메모리로",
+      "IDS/IPS 연산을 스위치 네트워크로"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "SHARP(Scalable Hierarchical Aggregation and Reduction Protocol)는 AllReduce 같은 집합 통신의 리덕션 연산을 호스트 CPU/GPU가 아니라 InfiniBand 스위치 ASIC 안에서 수행하는 in-network computing 기술입니다. 데이터가 스위치 트리를 올라가며 집계되므로 왕복 횟수와 전송량이 줄고, 대규모 MPI/NCCL 워크로드에서 지연과 CPU 오버헤드가 함께 감소합니다.",
+    "explanation_en": "SHARP performs collective reductions inside the InfiniBand switch ASICs (in-network computing) instead of on host CPUs. Aggregating data as it climbs the switch tree cuts the number of round trips and the volume moved, reducing latency and CPU overhead for large MPI/NCCL collectives."
+  },
+  {
+    "id": "v003",
+    "domain": "d3",
+    "type": "single",
+    "question": "The system administrator plans to use Multi-Instance GPU profiles. What command should be used to verify that the GPU has this mode enabled?",
+    "question_ko": "시스템 관리자가 Multi-Instance GPU(MIG) 프로파일을 사용하려 합니다. GPU에서 이 모드가 활성화되어 있는지 확인하려면 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "nvidia-mode",
+      "nvidia-smi",
+      "nvidia-mig",
+      "nvidia-enable"
+    ],
+    "choices_ko": [
+      "nvidia-mode",
+      "nvidia-smi",
+      "nvidia-mig",
+      "nvidia-enable"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "MIG 상태 확인·활성화·인스턴스 생성은 모두 nvidia-smi가 담당합니다. `nvidia-smi`의 기본 출력에 MIG 모드 On/Off가 표시되고, `nvidia-smi mig -lgip`으로 사용 가능한 프로파일을, `nvidia-smi -i <idx> -mig 1`로 모드 활성화를 수행합니다. nvidia-mode, nvidia-mig, nvidia-enable 같은 명령은 존재하지 않습니다.",
+    "explanation_en": "nvidia-smi is the single management utility for MIG: its default output shows the MIG mode column, `nvidia-smi mig -lgip` lists available profiles, and `nvidia-smi -i <idx> -mig 1` enables the mode. The other command names do not exist."
+  },
+  {
+    "id": "v004",
+    "domain": "d4",
+    "type": "single",
+    "question": "An AI operations team investigates unexpectedly slow distributed training. GPU utilization averages only 55%, while storage, CPU, and InfiniBand monitoring all indicate normal performance. DCGM reports no hardware faults, but profiling shows GPUs frequently waiting during synchronization phases. Which area should the engineers investigate first?",
+    "question_ko": "AI 운영팀이 예상보다 느린 분산 학습을 조사하고 있습니다. GPU 사용률은 평균 55%에 불과하지만 스토리지·CPU·InfiniBand 모니터링은 모두 정상이고 DCGM도 하드웨어 결함을 보고하지 않습니다. 다만 프로파일링 결과 GPU가 동기화 구간에서 자주 대기합니다. 엔지니어가 가장 먼저 조사해야 할 영역은?",
+    "choices": [
+      "NCCL communication configuration and topology awareness",
+      "NVMe drive firmware compatibility",
+      "CPU thermal throttling",
+      "MIG partition sizing"
+    ],
+    "choices_ko": [
+      "NCCL 통신 설정과 토폴로지 인식",
+      "NVMe 드라이브 펌웨어 호환성",
+      "CPU 열 스로틀링",
+      "MIG 파티션 크기"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "하드웨어와 스토리지가 정상인데 '동기화 구간에서만' GPU가 대기한다면 병목은 집합 통신 경로입니다. NCCL이 토폴로지를 잘못 감지해 NVLink 대신 PCIe/호스트 경유 경로를 쓰거나, IB 트랜스포트·GPUDirect RDMA가 비활성화되어 있으면 계산은 멀쩡해도 AllReduce가 느려집니다. NCCL_DEBUG=INFO로 선택된 트랜스포트와 링/트리 구성을 먼저 확인해야 합니다.",
+    "explanation_en": "When hardware and storage are healthy but GPUs stall specifically during synchronization, the bottleneck is the collective communication path. Misdetected topology, a fallback transport (PCIe/host staging instead of NVLink or IB), or disabled GPUDirect RDMA slows AllReduce even with healthy hardware. Start with NCCL_DEBUG=INFO to see the chosen transport and ring/tree layout."
+  },
+  {
+    "id": "v005",
+    "domain": "d5",
+    "type": "single",
+    "question": "A DGX H100 system shows intermittent \"Link Down\" errors on a 200G DAC cable. The Cable Validation Tool reports \"No Signal\" despite a physical connection. What is the first hardware check?",
+    "question_ko": "DGX H100 시스템에서 200G DAC 케이블에 간헐적인 \"Link Down\" 오류가 발생합니다. 물리적으로 연결되어 있는데도 CVT(Cable Validation Tool)는 \"No Signal\"을 보고합니다. 가장 먼저 수행할 하드웨어 점검은?",
+    "choices": [
+      "Verify cable compatibility against the ConnectX-7 validated cable list and inspect the connectors for damage",
+      "Reconfigure the port for 100G speeds via NVIDIA MST",
+      "Replace the switch's optical transceiver with a higher-wattage model",
+      "Upgrade all leaf switches to support RS-FEC"
+    ],
+    "choices_ko": [
+      "ConnectX-7 검증 케이블 목록으로 케이블 호환성을 확인하고 커넥터 손상 여부를 점검한다",
+      "NVIDIA MST로 포트를 100G 속도로 재설정한다",
+      "스위치의 광 트랜시버를 더 높은 전력의 모델로 교체한다",
+      "모든 리프 스위치를 RS-FEC 지원으로 업그레이드한다"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "\"No Signal\"은 링크 트레이닝 이전 단계, 즉 전기적 신호 자체가 감지되지 않는 물리 계층 문제입니다. 따라서 속도·FEC·스위치 하드웨어를 바꾸기 전에 (1) 해당 DAC가 ConnectX-7/DGX H100 검증 목록에 있는 지원 케이블인지, (2) 커넥터 핀 손상·체결 불량·케이지 오염이 없는지부터 확인해야 합니다. 비검증 케이블은 간헐적 링크 다운의 대표적 원인입니다.",
+    "explanation_en": "\"No Signal\" means no electrical signal is detected at all — a pre-link-training, physical-layer condition. Before touching speed, FEC, or switch hardware, confirm the DAC appears on the ConnectX-7/DGX H100 validated cable list and inspect the connectors for bent pins, poor seating, or debris. Unsupported cables are a classic cause of intermittent link-down events."
+  },
+  {
+    "id": "v006",
+    "domain": "d2",
+    "type": "single",
+    "question": "An AI engineering team trains a foundation model whose dataset resides on a high-performance parallel file system. Storage analysis reveals that a large percentage of CPU cycles are consumed copying data between storage devices and system memory before the GPUs can access it. The architect wants to reduce CPU overhead while increasing data throughput to the GPUs. Which technology should be implemented?",
+    "question_ko": "AI 엔지니어링 팀이 고성능 병렬 파일 시스템에 있는 데이터셋으로 파운데이션 모델을 학습합니다. 분석 결과 GPU가 데이터를 사용하기 전에 스토리지와 시스템 메모리 사이를 복사하는 데 CPU 사이클의 상당 부분이 소모되고 있습니다. CPU 오버헤드를 줄이면서 GPU로의 데이터 처리량을 높이려면 어떤 기술을 도입해야 하는가?",
+    "choices": [
+      "NVIDIA GPUDirect Storage",
+      "NVIDIA MIG",
+      "NVIDIA NVSwitch",
+      "Kubernetes Device Plugin"
+    ],
+    "choices_ko": [
+      "NVIDIA GPUDirect Storage",
+      "NVIDIA MIG",
+      "NVIDIA NVSwitch",
+      "Kubernetes Device Plugin"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "GPUDirect Storage(GDS)는 NVMe/병렬 파일 시스템에서 GPU 메모리로 DMA를 직접 수행해 호스트 바운스 버퍼 복사를 제거합니다. CPU는 제어 경로만 담당하므로 사용률이 내려가고, 대역폭과 지연이 모두 개선됩니다. 문제의 증상(스토리지→시스템 메모리 복사에 CPU 소모)이 정확히 GDS가 해결하는 지점입니다.",
+    "explanation_en": "GPUDirect Storage DMAs data straight from NVMe or a parallel filesystem into GPU memory, eliminating the host bounce-buffer copy. The CPU only handles the control path, so utilization drops while bandwidth improves and latency falls — precisely the symptom described."
+  },
+  {
+    "id": "v007",
+    "domain": "d3",
+    "type": "single",
+    "question": "During BCM cluster setup, an engineer must configure a bonded network interface on DGX nodes for high availability. Which cmsh command sequence properly configures a bond0 interface with two physical NICs?",
+    "question_ko": "BCM 클러스터 구축 중 엔지니어가 고가용성을 위해 DGX 노드에 본딩 네트워크 인터페이스를 구성해야 합니다. 두 개의 물리 NIC로 bond0 인터페이스를 올바르게 구성하는 cmsh 명령 순서는?",
+    "choices": [
+      "device; use dgx01; interfaces; add physical bond0; set network internalnet; commit",
+      "network; add bond0; set members eno1 eno2; set mode 4; commit",
+      "device; use dgx01; interfaces; add bond bond0; set interfaces eno1 eno2; set mode 4; set network internalnet; set ip 10.0.0.11; commit",
+      "partition; use base; add bond bond0; set slaves eno1 eno2; commit"
+    ],
+    "choices_ko": [
+      "device; use dgx01; interfaces; add physical bond0; set network internalnet; commit",
+      "network; add bond0; set members eno1 eno2; set mode 4; commit",
+      "device; use dgx01; interfaces; add bond bond0; set interfaces eno1 eno2; set mode 4; set network internalnet; set ip 10.0.0.11; commit",
+      "partition; use base; add bond bond0; set slaves eno1 eno2; commit"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "BCM에서 본딩은 '노드(device) → interfaces 하위 모드'에서 만듭니다. `add bond bond0`로 본드 타입 인터페이스를 생성하고, `set interfaces <nic1> <nic2>`로 멤버 NIC를 지정하며, `set mode`로 본딩 모드(예: 4 = 802.3ad LACP)를, `set network`/`set ip`로 소속 네트워크와 주소를 지정한 뒤 commit 합니다. 참고: 원문 덤프에서는 이 문항의 보기가 이미지로만 제공되어 비어 있었고, 본 문제은행에서는 실제 cmsh 문법에 맞춰 보기를 재구성했습니다.",
+    "explanation_en": "In BCM, bonds are created under a node's interfaces submode: `add bond bond0`, then `set interfaces <nic1> <nic2>` for the members, `set mode` for the bonding mode (4 = 802.3ad LACP), `set network` / `set ip` for addressing, and finally `commit`. Note: the original dump rendered this question's options as an image, so the choices here were reconstructed from real cmsh syntax."
+  },
+  {
+    "id": "v008",
+    "domain": "d3",
+    "type": "multiple",
+    "question": "A team is installing the NVIDIA Run:ai control plane on a Kubernetes cluster. Which two options are most critical to validate before proceeding? (Choose two.)",
+    "question_ko": "한 팀이 쿠버네티스 클러스터에 NVIDIA Run:ai 컨트롤 플레인을 설치하려 합니다. 진행 전에 반드시 확인해야 할 두 가지는? (2개 선택)",
+    "choices": [
+      "All cluster nodes have NVIDIA GPUs installed.",
+      "Helm is installed on the installer machine.",
+      "Ensure Kubernetes is running on the cluster.",
+      "NTP is disabled to simplify time synchronization."
+    ],
+    "choices_ko": [
+      "클러스터의 모든 노드에 NVIDIA GPU가 설치되어 있다.",
+      "설치 머신에 Helm이 설치되어 있다.",
+      "클러스터에서 쿠버네티스가 정상 동작 중이다.",
+      "시간 동기화를 단순화하기 위해 NTP를 비활성화한다."
+    ],
+    "answer": [
+      1,
+      2
+    ],
+    "explanation": "Run:ai 컨트롤 플레인은 Helm 차트로 배포되는 쿠버네티스 워크로드입니다. 따라서 (1) 정상 동작하는 쿠버네티스 클러스터와 (2) 설치 머신의 Helm이 필수 전제입니다. 모든 노드가 GPU를 가질 필요는 없고(컨트롤 플레인·시스템 노드는 CPU만으로 충분), NTP는 오히려 반드시 켜져 있어야 합니다.",
+    "explanation_en": "The Run:ai control plane is a Kubernetes workload deployed via Helm, so a working Kubernetes cluster and Helm on the installer machine are the mandatory prerequisites. Not every node needs a GPU (control-plane/system nodes do not), and NTP must be enabled, not disabled."
+  },
+  {
+    "id": "v009",
+    "domain": "d1",
+    "type": "single",
+    "question": "During a multi-day NeMo burn-in, intermittent \"GPU fell off bus\" errors occur. Which diagnostic approach isolates hardware faults?",
+    "question_ko": "여러 날에 걸친 NeMo 번인(burn-in) 중 간헐적으로 \"GPU fell off bus\" 오류가 발생합니다. 하드웨어 결함을 분리해 내는 진단 방법은?",
+    "choices": [
+      "Run DCGM diagnostics alongside the burn-in to monitor GPU health metrics",
+      "Switch from BERT to GPT models for simpler computations",
+      "Enable HPL_USE_NVSHMEM for alternative memory sharing",
+      "Reduce blocksize to 500MB to lower memory pressure"
+    ],
+    "choices_ko": [
+      "번인과 병행해 DCGM 진단을 실행하며 GPU 상태 지표를 모니터링한다",
+      "연산을 단순화하기 위해 BERT에서 GPT 모델로 바꾼다",
+      "대체 메모리 공유를 위해 HPL_USE_NVSHMEM을 활성화한다",
+      "메모리 압박을 낮추기 위해 blocksize를 500MB로 줄인다"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "\"GPU fell off bus\"는 PCIe 링크에서 GPU가 사라진 상태로, 전원·열·PCIe 링크·ECC 등 하드웨어 원인이 대부분입니다. DCGM을 번인과 함께 돌리면 온도, 전력, XID 오류, ECC 카운터, PCIe replay 등 텔레메트리를 시점별로 남길 수 있어 오류 발생 순간과 상관관계를 잡아낼 수 있습니다. 워크로드 파라미터를 바꾸는 선택지들은 증상을 가릴 뿐 원인을 분리하지 못합니다.",
+    "explanation_en": "\"GPU fell off bus\" means the GPU disappeared from the PCIe link — almost always power, thermal, PCIe-link, or ECC related. Running DCGM alongside the burn-in records temperature, power, XID errors, ECC counters, and PCIe replays over time so the failure moment can be correlated with telemetry. Changing workload parameters only masks the symptom."
+  },
+  {
+    "id": "v010",
+    "domain": "d5",
+    "type": "single",
+    "question": "A system administrator is virtualizing GPUs in VMware vSphere and needs to allocate a vGPU profile from the drop-down menu. What does \"grid_a100-20c\" mean?",
+    "question_ko": "시스템 관리자가 VMware vSphere에서 GPU를 가상화하며 드롭다운에서 vGPU 프로파일을 할당하려 합니다. \"grid_a100-20c\"는 무엇을 의미하는가?",
+    "choices": [
+      "This is an NVIDIA A100 which allows VMs to be over-committed.",
+      "This is a vGPU profile on NVIDIA A100 where 20 VMs can use the GPU.",
+      "This is an NVIDIA A100 which allows 20 cores of compute to a VM.",
+      "This is a 20GB vGPU profile on NVIDIA A100."
+    ],
+    "choices_ko": [
+      "VM 오버커밋을 허용하는 NVIDIA A100이다.",
+      "20개의 VM이 GPU를 사용할 수 있는 NVIDIA A100 vGPU 프로파일이다.",
+      "VM에 20개 코어의 연산을 허용하는 NVIDIA A100이다.",
+      "NVIDIA A100의 20GB vGPU 프로파일이다."
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "vGPU 프로파일 이름은 `<GPU 계열>-<프레임버퍼 GB><시리즈 문자>` 규칙을 따릅니다. a100-20c는 A100에서 20GB 프레임버퍼를 할당하는 C 시리즈(컴퓨트/AI 전용) 프로파일입니다. 숫자는 VM 개수나 코어 수가 아니라 GB 단위 메모리 크기입니다.",
+    "explanation_en": "vGPU profile names follow `<GPU family>-<framebuffer GB><series letter>`. So a100-20c is a 20 GB framebuffer profile on A100 in the C series (compute/AI). The number is memory size in GB, not a VM count or a core count."
+  }
+]

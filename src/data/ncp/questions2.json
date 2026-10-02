@@ -1,0 +1,243 @@
+[
+  {
+    "id": "n011",
+    "domain": "d1",
+    "type": "single",
+    "question": "A team is validating a DGX BasePOD deployment. Using cmsh, they run a command to check GPU health across all nodes. What indicates that the system is ready for AI workloads?",
+    "question_ko": "한 팀이 DGX BasePOD 배포를 검증하고 있습니다. cmsh를 사용하여 모든 노드의 GPU 상태를 점검하는 명령을 실행합니다. 시스템이 AI 워크로드를 수행할 준비가 되었음을 나타내는 것은 무엇인가?",
+    "choices": [
+      "The command output is ignored if the system powers on without errors.",
+      "At least half of the GPUs report Status_Health = OK.",
+      "All GPUs report Status_Health = OK and Health = OK for each device.",
+      "Only the head node's GPUs need to be healthy."
+    ],
+    "choices_ko": [
+      "시스템이 오류 없이 전원이 켜지면 명령 출력은 무시한다.",
+      "최소한 절반의 GPU가 Status_Health = OK를 보고한다.",
+      "모든 GPU가 Status_Health = OK를 보고하고 각 장치에 대해 Health = OK를 보고한다.",
+      "헤드 노드의 GPU만 정상이면 된다."
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "DGX BasePOD/SuperPOD 환경에서 Cluster Health는 이진 상태입니다. 전체 패브릭과 모든 컴퓨팅 자원이 준비되었거나, 그렇지 않으면 클러스터가 성능 저하(degraded)로 간주됩니다. Bright Cluster Manager(BCM) 셸(cmsh)로 클러스터 내 모든 노드의 텔레메트리를 집계할 수 있습니다. Production Ready로 간주되려면 다중 노드 배포 전반의 모든 개별 GPU가 Health = OK를 보고해야 합니다. 이 검증은 하드웨어가 PCIe 버스를 통해 올바르게 통신하고, NVLink 패브릭이 초기화되었으며, ECC 메모리 오류가 없음을 보장합니다. 32노드 클러스터에서 단 하나의 GPU라도 비정상이면 전체 작업이 가장 느리거나 상태가 나쁜 구성 요소의 속도에 맞춰지므로 NCCL 같은 집합 통신 라이브러리가 All-Reduce 중에 멈추거나 상당한 성능 저하를 겪을 수 있습니다. 따라서 모든 장치의 Status_Health = OK가 bring-up 단계의 필수 종료 기준입니다.",
+    "explanation_en": "In a DGX BasePOD or SuperPOD environment, Cluster Health is a binary state: either the entire fabric and all compute resources are ready, or the cluster is considered degraded. Using the Bright Cluster Manager (BCM) shell (cmsh), administrators can aggregate telemetry from every node. For a system to be Production Ready, every single GPU across the multi-node deployment must report Health = OK. This verification ensures the hardware is communicating correctly over PCIe, the NVLink fabric is initialized, and no ECC memory errors are present. If even a single GPU in a 32-node cluster is unhealthy, collective communication libraries like NCCL may hang or suffer significant performance penalties during All-Reduce, as the job scales to the speed of the slowest component."
+  },
+  {
+    "id": "n012",
+    "domain": "d2",
+    "type": "single",
+    "question": "A media company is developing an AI platform for video content analysis that requires storing and processing large volumes of unstructured video data. The platform must support high throughput for data ingestion and provide efficient access for real-time analytics. Given these requirements, which storage strategy should the company implement?",
+    "question_ko": "한 미디어 회사가 대용량 비정형 비디오 데이터를 저장·처리해야 하는 비디오 콘텐츠 분석용 AI 플랫폼을 개발하고 있습니다. 이 플랫폼은 데이터 수집(ingestion)을 위한 높은 처리량을 지원해야 하며 실시간 분석을 위한 효율적인 접근을 제공해야 합니다. 이러한 요구 사항을 고려할 때, 어떤 스토리지 전략을 도입해야 하는가?",
+    "choices": [
+      "Tape storage for its cost-effectiveness and archival capabilities",
+      "Block storage for low latency and high performance",
+      "File storage for hierarchical organization and easy navigation",
+      "Object storage for scalability and metadata management"
+    ],
+    "choices_ko": [
+      "비용 효율성과 아카이빙 기능을 갖춘 테이프 스토리지",
+      "낮은 지연 시간과 높은 성능을 위한 블록 스토리지",
+      "계층적 구성과 손쉬운 탐색을 위한 파일 스토리지",
+      "확장성과 메타데이터 관리를 위한 오브젝트 스토리지"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "문항은 대용량 비정형 비디오 데이터, 높은 수집 처리량, 분석을 위한 확장 가능한 접근이라는 세 요건을 명시하며, 이 조합은 오브젝트 스토리지의 정의적 사용 사례입니다. 오브젝트 스토리지는 각 비디오를 객체로 저장하면서 해상도·코덱·촬영 시각·라벨·모델 버전 같은 사용자 정의 메타데이터 계층을 함께 보관하는데, 이는 콘텐츠 분석 파이프라인이 영상을 색인·검색하는 데 정확히 필요한 기능입니다. 또한 플랫 네임스페이스 위에서 페타바이트 규모까지 수평 확장되며, 계층형 트리의 메타데이터 서버 경합 없이 HTTP/S3 엔드포인트로 병렬 수집할 수 있습니다. 파일 스토리지 보기가 틀린 이유는 그 근거가 '계층적 구성과 손쉬운 탐색', 즉 처리량이나 확장성이 아니라 편의성 논거라서 문항이 묻는 바에 답하지 못하기 때문입니다. (Lustre나 IBM Storage Scale 같은 고성능 병렬 파일 시스템은 GPUDirect Storage를 활용한 GPU 학습 데이터 공급에는 타당하지만, 그 보기가 서술하는 내용이 아닙니다.) 테이프는 아카이브용 순차 매체로 실시간 분석이 불가하고, 블록 스토리지는 자체 메타데이터 모델이 없고 페타바이트급 비정형 비디오까지 경제적으로 확장되지 않습니다.",
+    "explanation_en": "The question specifies three requirements — large volumes of unstructured video data, high ingestion throughput, and scalable access for analytics — and that combination is the defining use case for object storage. Object storage stores each video as an object with a rich, user-defined metadata layer (resolution, codec, capture time, labels, model version), exactly what a content-analysis pipeline needs to index and retrieve footage; it also scales horizontally to petabytes across a flat namespace and ingests in parallel over HTTP/S3 endpoints without the metadata-server contention of a hierarchical tree. The file-storage option is wrong here because its stated justification is \"hierarchical organization and easy navigation\" — a convenience argument, not a throughput or scalability argument. (A high-performance parallel file system such as Lustre or IBM Storage Scale is valid for GPU training feeds with GPUDirect Storage, but that is not what the option describes.) Tape is archival and sequential and cannot serve real-time analytics. Block storage delivers low latency for databases but has no native metadata model and does not scale economically to petabytes of unstructured video."
+  },
+  {
+    "id": "n013",
+    "domain": "d1",
+    "type": "single",
+    "question": "After upgrading to HPL-AI 2.0 on a DGX A100 cluster, a 2x performance gain is observed. Which optimization is primarily responsible for this improvement?",
+    "question_ko": "DGX A100 클러스터에서 HPL-AI 2.0으로 업그레이드한 후 2배의 성능 향상이 관찰되었습니다. 이 개선에 주로 기여한 최적화는 무엇인가?",
+    "choices": [
+      "Reduction of problem size (N) to accelerate computation.",
+      "MPI-aware GPU communication that reduces CPU bottlenecks and GPU idle time.",
+      "Doubling of GPU clock speeds through firmware updates and relevant configuration.",
+      "Automatic NVLink bandwidth doubling via driver updates."
+    ],
+    "choices_ko": [
+      "연산을 가속하기 위한 문제 크기(N)의 축소.",
+      "CPU 병목과 GPU 유휴 시간을 줄이는 MPI-aware GPU 통신.",
+      "펌웨어 업데이트 및 관련 구성을 통한 GPU 클럭 속도의 2배 향상.",
+      "드라이버 업데이트를 통한 자동 NVLink 대역폭 2배 증가."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "나머지 보기는 기본적인 이유로 탈락합니다. 문제 크기 N을 줄이는 것은 최적화가 아니라 벤치마크를 무효화하는 행위인데, HPL 성능은 메모리를 채우는 고정된 N에 대해 보고되기 때문입니다. 펌웨어로 GPU 클럭을 2배로 만들 수 없고, 드라이버 업데이트로 물리적 NVLink 대역폭을 2배로 늘릴 수도 없습니다. 둘 다 A100과 NVSwitch 패브릭의 고정된 하드웨어 속성입니다. HPL-AI 자체의 핵심 이점은 혼합정밀 연산, 즉 FP16/BF16/TF32로 분해를 수행한 뒤 반복적 정밀화로 FP64 상당 정확도를 회복하는 방식에서 나오며, 문항이 말하는 릴리스 간 향상은 통신 계층에서 비롯됩니다. 다중 노드에서는 CPU가 MPI 랭크를 관리하고 호스트 메모리를 거쳐 버퍼를 준비하는 과정에서 병목이 됩니다. MPI-aware(CUDA-aware) GPU 통신은 MPI가 디바이스 포인터를 직접 다루게 하고 집합 통신을 NCCL 및 인네트워크 SHARP 리덕션으로 오프로드하여, 호스트가 다음 패널을 조율하기를 기다리며 소비되는 GPU 유휴 시간을 줄입니다. 흔한 덤프 오류에 유의해야 합니다. DGX A100은 Quantum HDR 200G InfiniBand를 사용하며 SHARPv2까지 지원합니다. SHARPv3는 Quantum-2 NDR 400G 세대 기능입니다. 또 GPUDirect RDMA만으로 처리량이 2배가 되지는 않으며, 호스트 메모리 경유 단계를 제거해 스케일링 효율을 개선하는 요인입니다.",
+    "explanation_en": "The distractors fail on basic grounds: shrinking the problem size N does not optimize anything — it invalidates the benchmark, since HPL performance is reported for a fixed, memory-filling N; firmware cannot double GPU clocks and a driver update cannot double physical NVLink bandwidth, as both are fixed hardware properties of the A100 and its NVSwitch fabric. HPL-AI itself gains its headline speed from mixed-precision arithmetic — FP16/BF16/TF32 factorization recovered to FP64-equivalent accuracy through iterative refinement — while the release-over-release gain the question describes comes from the communication layer. On a multi-node cluster the CPU becomes a bottleneck marshalling MPI ranks and staging buffers through host memory; MPI-aware (CUDA-aware) GPU communication lets MPI operate on device pointers directly and offloads collectives to NCCL and to in-network SHARP reductions, cutting GPU idle time. Note a common dump error: a DGX A100 cluster uses Quantum HDR 200G InfiniBand, which supports SHARPv2; SHARPv3 was introduced with Quantum-2 NDR 400G. Likewise, GPUDirect RDMA alone does not double throughput — it improves scaling efficiency by removing host-memory staging."
+  },
+  {
+    "id": "n014",
+    "domain": "d3",
+    "type": "single",
+    "question": "A system administrator needs to install a container toolkit and successfully run the following commands: sudo apt-get update / sudo apt-get install -y nvidia-container-toolkit / sudo nvidia-ctk runtime configure --runtime docker. What step should be taken next to finish the installation?",
+    "question_ko": "시스템 관리자가 컨테이너 툴킷을 설치하고 다음 명령들을 성공적으로 실행했습니다: sudo apt-get update / sudo apt-get install -y nvidia-container-toolkit / sudo nvidia-ctk runtime configure --runtime docker. 설치를 완료하기 위해 다음으로 취해야 할 단계는 무엇인가?",
+    "choices": [
+      "dpkg -i doca-host-repo-ubuntu<version>_amd64.deb",
+      "apt-get install cuda-drivers",
+      "systemctl restart docker",
+      "apt-get remove nvidia-container-toolkit"
+    ],
+    "choices_ko": [
+      "dpkg -i doca-host-repo-ubuntu<version>_amd64.deb",
+      "apt-get install cuda-drivers",
+      "systemctl restart docker",
+      "apt-get remove nvidia-container-toolkit"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "nvidia-ctk runtime configure 명령은 nvidia runtime을 등록하기 위해 Docker 데몬 구성 파일(/etc/docker/daemon.json)을 수정하는 중요한 단계입니다. 그러나 Docker 데몬은 초기화 단계에서만 이 구성 파일을 읽습니다. 툴킷이 설치되고 구성 파일이 업데이트되었더라도 서비스가 새로 고쳐지기 전까지 Docker는 GPU 가속 컨테이너를 생성할 수 없습니다. sudo systemctl restart docker(또는 사용 중인 컨테이너 엔진의 동등한 명령)를 실행하는 것이 필수적인 마지막 단계입니다. 이는 Docker가 설정을 다시 로드하고 NVIDIA Container Runtime을 유효한 옵션으로 인식하도록 강제합니다. 이 재시작이 없으면 --gpus all 플래그로 컨테이너를 실행할 때 nvidia runtime을 찾을 수 없거나 구성되지 않았다는 오류가 발생합니다. 이는 구성 스크립트는 완료되었지만 서비스 상태가 오래된 채로 남아 있는 자동화된 AI 인프라 배포에서 흔히 발생하는 실패 지점입니다.",
+    "explanation_en": "The nvidia-ctk runtime configure command modifies the Docker daemon configuration file (/etc/docker/daemon.json) to register the nvidia runtime. However, the Docker daemon only reads this configuration during initialization. Even though the toolkit is installed and the configuration file is updated, Docker cannot spawn GPU-accelerated containers until the service is refreshed. Executing sudo systemctl restart docker is the mandatory final step. This forces Docker to reload its settings and recognize the NVIDIA Container Runtime as a valid option. Without this restart, running a container with --gpus all results in an error stating that the nvidia runtime is not found or unconfigured. This is a common failure point in automated deployments where the configuration script finishes but the service state remains stale."
+  },
+  {
+    "id": "n015",
+    "domain": "d4",
+    "type": "single",
+    "question": "An InfiniBand server stops working, and a system administrator runs 'ibstat' which shows: Port 1: State: Initializing / Physical state: Linkup / Rate: 100 / Base lid: 0 / SM lid: 0. What is the cause of the issue?",
+    "question_ko": "InfiniBand 서버가 작동을 멈추었고, 시스템 관리자가 'ibstat'를 실행하여 다음을 확인했습니다: Port 1: State: Initializing / Physical state: Linkup / Rate: 100 / Base lid: 0 / SM lid: 0. 이 문제의 원인은 무엇인가?",
+    "choices": [
+      "The HCA port is faulty.",
+      "There is no running SM in the fabric.",
+      "The neighboring switch port is faulty.",
+      "The cable is disconnected."
+    ],
+    "choices_ko": [
+      "HCA 포트에 결함이 있다.",
+      "패브릭에 실행 중인 SM이 없다.",
+      "인접 스위치 포트에 결함이 있다.",
+      "케이블이 분리되어 있다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "ibstat 출력에서 가장 중요한 항목은 Physical state, State, SM lid입니다. Physical state: Linkup은 서버 HCA와 인접 스위치 포트 간 전기적·광학적 연결이 물리 계층에서 정상 수립되어 있음을 확인해 줍니다. 이는 케이블 분리나 완전히 죽은 하드웨어 포트 가능성을 즉시 배제합니다. 그러나 State: Initializing은 배선은 연결되어 있으나 논리적 InfiniBand 프로토콜 핸드셰이크가 완료되지 않았음을 나타냅니다. InfiniBand에서 Subnet Manager(SM)는 노드를 탐색하고 LID를 할당하며 라우팅 테이블을 구성하는 중앙 두뇌입니다. 출력의 Base lid: 0과 SM lid: 0은 해당 포트에 LID가 할당되지 않았고 통신할 활성 SM을 찾을 수 없음을 의미합니다. 포트를 Initializing에서 Active로 전환해 줄 실행 중인 SM이 없으면 어떠한 RDMA 트래픽도 패브릭을 통과할 수 없습니다. 이 상황은 관리 노드에서 SM 서비스가 중단되었거나 관리형 스위치에서 SM이 비활성화된 경우에 발생합니다.",
+    "explanation_en": "In the ibstat output, the critical data points are Physical state, State, and SM lid. Physical state: Linkup confirms the electrical or optical connection between the server's HCA and the neighboring switch port is established and healthy at the physical layer. This immediately rules out a disconnected cable or a completely dead hardware port. However, State: Initializing indicates that while the wires are connected, the logical InfiniBand protocol has not finished its handshake. The Subnet Manager (SM) is the centralized brain responsible for discovering nodes, assigning LIDs, and configuring routing tables. Base lid: 0 and SM lid: 0 signify that the port has not been assigned a LID and cannot find an active Subnet Manager. Without a running SM to transition the port from Initializing to Active, no RDMA traffic can pass. This typically occurs if the SM service crashed on the management node, or if the SM is disabled on the managed switches."
+  },
+  {
+    "id": "n016",
+    "domain": "d5",
+    "type": "multiple",
+    "question": "You are configuring an East-West (E/W) Spectrum-X fabric using SuperNIC. The Bluefield-3 devices should be set to NIC mode with RoCE enabled. Which of the following steps and commands are necessary? (Choose two)",
+    "question_ko": "SuperNIC를 사용하여 East-West(E/W) Spectrum-X 패브릭을 구성하고 있습니다. Bluefield-3 장치는 RoCE가 활성화된 NIC mode로 설정되어야 합니다. 다음 중 필요한 단계와 명령은 무엇인가? (2개 선택)",
+    "choices": [
+      "Use the command sudo mlxconfig -d /dev/mst/<device> set LINK_TYPE_P1=2 to enable Ethernet on the Bluefield-3 devices.",
+      "Use the command sudo mlxconfig -d /dev/mst/<device> set DISABLE_SPECTRUM_X=1 to reduce overhead.",
+      "Use the command sudo mlxconfig -d /dev/mst/<device> set INTERNAL_CPU_OFFLOAD_ENGINE=1 (value 1 = DISABLED) to disable the internal Arm offload engine and place the SuperNIC in NIC mode.",
+      "Use the command sudo mlxconfig -d /dev/mst/<device> set DPU_MODE=1 to set up the Bluefield-3 devices in DPU mode."
+    ],
+    "choices_ko": [
+      "Bluefield-3 장치에서 Ethernet을 활성화하기 위해 sudo mlxconfig -d /dev/mst/<device> set LINK_TYPE_P1=2 명령을 사용한다.",
+      "오버헤드를 줄이기 위해 sudo mlxconfig -d /dev/mst/<device> set DISABLE_SPECTRUM_X=1 명령을 사용한다.",
+      "내부 Arm 오프로드 엔진을 비활성화하여 SuperNIC를 NIC mode로 만들기 위해 sudo mlxconfig -d /dev/mst/<device> set INTERNAL_CPU_OFFLOAD_ENGINE=1(값 1 = DISABLED) 명령을 사용한다.",
+      "Bluefield-3 장치를 DPU mode로 설정하기 위해 sudo mlxconfig -d /dev/mst/<device> set DPU_MODE=1 명령을 사용한다."
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explanation": "Spectrum-X는 Spectrum-4 스위치와 BlueField-3 SuperNIC를 결합하며, East-West AI 트래픽을 위해서는 BlueField-3를 Ethernet NIC mode로 프로비저닝해야 합니다. 첫째, 물리 포트의 링크 타입이 Ethernet이어야 합니다. LINK_TYPE_P1=2는 포트를 InfiniBand(1)에서 Ethernet(2)으로 전환하며, 두 번째 포트에는 LINK_TYPE_P2=2를 추가합니다. 둘째, 동작 모드는 존재하지도 않는 DPU_MODE 파라미터가 아니라 internal CPU offload engine으로 제어됩니다. 공식 명령은 mlxconfig -d /dev/mst/mt41692_pciconf0 s INTERNAL_CPU_OFFLOAD_ENGINE=1이며, 적용 후 콜드 리부트 또는 mlxfwreset이 필요합니다. 중요한 점은 값의 의미가 흔히 오해되는 것과 정반대라는 것입니다. 0 = ENABLED(DPU mode, Arm 코어가 데이터패스를 담당), 1 = DISABLED(NIC mode)입니다. NVIDIA 공식 문서는 'NIC mode를 활성화하려면 Internal CPU Offload Engine을 Disabled로 설정하라'고 명시합니다. 즉 값을 1로 설정하면 Arm 오프로드 엔진이 꺼지고 네트워크 데이터패스와 RoCE·혼잡 제어 처리의 제어권이 호스트로 완전히 넘어가며, 이것이 Spectrum-X가 기대하는 SuperNIC 동작입니다. 나머지 두 보기는 조작된 파라미터를 참조합니다. mlxconfig에는 DISABLE_SPECTRUM_X도 DPU_MODE도 존재하지 않습니다.",
+    "explanation_en": "NVIDIA Spectrum-X pairs Spectrum-4 switches with BlueField-3 SuperNICs, and for East-West AI traffic the BlueField-3 must be provisioned in Ethernet NIC mode. First, the physical port link type must be Ethernet: LINK_TYPE_P1=2 switches the port from InfiniBand (1) to Ethernet (2); add LINK_TYPE_P2=2 for the second port. Second, the operating mode is controlled by the internal CPU offload engine, not by any DPU_MODE knob. The official command is mlxconfig -d /dev/mst/mt41692_pciconf0 s INTERNAL_CPU_OFFLOAD_ENGINE=1, followed by a cold reboot or mlxfwreset. Critically, the value semantics are the opposite of what is often assumed: 0 = ENABLED (DPU mode, the Arm cores own the datapath) and 1 = DISABLED (NIC mode). NVIDIA documentation states \"to enable NIC mode, set Internal CPU Offload Engine to Disabled.\" Setting it to 1 turns the Arm offload engine off, handing full control of the network datapath and RoCE/congestion-control processing back to the host. The other options reference fabricated parameters: there is no DISABLE_SPECTRUM_X and no DPU_MODE in mlxconfig."
+  },
+  {
+    "id": "n017",
+    "domain": "d3",
+    "type": "single",
+    "question": "An administrator needs to verify HA functionality after configuring BCM (Base Command Manager / Bright). Which command confirms the active head node and failover readiness?",
+    "question_ko": "관리자가 BCM(Base Command Manager / Bright)을 구성한 후 HA 기능을 검증해야 합니다. 활성 head node와 failover 준비 상태를 확인하는 명령은 무엇인가?",
+    "choices": [
+      "cmha status to check HA status and active/standby roles.",
+      "nvsm show health to validate GPU status on both head nodes.",
+      "systemctl restart cmdaemon to force a failover test.",
+      "ping <secondary-head-node-ip> to test basic connectivity."
+    ],
+    "choices_ko": [
+      "HA 상태와 active/standby 역할을 확인하기 위한 cmha status.",
+      "두 head node의 GPU 상태를 검증하기 위한 nvsm show health.",
+      "failover 테스트를 강제하기 위한 systemctl restart cmdaemon.",
+      "기본 연결성을 테스트하기 위한 ping <secondary-head-node-ip>."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "BCM은 기본 컨트롤러 장애에도 AI factory가 계속 운영되도록 head node의 HA 쌍을 사용합니다. 이 HA 상태를 검증하는 명령은 head node 셸에서 실행하는 cmha status이며, cmsh status가 아닙니다. cmha status는 로컬 역할을 명시적으로 보고해 예를 들어 'Node Status: running in active master mode'와 같이 출력하고, 이어서 두 head node에 대해 mysql(데이터베이스 복제), failoverping(구버전에서는 backupping), ping, status 항목을 각각 [OK] 또는 [FAIL]로 표시하는 매트릭스를 출력합니다. 이것이 바로 문항이 요구하는 active/standby 역할과 failover 준비 상태의 조합입니다. cmsh는 Cluster Management Shell로서 status 명령이 존재하기는 하지만, 이는 관리 대상 노드들의 up/down 상태를 나열할 뿐 HA 쌍의 역할이나 failover 준비 상태를 보여주지 않습니다. nvsm show health는 DGX 하드웨어 점검 도구로 BCM의 HA 로직과 무관합니다. CMDaemon 재시작은 검증이 아니라 서비스 중단을 유발하는 행위이고, ping은 L3 도달성만 증명할 뿐 관리 서비스가 상태를 유지하는 failover를 수행할 준비가 되었는지는 증명하지 못합니다.",
+    "explanation_en": "BCM uses an HA pair of head nodes so the AI factory keeps running if the primary controller fails. The command that verifies this HA state is cmha status, run from a head node shell — not cmsh status. cmha status reports the local role explicitly, for example \"Node Status: running in active master mode\", and then prints a per-item matrix for both head nodes covering mysql (database replication), failoverping (called backupping in older releases), ping, and status, each marked [OK] or [FAIL]. That is precisely the combination of active/standby role plus failover readiness the question asks for. cmsh is the Cluster Management Shell; its status command lists the up/down state of managed nodes and does not report the HA pair's roles or failover readiness. nvsm show health is a DGX hardware health tool and knows nothing about BCM's HA logic. Restarting CMDaemon is a service-disrupting action rather than a verification step, and ping only proves L3 reachability."
+  },
+  {
+    "id": "n018",
+    "domain": "d4",
+    "type": "single",
+    "question": "During a multi-day NeMo burn-in, intermittent \"GPU fell off bus\" errors occur. Which diagnostic approach isolates hardware faults?",
+    "question_ko": "여러 날에 걸친 NeMo burn-in 테스트 중에 간헐적으로 \"GPU fell off bus\" 오류가 발생합니다. 하드웨어 결함을 격리하는 진단 접근법은 무엇인가?",
+    "choices": [
+      "Enable HPL_USE_NVSHMEM for alternative memory sharing.",
+      "Run DCGM diagnostics alongside burn-in to monitor GPU health metrics.",
+      "Switch from BERT to GPT models for simpler computations.",
+      "Reduce blocksize to 500MB to lower memory pressure."
+    ],
+    "choices_ko": [
+      "대체 메모리 공유를 위해 HPL_USE_NVSHMEM을 활성화한다.",
+      "GPU 상태 지표를 모니터링하기 위해 burn-in과 함께 DCGM 진단을 실행한다.",
+      "더 단순한 연산을 위해 BERT에서 GPT 모델로 전환한다.",
+      "메모리 부하를 낮추기 위해 blocksize를 500MB로 줄인다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "\"GPU fell off bus\"는 GPU와 CPU/PCIe 스위치 사이의 PCIe 링크가 붕괴된 심각한 장애로, 주로 열 스트레스, 전원 불안정, 물리적 하드웨어 결함으로 발생합니다(XID 79 계열). NeMo 같은 집약적 워크로드 중 근본 원인을 격리하려면 고정밀 텔레메트리를 수집해야 합니다. DCGM 진단은 정확히 이러한 시나리오를 위해 설계되었습니다. dcgmi diag -r 3(포괄적 하드웨어 스트레스 테스트)를 실행하거나 워크로드와 동시에 dcgmi health --check로 상태를 모니터링하면, PCIe replay count, 온도 급상승, XID 오류 등의 파라미터가 발생하는 정확한 순간을 포착할 수 있습니다. 이 데이터로 특정 GPU 모듈에 결함이 있는지, 아니면 문제가 시스템 전반적인 것인지(예: 메인보드 PCIe 스위치 고장) 판단할 수 있습니다. 워크로드를 낮추는 것은 증상을 숨길 수는 있지만 하드웨어가 최대 전력과 데이터 처리량을 감당하지 못하는 문제를 진단하지는 못합니다.",
+    "explanation_en": "\"GPU fell off bus\" is a critical failure where the PCIe link between the GPU and the CPU/PCIe switch has collapsed, often due to thermal stress, power instability, or physical hardware defects (the XID 79 family). To isolate the root cause during an intensive workload like NVIDIA NeMo, the administrator must collect high-fidelity telemetry. DCGM diagnostics are designed for exactly this scenario. By running dcgmi diag -r 3 (a comprehensive hardware stress test) or monitoring health via dcgmi health --check concurrently with the workload, the system can capture the exact moment parameters like PCIe replay counts, temperature spikes, or XID errors occur. This data allows the engineer to determine if a specific module is faulty or if the issue is systemic. Lowering the workload might hide the symptom, but it does not diagnose the hardware's inability to handle peak power and data throughput."
+  },
+  {
+    "id": "n019",
+    "domain": "d3",
+    "type": "single",
+    "question": "After configuring HA, the administrator runs cmha status and notices the secondary head node reports mysql [FAIL]. What is the most likely cause?",
+    "question_ko": "HA를 구성한 후 관리자가 cmha status를 실행했더니 보조(secondary) head node가 mysql [FAIL]을 보고합니다. 가장 유력한 원인은 무엇인가?",
+    "choices": [
+      "The BCM license expired after HA configuration.",
+      "Network connectivity issues between the primary and secondary head nodes.",
+      "The secondary head node lacks NVIDIA GPU drivers.",
+      "The cluster nodes are powered on during the HA configuration."
+    ],
+    "choices_ko": [
+      "HA 구성 후 BCM 라이선스가 만료되었다.",
+      "기본(primary) head node와 보조(secondary) head node 간의 네트워크 연결 문제.",
+      "보조 head node에 NVIDIA GPU 드라이버가 없다.",
+      "HA 구성 중에 클러스터 노드들의 전원이 켜져 있다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "BCM HA 구성에서는 failover가 상태를 유지한 채 이루어질 수 있도록 CMDaemon 데이터베이스(MySQL/MariaDB)가 active head node와 standby head node 사이에서 복제 상태를 유지해야 합니다. 먼저 명령을 정확히 짚어야 합니다. 두 head node에 대해 mysql, failoverping, ping, status 항목을 [OK]/[FAIL]로 나열하는 출력은 cmsh status가 아니라 cmha status에서 나옵니다. mysql [FAIL] 항목은 상대 head node의 mysqld에 도달할 수 없거나 복제가 끊어졌음을 의미하며, 가장 대표적인 근본 원인은 두 head node 간 관리·heartbeat 네트워크 경로의 단절입니다. 이 경로가 없으면 standby 노드는 자신의 사본을 최신 상태로 유지하는 데 필요한 바이너리 로그를 가져올 수 없습니다. 라이선스 만료는 mysql 항목만 실패시키는 것이 아니라 CMDaemon 기능 전반을 광범위하게 막습니다. head node는 관리 서버이며 HA·복제 역할은 GPU 드라이버에 의존하지 않습니다. 컴퓨트 노드의 전원 상태는 head node MySQL 복제와 인과관계가 없습니다.",
+    "explanation_en": "In a BCM HA setup, the CMDaemon database (MySQL/MariaDB) must stay replicated between the active and standby head nodes so a failover can be stateful. Note the correct command first: the output listing mysql, failoverping, ping, and status as [OK]/[FAIL] for both head nodes comes from cmha status, not cmsh status — cmsh status only lists managed node up/down state. A mysql [FAIL] line means the peer head node's mysqld is not reachable or replication is broken, and the dominant root cause is a break in the management/heartbeat network path between the two head nodes: without it, the standby cannot pull the binary logs needed to keep its copy current. An expired license disables CMDaemon functionality broadly rather than failing only the mysql item. Head nodes are management servers and their HA/replication role has no dependency on GPU drivers. The power state of compute nodes has no causal relationship with head-node MySQL replication."
+  },
+  {
+    "id": "n020",
+    "domain": "d3",
+    "type": "single",
+    "question": "A user wants to restrict a Docker container to use only GPUs 0 and 2. Which command achieves this?",
+    "question_ko": "사용자가 Docker 컨테이너를 GPU 0번과 2번만 사용하도록 제한하려고 합니다. 이를 달성하는 명령은 무엇인가?",
+    "choices": [
+      "docker run --gpus '\"device=0,2\"' nvidia/cuda:12.1-base nvidia-smi",
+      "docker run -e NVIDIA_VISIBLE_DEVICES=0,2 nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus all nvidia/cuda:12.1-base nvidia-smi -id=0,2",
+      "docker run --device /dev/nvidia0,/dev/nvidia2 nvidia/cuda:12.1-base nvidia-smi"
+    ],
+    "choices_ko": [
+      "docker run --gpus '\"device=0,2\"' nvidia/cuda:12.1-base nvidia-smi",
+      "docker run -e NVIDIA_VISIBLE_DEVICES=0,2 nvidia/cuda:12.1-base nvidia-smi",
+      "docker run --gpus all nvidia/cuda:12.1-base nvidia-smi -id=0,2",
+      "docker run --device /dev/nvidia0,/dev/nvidia2 nvidia/cuda:12.1-base nvidia-smi"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "NVIDIA Container Toolkit과 최신 Docker(19.03 이상)에서 --gpus 플래그가 리소스 할당의 공식적이고 검증된 방법입니다. 컨테이너를 특정 하드웨어 ID로 제한하려면 --gpus '\"device=0,2\"'라는 특정 문자열 형식이 필요합니다. 이는 NVIDIA Container Runtime에게 해당 물리 GPU 장치만 컨테이너 네임스페이스에 매핑하도록 지시합니다. NVIDIA_VISIBLE_DEVICES 환경 변수는 이전 nvidia-docker2 구성에서 사용되었지만 현재는 레거시로 간주되며 더 현대적인 --gpus 플래그에 의해 재정의될 수 있습니다. 장치 노드(/dev/nvidiaX)만 매핑하는 것으로는 충분하지 않은데, 컨테이너에는 NVIDIA 드라이버 라이브러리를 위한 볼륨 마운트도 필요하고 --gpus 플래그가 이를 자동 처리합니다. nvidia-smi에 -id를 주는 방식은 컨테이너에 이미 전체 GPU가 노출된 뒤 표시만 걸러내는 것이라 격리가 아닙니다. 이러한 정밀한 격리는 한 사용자나 작업이 DGX H100의 8-GPU 트레이 전체를 점유하지 않도록 보장해야 하는 멀티 테넌트 환경에서 중요합니다.",
+    "explanation_en": "With the NVIDIA Container Toolkit and modern Docker versions (19.03+), the --gpus flag is the official, verified method for resource allocation. To restrict a container to specific hardware IDs, the syntax requires a specific string format: --gpus '\"device=0,2\"'. This tells the NVIDIA Container Runtime to map only those specific physical GPU devices into the container's namespace. Environment variables like NVIDIA_VISIBLE_DEVICES were used in older nvidia-docker2 setups but are now considered legacy and can be overridden by the more modern --gpus flag. Simply mapping the device nodes (/dev/nvidiaX) is insufficient; the container also needs the appropriate volume mounts for the NVIDIA driver libraries, which the --gpus flag handles automatically. Passing -id to nvidia-smi merely filters the display after all GPUs are already exposed, which is not isolation."
+  }
+]

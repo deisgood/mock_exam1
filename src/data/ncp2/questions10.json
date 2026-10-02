@@ -1,0 +1,245 @@
+[
+  {
+    "id": "v091",
+    "domain": "d4",
+    "type": "single",
+    "question": "An HPC administrator observes that a distributed training workload generates heavy AllReduce traffic across hundreds of GPUs. Although each InfiniBand link is healthy, several links become heavily utilized while others remain nearly idle, limiting overall scalability. Which configuration change is most likely to improve communication efficiency?",
+    "question_ko": "HPC 관리자가 수백 개 GPU에 걸친 분산 학습 워크로드에서 AllReduce 트래픽이 많이 발생하는 것을 관찰했습니다. 각 InfiniBand 링크는 정상이지만 일부 링크만 과도하게 사용되고 나머지는 거의 유휴 상태여서 확장성이 제한됩니다. 통신 효율을 개선할 가능성이 가장 높은 구성 변경은?",
+    "choices": [
+      "Enable multi-rail communication so traffic can utilize multiple network interfaces",
+      "Reduce GPU clock frequency to minimize communication demand",
+      "Disable RDMA to simplify packet routing",
+      "Replace NVSwitch with PCIe switches"
+    ],
+    "choices_ko": [
+      "여러 네트워크 인터페이스를 활용하도록 multi-rail 통신을 활성화한다",
+      "통신 요구를 줄이기 위해 GPU 클럭 주파수를 낮춘다",
+      "패킷 라우팅을 단순화하기 위해 RDMA를 비활성화한다",
+      "NVSwitch를 PCIe 스위치로 교체한다"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "링크별 사용률이 심하게 불균형하다는 것은 트래픽이 일부 경로에만 몰린다는 뜻입니다. multi-rail을 활성화해 NCCL이 노드의 여러 HCA(rail)에 트래픽을 분산하도록 하면(NCCL_IB_HCA 등으로 지정) 대역폭이 고르게 사용되고 병목이 해소됩니다.",
+    "explanation_en": "Badly skewed per-link utilization means traffic is pinned to a few paths. Enabling multi-rail so NCCL spreads traffic across the node's multiple HCAs (for example via NCCL_IB_HCA) balances bandwidth use and removes the bottleneck."
+  },
+  {
+    "id": "v092",
+    "domain": "d1",
+    "type": "single",
+    "question": "Which of the following tests should be used to check for the lowest possible latency between two nodes in a fabric?",
+    "question_ko": "패브릭에서 두 노드 사이의 가능한 최저 지연을 확인하려면 어떤 테스트를 사용해야 하는가?",
+    "choices": [
+      "ib_read_lat",
+      "ib_write_lat",
+      "ib_read_bw",
+      "iperf"
+    ],
+    "choices_ko": [
+      "ib_read_lat",
+      "ib_write_lat",
+      "ib_read_bw",
+      "iperf"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RDMA Write는 송신 측이 원격 메모리에 직접 기록하는 단방향 연산이라 왕복 응답이 필요한 Read보다 지연이 낮습니다. 따라서 패브릭이 낼 수 있는 최저 지연을 보려면 ib_write_lat을 사용합니다. ib_read_bw는 대역폭 측정이고 iperf는 TCP/IP 도구입니다.",
+    "explanation_en": "RDMA Write is a one-sided operation that pushes data into remote memory, so it shows lower latency than Read, which requires a round trip for the response. ib_write_lat therefore reveals the fabric's best-case latency. ib_read_bw measures bandwidth, and iperf is a TCP/IP tool."
+  },
+  {
+    "id": "v093",
+    "domain": "d4",
+    "type": "single",
+    "question": "A system administrator needs to troubleshoot multiple GPUs in a cluster environment. Which would be the most efficient tool for this?",
+    "question_ko": "시스템 관리자가 클러스터 환경에서 여러 GPU를 진단해야 합니다. 가장 효율적인 도구는?",
+    "choices": [
+      "NVIDIA-SMI",
+      "GPU Health Analyzer",
+      "VMware Aria Operations",
+      "NVIDIA DCGM"
+    ],
+    "choices_ko": [
+      "NVIDIA-SMI",
+      "GPU Health Analyzer",
+      "VMware Aria Operations",
+      "NVIDIA DCGM"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "DCGM은 데이터센터 규모의 GPU 관리·진단 프레임워크로, 다수 노드의 GPU 상태를 중앙에서 수집(dcgmi/호스트 엔진)하고 단계별 진단(dcgmi diag -r 1~4)과 정책·경보를 제공합니다. nvidia-smi는 노드마다 개별 실행해야 하므로 클러스터 규모 진단에는 비효율적입니다.",
+    "explanation_en": "DCGM is the data-center-scale GPU management and diagnostics framework: it collects GPU state centrally (dcgmi/host engine) across many nodes and provides tiered diagnostics (dcgmi diag -r 1..4) plus policies and alerts. nvidia-smi must be run node by node, which does not scale."
+  },
+  {
+    "id": "v094",
+    "domain": "d2",
+    "type": "single",
+    "question": "You are responsible for interoperability between AI applications deployed across an on-premises data center with NVIDIA GPUs and multiple cloud platforms. To maintain consistent performance and flexibility, which strategy should you prioritize?",
+    "question_ko": "NVIDIA GPU를 갖춘 온프레미스 데이터센터와 여러 클라우드 플랫폼에 걸쳐 배포된 AI 애플리케이션의 상호운용성을 책임지고 있습니다. 일관된 성능과 유연성을 유지하려면 어떤 전략을 우선해야 하는가?",
+    "choices": [
+      "Choose a vendor and standardize on one storage solution across all environments to simplify management.",
+      "Ensure all environments use compatible storage protocols and APIs, such as NFS or S3, to facilitate data exchange and integration across platforms.",
+      "Implement a multi-cloud strategy that leverages native storage in each cloud while using middleware to ensure interoperability.",
+      "Focus on increasing network bandwidth between locations to reduce latency and improve data transfer speeds."
+    ],
+    "choices_ko": [
+      "벤더를 하나 골라 모든 환경에서 단일 스토리지 솔루션으로 표준화해 관리를 단순화한다.",
+      "모든 환경이 NFS나 S3 같은 호환 스토리지 프로토콜·API를 사용하도록 해 플랫폼 간 데이터 교환과 통합을 용이하게 한다.",
+      "각 클라우드의 네이티브 스토리지를 활용하는 멀티클라우드 전략을 도입하고 미들웨어로 상호운용성을 보장한다.",
+      "지역 간 네트워크 대역폭을 늘려 지연을 줄이고 데이터 전송 속도를 개선하는 데 집중한다."
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "상호운용성의 핵심은 '어디서든 같은 방식으로 데이터에 접근할 수 있는가'입니다. NFS(POSIX 계열)와 S3(오브젝트) 같은 표준 프로토콜·API로 접근 계층을 통일하면 애플리케이션 코드를 바꾸지 않고 온프레미스와 여러 클라우드를 오갈 수 있습니다. 단일 벤더 표준화는 유연성을 잃고, 미들웨어 계층은 복잡성과 장애 지점을 더합니다.",
+    "explanation_en": "Interoperability comes down to accessing data the same way everywhere. Standardizing on common protocols and APIs — NFS for POSIX-style access, S3 for objects — lets applications move between on-premises and multiple clouds without code changes. Single-vendor standardization sacrifices flexibility, and a middleware layer adds complexity and another failure point."
+  },
+  {
+    "id": "v095",
+    "domain": "d2",
+    "type": "single",
+    "question": "A customer has just completed the first boot of their DGX system and is prompted to create an administrative user. What is the correct approach for setting up this user to ensure secure BMC and GRUB access?",
+    "question_ko": "한 고객이 DGX 시스템의 첫 부팅을 마치고 관리자 사용자를 생성하라는 안내를 받았습니다. 안전한 BMC 및 GRUB 접근을 위해 이 사용자를 설정하는 올바른 방법은?",
+    "choices": [
+      "Create a unique, strong username and password that will be used for both BMC and GRUB access, avoiding default or weak credentials.",
+      "Skip creating a new user and retain the default admin account for BMC and GRUB access.",
+      "Create separate usernames for BMC and GRUB to maximize flexibility.",
+      "Use \"sysadmin\" as the username with a simple password for ease of management."
+    ],
+    "choices_ko": [
+      "기본값이나 취약한 자격 증명을 피하고, BMC와 GRUB 접근에 함께 사용할 고유하고 강력한 사용자명·비밀번호를 생성한다.",
+      "새 사용자를 만들지 않고 BMC와 GRUB 접근에 기본 admin 계정을 유지한다.",
+      "유연성을 극대화하기 위해 BMC와 GRUB에 서로 다른 사용자명을 만든다.",
+      "관리 편의를 위해 사용자명을 \"sysadmin\"으로 하고 단순한 비밀번호를 쓴다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "DGX 최초 부팅 시 생성하는 관리자 계정은 OS 로그인뿐 아니라 BMC와 GRUB 접근에도 사용됩니다. 즉 이 자격 증명 하나가 시스템 전체의 제어권과 직결되므로, 기본 계정이나 추측하기 쉬운 이름·비밀번호를 피하고 고유하고 강력한 자격 증명을 설정해야 합니다.",
+    "explanation_en": "The administrative account created at DGX first boot is used not only for OS login but also for BMC and GRUB access, so this single credential controls the whole system. Default accounts and guessable names or passwords must be avoided in favor of unique, strong credentials."
+  },
+  {
+    "id": "v096",
+    "domain": "d4",
+    "type": "single",
+    "question": "A platform engineer uses NVIDIA DCGM to monitor hundreds of GPUs in production. One GPU repeatedly reports increasing corrected ECC memory errors, although training jobs continue to complete successfully. What is the most appropriate operational response?",
+    "question_ko": "플랫폼 엔지니어가 NVIDIA DCGM으로 프로덕션의 수백 개 GPU를 모니터링합니다. 한 GPU에서 정정된(corrected) ECC 메모리 오류가 계속 증가하지만 학습 작업은 정상적으로 완료됩니다. 가장 적절한 운영 대응은?",
+    "choices": [
+      "Continue monitoring and schedule proactive maintenance before uncorrectable errors develop.",
+      "Ignore the warnings because corrected ECC errors have no operational significance.",
+      "Immediately replace every GPU in the cluster.",
+      "Disable ECC permanently to eliminate future alerts."
+    ],
+    "choices_ko": [
+      "모니터링을 계속하면서 정정 불가 오류로 발전하기 전에 선제적 정비를 계획한다.",
+      "정정된 ECC 오류는 운영상 의미가 없으므로 경고를 무시한다.",
+      "클러스터의 모든 GPU를 즉시 교체한다.",
+      "향후 경보를 없애기 위해 ECC를 영구 비활성화한다."
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "정정 가능한 ECC 오류는 지금은 작업에 영향을 주지 않지만, 발생률이 지속적으로 증가하는 패턴은 메모리 셀 열화의 신호일 수 있습니다. 추세를 계속 관찰하면서 계획된 정비 창에서 해당 GPU를 점검·교체하는 것이 가용성과 비용의 균형점입니다. 무시하거나 ECC를 끄면 정정 불가 오류가 갑자기 학습을 중단시킬 위험이 커집니다.",
+    "explanation_en": "Correctable ECC errors are not affecting jobs today, but a steadily rising rate can signal degrading memory cells. Tracking the trend and servicing or replacing that GPU in a planned maintenance window balances availability against cost. Ignoring it or disabling ECC raises the risk of an uncorrectable error abruptly killing a training run."
+  },
+  {
+    "id": "v097",
+    "domain": "d5",
+    "type": "single",
+    "question": "What is the longest distance that DAC LinkX 25G-NRZ cables can cover?",
+    "question_ko": "DAC LinkX 25G-NRZ 케이블이 지원하는 최대 거리는?",
+    "choices": [
+      "1 meter",
+      "10 meters",
+      "3 meters",
+      "5 meters"
+    ],
+    "choices_ko": [
+      "1미터",
+      "10미터",
+      "3미터",
+      "5미터"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "25G-NRZ 수동 DAC 케이블의 최대 길이는 5미터입니다. 구리 케이블은 속도가 올라갈수록 감쇠 때문에 지원 길이가 짧아지며(예: 더 높은 속도 세대에서는 2~3미터), 그보다 먼 거리는 AOC나 트랜시버 기반 광 링크로 연결합니다.",
+    "explanation_en": "Passive 25G-NRZ DAC cables reach up to 5 meters. Copper reach shrinks as signaling rates rise (later generations are limited to roughly 2–3 m), and longer runs use AOCs or transceiver-based optical links."
+  },
+  {
+    "id": "v098",
+    "domain": "d1",
+    "type": "single",
+    "question": "An administrator needs to perform a comprehensive pre-production stress test on a DGX H100 system. Which command validates GPU, CPU, memory, and storage components while following NVIDIA's recommended procedure?",
+    "question_ko": "관리자가 DGX H100 시스템에 대해 프로덕션 투입 전 종합 스트레스 테스트를 수행해야 합니다. NVIDIA 권장 절차에 따라 GPU·CPU·메모리·스토리지를 검증하는 명령은?",
+    "choices": [
+      "nvidia-smi -q | grep \"GPU Stress Test\"",
+      "sudo nvsm stress-test --force",
+      "stress --cpu $(nproc) --io $(nproc) --timeout 600",
+      "./gpu_burn 60"
+    ],
+    "choices_ko": [
+      "nvidia-smi -q | grep \"GPU Stress Test\"",
+      "sudo nvsm stress-test --force",
+      "stress --cpu $(nproc) --io $(nproc) --timeout 600",
+      "./gpu_burn 60"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "NVSM의 stress-test는 DGX 플랫폼 전체를 대상으로 하는 NVIDIA 권장 스트레스 검증입니다. GPU뿐 아니라 CPU·메모리·스토리지까지 부하를 걸고 그동안의 하드웨어 상태를 함께 평가합니다. --force는 확인 프롬프트 없이 진행하는 옵션으로, 시스템 부하가 크므로 프로덕션 투입 전에 수행합니다.",
+    "explanation_en": "NVSM's stress-test is NVIDIA's recommended platform-wide DGX stress validation, loading CPU, memory, and storage as well as the GPUs while evaluating hardware health throughout. --force skips the confirmation prompt; because the load is heavy, it belongs in the pre-production phase."
+  },
+  {
+    "id": "v099",
+    "domain": "d2",
+    "type": "single",
+    "question": "An administrator notices that a server is not collecting fabric telemetry such as traffic flows, performance counters, faults, and events. In which network does this information flow?",
+    "question_ko": "관리자가 어떤 서버에서 트래픽 흐름, 성능 카운터, 결함, 이벤트 같은 패브릭 텔레메트리가 수집되지 않는 것을 발견했습니다. 이 정보는 어느 네트워크를 통해 흐르는가?",
+    "choices": [
+      "Compute",
+      "Storage",
+      "In-band management",
+      "InfiniBand management"
+    ],
+    "choices_ko": [
+      "컴퓨트",
+      "스토리지",
+      "대역내 관리",
+      "InfiniBand 관리"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "InfiniBand 패브릭의 트래픽 흐름, 포트 카운터, 결함, 이벤트는 서브넷 관리 트래픽(MAD)으로 주고받으며 UFM 같은 패브릭 관리자가 이를 수집합니다. 이 경로가 InfiniBand 관리 네트워크이며, 여기서 문제가 생기면 링크 자체는 살아 있어도 텔레메트리 수집이 멈춥니다.",
+    "explanation_en": "InfiniBand traffic flows, port counters, faults, and events travel as subnet management traffic (MADs) and are collected by a fabric manager such as UFM. That path is the InfiniBand management network; if it breaks, telemetry collection stops even though data links stay up."
+  },
+  {
+    "id": "v100",
+    "domain": "d3",
+    "type": "multiple",
+    "question": "You are setting up High Availability (HA) for NVIDIA Base Command Manager (BCM) with a primary and secondary head node. Which two actions are mandatory for a robust and verified HA cluster configuration? (Choose two.)",
+    "question_ko": "기본(primary)과 보조(secondary) 헤드 노드로 NVIDIA Base Command Manager(BCM)의 고가용성(HA)을 구성하고 있습니다. 견고하고 검증된 HA 클러스터 구성을 위해 반드시 수행해야 하는 두 가지는? (2개 선택)",
+    "choices": [
+      "After configuration, simulate a failover by stopping BCM services on the active head node to verify services run on the secondary node without interruption.",
+      "During configuration, explicitly synchronize both the configuration and state data directories from the primary to the secondary head node.",
+      "Compute nodes must be powered on and performing work to initiate synchronization of the head nodes.",
+      "Configure both head nodes with independent static IP addresses for BCM services instead of a shared virtual IP.",
+      "Assign a floating virtual IP address that can automatically migrate between the primary and secondary head nodes during failover."
+    ],
+    "choices_ko": [
+      "구성 완료 후 활성 헤드 노드의 BCM 서비스를 중지해 페일오버를 모의하고, 보조 노드에서 서비스가 중단 없이 동작하는지 검증한다.",
+      "구성 중 기본 헤드 노드에서 보조 헤드 노드로 구성 및 상태 데이터 디렉터리를 명시적으로 동기화한다.",
+      "헤드 노드 동기화를 시작하려면 컴퓨트 노드가 켜져 있고 작업을 수행 중이어야 한다.",
+      "공유 가상 IP 대신 두 헤드 노드가 각각 독립적인 고정 IP로 BCM 서비스를 제공하도록 구성한다.",
+      "페일오버 시 기본과 보조 헤드 노드 사이를 자동으로 이동할 수 있는 플로팅 가상 IP를 할당한다."
+    ],
+    "answer": [
+      0,
+      4
+    ],
+    "explanation": "HA의 두 축은 '서비스 주소가 이동할 수 있는가'와 '실제로 이동하는지 확인했는가'입니다. 플로팅 가상 IP가 있어야 클라이언트가 주소 변경 없이 활성 헤드 노드에 접속할 수 있고, 구성 후 페일오버를 실제로 모의해 봐야 설정이 동작함을 검증할 수 있습니다. 데이터 동기화는 BCM HA 설정 과정에서 자동으로 수행되며, 컴퓨트 노드 가동은 전제 조건이 아닙니다.",
+    "explanation_en": "HA rests on two things: the service address must be able to move, and you must prove that it does. A floating virtual IP lets clients reach whichever head node is active without changing addresses, and an actual simulated failover after configuration verifies the setup works. Data synchronization is handled by the BCM HA setup itself, and powered-on compute nodes are not a prerequisite."
+  }
+]

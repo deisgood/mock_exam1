@@ -1,0 +1,212 @@
+[
+  {
+    "id": "n031",
+    "domain": "d1",
+    "type": "single",
+    "question": "An engineer needs to validate 400G DAC cable signal integrity in a DGX cluster. Which CVT metric best identifies marginal cables needing replacement?",
+    "question_ko": "엔지니어가 DGX 클러스터에서 400G DAC 케이블의 신호 무결성을 검증해야 합니다. 교체가 필요한 한계 상태(marginal)의 케이블을 가장 잘 식별하는 CVT 지표는 무엇인가?",
+    "choices": [
+      "Lane power variance < 3dB across all transceivers.",
+      "Transceiver model matching QSFP-DD specifications.",
+      "Temperature fluctuations > 5°C during validation.",
+      "Effective BER > 1.5E-254 during a <6-hour monitoring window."
+    ],
+    "choices_ko": [
+      "모든 트랜시버에 걸친 레인 전력 편차 < 3dB",
+      "QSFP-DD 사양과 일치하는 트랜시버 모델",
+      "검증 중 온도 변동 > 5°C",
+      "6시간 미만의 모니터링 구간 동안 Effective BER > 1.5E-254"
+    ],
+    "answer": [3],
+    "explanation": "400G(NDR) InfiniBand 및 Ethernet 링크에서 신호 무결성은 FEC(Forward Error Correction)를 통해 관리됩니다. Raw BER이 정정 이전 오류를 나타내는 반면, Effective BER(FEC 이후 남은 오류)은 링크 안정성을 판단하는 결정적 지표입니다. 고성능 AI 패브릭에서 Effective BER은 이상적으로 0이어야 합니다. NVIDIA의 Cable Validation Tool(CVT)과 UFM은 표준 모니터링 기간 동안 Effective BER이 1.5E-254를 초과하는 링크를 표시합니다. 이 임계값은 FEC 엔진이 한계까지 동작하고 있어 무손실(lossless) 패브릭을 보장할 수 없음을 의미합니다. 광 트랜시버와 달리 DAC(Direct Attach Copper) 케이블은 전기적 방식이므로 Rx power를 가지지 않으며, 따라서 BER이 주된 상태 지표가 됩니다. 이 임계값을 통과하지 못하는 한계 상태 케이블은 간헐적 패킷 재전송을 유발해 NCCL 집합 연산에서 막대한 성능 저하를 초래합니다.",
+    "explanation_en": "For 400G (NDR) InfiniBand and Ethernet links, signal integrity is managed through Forward Error Correction (FEC). While Raw BER accounts for errors before correction, the Effective BER (errors remaining after FEC) is the definitive metric for link stability. In a high-performance NVIDIA AI fabric, the Effective BER should ideally be zero. NVIDIA's Cable Validation Tool (CVT) and UFM flag any link showing an Effective BER greater than 1.5E-254 during standard monitoring periods. This threshold indicates that the FEC engine is working at its limit and cannot guarantee a lossless fabric. Unlike optical transceivers, Direct Attach Copper (DAC) cables do not have Rx power, as they are electrical, making BER the primary health indicator. A marginal cable failing this threshold will cause intermittent packet retransmissions, leading to massive performance degradation in NCCL collective operations."
+  },
+  {
+    "id": "n032",
+    "domain": "d5",
+    "type": "single",
+    "question": "A System Administrator needs to change the scheduling behavior of a single GPU to use a fixed share scheduler. What command achieves this?",
+    "question_ko": "시스템 관리자가 단일 GPU의 스케줄링 동작을 fixed share 스케줄러를 사용하도록 변경해야 합니다. 어떤 명령이 이를 수행하는가?",
+    "choices": [
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwordsPerDevice=pci=<domain>:<bdf>;RmPVMRL=0x11\"",
+      "esxcli -i 0 -mig 18",
+      "nvidia-smi -i 0 -mig 1",
+      "mlxconfig -d /dev/mst/mt4123_pciconf0 set LINK_TYPE_P1=2"
+    ],
+    "choices_ko": [
+      "esxcli system module parameters set -m nvidia -p \"NVreg_RegistryDwordsPerDevice=pci=<domain>:<bdf>;RmPVMRL=0x11\"",
+      "esxcli -i 0 -mig 18",
+      "nvidia-smi -i 0 -mig 1",
+      "mlxconfig -d /dev/mst/mt4123_pciconf0 set LINK_TYPE_P1=2"
+    ],
+    "answer": [0],
+    "explanation": "Fixed Share Scheduler는 MIG 용어가 아니라, 시분할(time-sliced) vGPU가 활성화된 GPU가 가상 머신 간에 엔진 시간을 어떻게 배분할지 결정하는 NVIDIA vGPU 소프트웨어의 세 가지 스케줄링 정책(Best Effort, Equal Share, Fixed Share) 중 하나입니다. NVIDIA Virtual GPU Software User Guide에 따르면 이 정책은 nvidia 커널 모듈이 노출하는 RmPVMRL 레지스트리 키로 선택합니다. VMware ESXi에서 특정 GPU의 동작을 변경하려면 NVreg_RegistryDwordsPerDevice에 PCI domain과 bus/device/function으로 해당 단일 GPU를 지정합니다. 호스트의 모든 GPU에 적용하려면 대신 NVreg_RegistryDwords=RmPVMRL=<value>를 사용합니다. RmPVMRL=0x11이 Fixed Share Scheduler를 선택하며(예: 0x00180011은 24ms 타임슬라이스의 Fixed Share), 적용하려면 하이퍼바이저 호스트를 재부팅해야 합니다. nvidia-smi -i 0 -mig 1은 MIG 모드를 활성화할 뿐이며, 이는 GPU를 전용 SM과 메모리를 갖는 격리된 인스턴스로 물리적으로 분할하는 것이지 시분할 스케줄러 정책 선택이 아닙니다. 따라서 MIG를 fixed share와 동일시하는 것은 기술적으로 잘못되었습니다. esxcli -i 0 -mig 18은 유효한 문법이 아니며, mlxconfig 명령은 ConnectX 어댑터 포트의 링크 타입을 설정하는 것으로 GPU 스케줄링과 무관합니다.",
+    "explanation_en": "\"Fixed Share Scheduler\" is not MIG terminology — it is one of the three NVIDIA vGPU software scheduling policies (Best Effort, Equal Share, Fixed Share) that govern how a time-sliced vGPU-enabled GPU divides engine time among virtual machines. Per the NVIDIA Virtual GPU Software User Guide, the policy is selected through the RmPVMRL registry key exposed by the nvidia kernel module. To change the behavior of select GPUs on VMware ESXi, the administrator uses NVreg_RegistryDwordsPerDevice with the PCI domain and bus/device/function identifying the single GPU; to apply to all GPUs you would instead use NVreg_RegistryDwords=RmPVMRL=<value>. RmPVMRL=0x11 selects the Fixed Share Scheduler (for example 0x00180011 sets Fixed Share with a 24 ms time slice), and the hypervisor host must be rebooted for the setting to take effect. nvidia-smi -i 0 -mig 1 only enables MIG mode, which physically partitions the GPU into isolated instances with dedicated SMs and memory — it does not select a time-slicing scheduler policy. The esxcli -mig option is not valid syntax, and the mlxconfig command sets the link type of a ConnectX adapter port, unrelated to GPU scheduling."
+  },
+  {
+    "id": "n033",
+    "domain": "d4",
+    "type": "single",
+    "question": "After ClusterKit reports \"GPU-Host latency exceeds threshold,\" which NVIDIA diagnostic tool should be used to isolate hardware faults?",
+    "question_ko": "ClusterKit이 \"GPU-Host latency exceeds threshold\"를 보고한 후, 하드웨어 결함을 격리하기 위해 어떤 NVIDIA 진단 도구를 사용해야 하는가?",
+    "choices": [
+      "Re-run ClusterKit with --stress=gpu -Y 60 to extend test duration",
+      "nvidia-smi topo -m to inspect GPU topology connections",
+      "DCGM Diags dcgmi diag -r 2",
+      "ib_write_bw to measure InfiniBand bandwidth between nodes"
+    ],
+    "choices_ko": [
+      "테스트 지속 시간을 늘리기 위해 --stress=gpu -Y 60 옵션으로 ClusterKit을 재실행한다",
+      "GPU 토폴로지 연결을 점검하기 위해 nvidia-smi topo -m 을 사용한다",
+      "DCGM Diags dcgmi diag -r 2",
+      "노드 간 InfiniBand 대역폭을 측정하기 위해 ib_write_bw 를 사용한다"
+    ],
+    "answer": [2],
+    "explanation": "이 문제는 하드웨어 결함을 격리하는 진단 도구를 묻고 있으며, 그것은 DCGM Diagnostics입니다. dcgmi diag -r 2는 Medium(run level 2) 스위트를 실행하며 2분 이내에 완료되고 Software, PCIe/NVLink, GPU Memory 플러그인을 수행합니다. NVIDIA DCGM 공식 문서에 따르면 PCIe 플러그인(GPU bandwidth plugin)의 목적은 정확히 GPU와 호스트 사이의 대역폭과 지연 시간을 측정하는 것입니다. 즉 pinned 및 unpinned host-to-device / device-to-host 전송을 수행하고, 측정값을 설정 가능한 임계값과 비교하여 GPU별로 PASS/FAIL을 반환합니다. 이는 ClusterKit의 GPU-Host latency 경보와 직접 대응되며 PCIe 경로의 하드웨어 수준 문제를 확인하거나 배제해 줍니다. nvidia-smi topo -m은 GPU·CPU·NIC 간 연결 유형(PIX, PXB, PHB, NODE, SYS, NV#)을 어피니티 매트릭스로 출력하는 정적 조회 명령일 뿐 어떠한 결함도 검출하지 못하며, 결함 발견 이후 NUMA/PCIe 어피니티를 해석하는 보조 수단으로만 유용합니다. ib_write_bw는 노드 간 InfiniBand 대역폭 측정이라 GPU-Host 경로와 무관하고, ClusterKit 재실행은 보고 도구를 더 오래 돌릴 뿐 원인을 격리하지 못합니다.",
+    "explanation_en": "The question asks for a diagnostic tool that isolates hardware faults, and that is DCGM Diagnostics. dcgmi diag -r 2 runs the Medium (run level 2) suite, which completes in under two minutes and executes the Software, PCIe/NVLink, and GPU Memory plugins. Per the NVIDIA DCGM documentation, the purpose of the PCIe plugin (also called the GPU bandwidth plugin) is precisely to measure the bandwidth and latency to and from the GPUs and the host — it exercises pinned and unpinned host-to-device and device-to-host transfers, compares measurements against configurable thresholds, and returns a PASS/FAIL per GPU. That maps directly onto ClusterKit's GPU-Host latency alert. nvidia-smi topo -m is a static query printing an affinity matrix of connection types (PIX, PXB, PHB, NODE, SYS, NV#); it detects no faults and is only useful afterwards to interpret NUMA/PCIe affinity. ib_write_bw measures inter-node InfiniBand bandwidth and has nothing to do with the GPU-to-host path, and re-running the reporting tool for longer isolates nothing."
+  },
+  {
+    "id": "n034",
+    "domain": "d2",
+    "type": "single",
+    "question": "If two ports must be connected, but one is SFP and one is QSFP, for example, to connect a 25 GbE host channel adapter to a QSFP port capable of both 100 GbE and 25 GbE, which of the following solutions would best meet this requirement?",
+    "question_ko": "두 포트를 연결해야 하는데 하나는 SFP이고 다른 하나는 QSFP인 경우, 예를 들어 25 GbE HCA를 100 GbE와 25 GbE를 모두 지원하는 QSFP 포트에 연결해야 한다면, 다음 중 이 요구 사항을 가장 잘 충족하는 솔루션은 무엇인가?",
+    "choices": ["SFP Connectors", "SFP to 1G BASE-T (RJ45) adapter", "QSA Adapter"],
+    "choices_ko": ["SFP 커넥터", "SFP to 1G BASE-T (RJ45) 어댑터", "QSA 어댑터"],
+    "answer": [2],
+    "explanation": "QSA(QSFP to SFP Adapter)는 단일 레인 SFP/SFP28 트랜시버(일반적으로 10G 또는 25G)를 4레인 QSFP/QSFP28 스위치 포트에 꽂을 수 있게 해주는 기계적·전기적 브리지입니다. AI 인프라에서 이는 100G/200G 포트 전체를 낭비하거나 특수 브레이크아웃 케이블 없이 저속 관리 서버나 레거시 노드를 고속 백본 스위치에 연결하는 데 흔히 사용됩니다. QSA 어댑터는 SFP 모듈의 단일 레인을 QSFP 포트의 첫 번째 레인에 매핑합니다. 이는 링크의 신호 무결성과 지연 특성을 유지하는 패스스루 솔루션입니다. SFP 커넥터만으로는 폼팩터 차이를 메울 수 없고, SFP to 1G BASE-T 어댑터는 속도를 1G로 떨어뜨려 25GbE 요구를 충족하지 못합니다. QSA는 NVIDIA 네트워킹 환경에서 포트 밀도 불일치 문제에 대한 검증된 하드웨어 솔루션입니다.",
+    "explanation_en": "The QSA (QSFP to SFP Adapter) is a mechanical and electrical bridge that allows a single-lane SFP/SFP28 transceiver (typically 10G or 25G) to be plugged into a four-lane QSFP/QSFP28 switch port. In AI infrastructure, this is commonly used to connect low-speed management servers or legacy nodes to a high-speed backbone switch without wasting entire 100G/200G ports or requiring specialized breakout cables. The QSA adapter maps the single lane of the SFP module to the first lane of the QSFP port. This is a pass-through solution that maintains the signal integrity and latency characteristics of the link. Plain SFP connectors cannot bridge the form-factor difference, and an SFP to 1G BASE-T adapter would drop the speed to 1G, failing the 25GbE requirement."
+  },
+  {
+    "id": "n035",
+    "domain": "d3",
+    "type": "multiple",
+    "question": "You are installing the operating system as part of the initial setup for a new NVIDIA Base Command Manager (BCM) cluster. Which two of the following actions are essential for a successful OS installation on the cluster's head node? (Choose two)",
+    "question_ko": "새로운 NVIDIA Base Command Manager(BCM) 클러스터의 초기 설정 과정에서 운영 체제를 설치하고 있습니다. 클러스터의 head node에 OS를 성공적으로 설치하기 위해 필수적인 두 가지 작업은 무엇인가? (2개 선택)",
+    "choices": [
+      "Configure network switches for PXE boot to all compute nodes before installing the OS on the head node.",
+      "Download the latest BCM ISO and verify its integrity using the provided checksum, then start the installation.",
+      "Start the head node OS installation process with the system BIOS set to legacy boot mode instead of UEFI.",
+      "Set the desired time zone and configure NTP synchronization during the OS installation wizard."
+    ],
+    "choices_ko": [
+      "head node에 OS를 설치하기 전에 모든 compute node에 대한 PXE boot용 네트워크 스위치를 구성한다.",
+      "최신 BCM ISO를 다운로드하고 제공된 체크섬으로 무결성을 검증한 후 설치를 시작한다.",
+      "시스템 BIOS를 UEFI 대신 legacy boot 모드로 설정한 상태에서 head node OS 설치 프로세스를 시작한다.",
+      "OS 설치 마법사 중에 원하는 시간대를 설정하고 NTP 동기화를 구성한다."
+    ],
+    "answer": [1, 3],
+    "explanation": "head node 설정은 BCM 클러스터를 구축하는 기초 단계입니다. BCM ISO 체크섬 검증이 필수인 이유는 BCM이 커스터마이즈된 OS(RHEL 또는 Ubuntu 기반)와 Bright Cluster Manager 소프트웨어 스택을 포함하는 특수 설치 ISO로 배포되기 때문입니다. 체크섬을 검증하면 다운로드 중 손상이 없었음을 보장해 원인을 알 수 없는 설치 실패를 방지합니다. NTP 구성도 마찬가지로 중요한데, AI 클러스터는 로그 집계, 인증 토큰(LDAP/Active Directory), 여러 노드에 걸친 성능 모니터링을 위해 동기화된 시계에 크게 의존하기 때문입니다. 초기 마법사에서 NTP가 구성되지 않으면 시간 드리프트로 cmdaemon이 head node와 compute node 간 동기화에 실패할 수 있습니다. 최신 NVIDIA DGX 시스템은 UEFI 부팅을 요구하므로 Legacy 모드는 잘못되었습니다. PXE 구성은 BCM 소프트웨어가 이미 실행 중인 상태에서 head node가 관리하는 설치 후 작업입니다.",
+    "explanation_en": "Setting up the head node is the foundational step in building a BCM cluster. Verifying the BCM ISO checksum is essential because BCM is deployed via a specialized installer ISO containing the customized OS (RHEL or Ubuntu base) and the Bright Cluster Manager software stack; verifying the checksum ensures no corruption occurred during download, preventing mysterious installation failures. Configuring NTP is equally critical because AI clusters rely heavily on synchronized clocks for log aggregation, authentication tokens (LDAP/Active Directory), and performance monitoring across nodes. If NTP is not configured during the initial wizard, the resulting time drift can cause cmdaemon to fail synchronization between the head node and compute nodes. Modern NVIDIA DGX systems require UEFI boot, so Legacy mode is incorrect. PXE configuration is a post-installation task managed by the head node once BCM is already running."
+  },
+  {
+    "id": "n036",
+    "domain": "d1",
+    "type": "single",
+    "question": "During HPL execution on a DGX cluster, the benchmark fails with \"not enough memory\" errors despite sufficient physical RAM. Which HPL.dat parameter adjustment is most effective?",
+    "question_ko": "DGX 클러스터에서 HPL을 실행하는 동안, 물리적 RAM이 충분함에도 불구하고 벤치마크가 \"not enough memory\" 오류로 실패합니다. 가장 효과적인 HPL.dat 파라미터 조정은 무엇인가?",
+    "choices": [
+      "Reduce the problem size while maintaining the same block size.",
+      "Set PMAP to 1 to enable process mapping.",
+      "Increase block size to 6144 to maximize GPU utilization.",
+      "Disable double-buffering via BCAST parameter."
+    ],
+    "choices_ko": [
+      "동일한 block size를 유지하면서 problem size를 줄인다.",
+      "process mapping을 활성화하기 위해 PMAP을 1로 설정한다.",
+      "GPU 사용률을 최대화하기 위해 block size를 6144로 늘린다.",
+      "BCAST 파라미터를 통해 double-buffering을 비활성화한다."
+    ],
+    "answer": [0],
+    "explanation": "HPL은 행렬 N을 저장하기 위해 사용 가능한 GPU 메모리의 상당 부분을 할당하는 메모리 집약적 벤치마크입니다. 서버에 2TB의 물리 시스템 RAM이 있더라도 \"not enough memory\" 오류는 보통 GPU 자체의 HBM을 가리킵니다. DGX H100에서 각 GPU는 80GB의 HBM3를 갖습니다. HPL.dat에 지정된 problem size(N)가 너무 크면 행렬에 필요한 메모리가 GPU 메모리 총량을 초과합니다. 최적의 block size(NB)를 유지하면서 problem size(N)를 줄이면 문제가 GPU 메모리 한계 내에 들어가면서도 연산 유닛을 최대 성능까지 밀어붙일 수 있습니다. 실무 권장은 가용 메모리의 약 80~90%를 채우는 N이며, 100%에 맞추면 워크스페이스 부족으로 OOM이 납니다. block size를 늘리면 오히려 특정 내부 버퍼의 메모리 사용량이 증가해 문제를 악화시킬 수 있습니다. N을 줄이는 것은 클러스터 bring-up 초기 튜닝 단계에서 실행을 안정화하는 표준 절차입니다.",
+    "explanation_en": "HPL is a memory-intensive benchmark that allocates a large portion of available GPU memory to store the matrix N. While a server may have 2TB of physical system RAM, the \"not enough memory\" error usually refers to the HBM on the GPUs themselves. In a DGX H100, each GPU has 80GB of HBM3. If the problem size (N) specified in HPL.dat is too large, the required memory for the matrix exceeds the aggregate GPU memory capacity. Reducing N while maintaining the optimal block size (NB) ensures the problem fits within GPU memory limits while still pushing the computational units to peak performance. Practical guidance is to size N to fill roughly 80-90% of available memory; targeting 100% causes OOM from insufficient workspace. Increasing the block size would actually increase the memory footprint of certain internal buffers, potentially worsening the issue."
+  },
+  {
+    "id": "n037",
+    "domain": "d4",
+    "type": "single",
+    "question": "Given nvsm show healthinfo output showing \"Verify installed GPUs .... Unhealthy / Checking output of 'lspci' for expected GPUs / Missing GPU at PCI address '07:00.0'\", what insights can a system administrator gain regarding the DGX system's health?",
+    "question_ko": "nvsm show healthinfo 출력에 \"Verify installed GPUs .... Unhealthy / Checking output of 'lspci' for expected GPUs / Missing GPU at PCI address '07:00.0'\"가 표시되었습니다. 시스템 관리자는 DGX 시스템의 상태에 관해 어떤 인사이트를 얻을 수 있는가?",
+    "choices": [
+      "A GPU tray upgrade failed.",
+      "A GPU is missing on the DGX system.",
+      "A GPU driver upgrade has failed.",
+      "The system has passed the hardware health check successfully."
+    ],
+    "choices_ko": [
+      "GPU 트레이 업그레이드가 실패했다.",
+      "DGX 시스템에서 GPU 하나가 누락되었다.",
+      "GPU 드라이버 업그레이드가 실패했다.",
+      "시스템이 하드웨어 상태 점검을 성공적으로 통과했다."
+    ],
+    "answer": [1],
+    "explanation": "제시된 출력은 NVSM의 nvsm show healthinfo 결과입니다. NVSM은 DGX 시스템의 하드웨어 상태를 모니터링하고 결함을 식별하는 진단 프레임워크입니다. 이 진단에서 시스템은 Verify installed GPUs 점검이 Unhealthy를 반환했다고 보고합니다. 근본 원인을 제공하기 위해 NVSM은 lspci에서 얻은 실시간 하드웨어 열거 정보를 시스템의 알려진 Golden Configuration(펌웨어에 정의된 하드웨어 매니페스트)과 대조합니다. 명시적 오류 메시지인 \"Missing GPU at PCI address '07:00.0'\"는 시스템이 해당 PCIe 버스 주소에 GPU 모듈이 존재할 것으로 기대하지만 그 하드웨어가 응답하지 않거나 버스에서 보이지 않는다는 것을 나타냅니다. 이는 소프트웨어나 드라이버 문제가 아니라 하드웨어 결함입니다. 물리적 모듈 고장, GPU 베이스보드 해당 구간의 전력 공급 문제, 또는 PCIe 스위치 패브릭 장애로 발생할 수 있습니다. DGX는 고속 집합 통신을 위해 8개 GPU 전체에 의존하므로 하나만 누락되어도 대규모 학습에 참여할 수 없고 물리 점검 또는 GPU 트레이 교체(RMA)가 필요합니다.",
+    "explanation_en": "The output is the result of the NVSM tool's nvsm show healthinfo command. NVSM is a diagnostic framework for DGX systems that monitors hardware health and identifies faults. Here the system reports that the \"Verify installed GPUs\" check returned Unhealthy. To provide a root cause, NVSM cross-references the live hardware enumeration from lspci against the system's known Golden Configuration (the hardware manifest defined in firmware). The explicit message \"Missing GPU at PCI address '07:00.0'\" indicates that the system expects a GPU module at that specific PCIe bus address, but the hardware is not responding or visible to the bus. This is a critical hardware fault rather than a software or driver issue. It could be caused by a physical module failure, a power delivery issue to that segment of the GPU baseboard, or a failure in the PCIe switch fabric. Because the DGX relies on a full set of 8 GPUs for NCCL collectives, a single missing GPU prevents the node from participating in large-scale training, requiring physical inspection or a GPU tray replacement (RMA)."
+  },
+  {
+    "id": "n038",
+    "domain": "d1",
+    "type": "single",
+    "question": "For an NVIDIA Enterprise AI Factory with 256 GPUs, which storage solution characteristic is most critical to validate during scaling tests?",
+    "question_ko": "256개의 GPU를 갖춘 NVIDIA Enterprise AI Factory의 경우, 확장(스케일링) 테스트 중에 검증해야 할 가장 중요한 스토리지 솔루션 특성은 무엇인가?",
+    "choices": [
+      "Consistent per-node throughput >8 GiB/s.",
+      "Single-node write performance during idle clusters.",
+      "RAID rebuild times under disk failure.",
+      "Maximum 4K random read IOPS exceeding 1 million."
+    ],
+    "choices_ko": [
+      "노드당 8 GiB/s 초과의 일관된 처리량.",
+      "유휴 상태 클러스터에서의 단일 노드 쓰기 성능.",
+      "디스크 장애 시 RAID 재구축 시간.",
+      "100만을 초과하는 최대 4K 랜덤 읽기 IOPS."
+    ],
+    "answer": [0],
+    "explanation": "AI 클러스터를 256개 GPU(DGX H100 32노드)로 확장하면 스토리지 패브릭에 대규모 Incast 문제가 발생합니다. 대규모 학습 중에는 모든 노드가 거대한 데이터 배치를 동시에 자주 읽습니다. NVIDIA 레퍼런스 아키텍처(BasePOD/SuperPOD)는 고성능 학습을 위해 각 노드가 8개 GPU 전부를 포화 상태로 유지할 수 있도록 최소 처리량(흔히 8 GiB/s 이상)을 지속 유지해야 한다고 규정합니다. 스토리지가 한 노드는 고속으로 처리하지만 32개 노드 전부가 데이터를 요청할 때 병목이 생긴다면, GPU가 IO를 기다리며 유휴 상태가 되어 Scaling Efficiency가 급격히 떨어집니다. 따라서 전체 클러스터 부하 상태에서 노드당 일관된 처리량을 검증하는 것이 가장 중요한 지표입니다. IOPS는 작은 파일에는 중요하지만 최신 AI 데이터셋은 흔히 대용량 바이너리 포맷(WebDataset, TFRecord)으로 샤딩되므로 순차 처리량이 주된 병목입니다. 유휴 상태 단일 노드 성능은 동시성을 전혀 검증하지 못하고, RAID 재구축 시간은 가용성 지표이지 스케일링 성능 지표가 아닙니다.",
+    "explanation_en": "Scaling an AI cluster to 256 GPUs (32 nodes of DGX H100) creates a massive incast problem for the storage fabric. During large-scale training, every node frequently reads huge batches of data simultaneously. NVIDIA's reference architectures (BasePOD/SuperPOD) specify that for high-performance training, each node must sustain a minimum throughput — often 8 GiB/s or more — to keep all 8 GPUs saturated. If the storage system can handle one node at high speed but chokes when all 32 nodes request data, the scaling efficiency drops drastically as GPUs sit idle waiting for IO. Therefore, validating consistent per-node throughput under full cluster load is the most critical metric. While IOPS matter for small files, modern AI datasets are often sharded into large binary formats (WebDataset or TFRecord) where sequential throughput becomes the primary bottleneck. Idle single-node performance tests no concurrency at all, and RAID rebuild time is an availability metric, not a scaling-performance one."
+  },
+  {
+    "id": "n039",
+    "domain": "d2",
+    "type": "single",
+    "question": "A financial services firm is deploying an AI model for fraud detection that requires rapid inference and data retrieval across multiple sites. Which feature should their storage system prioritize?",
+    "question_ko": "한 금융 서비스 회사가 여러 사이트에 걸쳐 빠른 추론과 데이터 검색을 요구하는 사기 탐지용 AI 모델을 배포하고 있습니다. 이 회사의 스토리지 시스템은 어떤 기능을 우선시해야 하는가?",
+    "choices": [
+      "Multi-protocol data access with low latency.",
+      "High capacity with moderate speed.",
+      "Tape backup systems.",
+      "Low-cost HDD solutions."
+    ],
+    "choices_ko": [
+      "낮은 지연 시간을 갖춘 다중 프로토콜 데이터 액세스.",
+      "중간 정도의 속도를 갖춘 대용량.",
+      "테이프 백업 시스템.",
+      "저비용 HDD 솔루션."
+    ],
+    "answer": [0],
+    "explanation": "금융 서비스의 사기 탐지는 실시간 AI 워크로드입니다. 시스템은 거래 데이터를 수집하고 과거 고객 프로필을 조회하며 밀리초 단위로 추론을 수행해야 합니다. 이를 위해서는 다중 프로토콜 액세스(수집용 S3, 추론 엔진용 POSIX/NFS 등)를 지원하면서 낮은 지연 시간을 겸비한 스토리지 아키텍처가 필요합니다. 이러한 환경에서 스토리지 지연 시간은 Time to Decision에 직접 영향을 미칩니다. All-Flash 스토리지 계층은 필수인데, 기존 HDD 솔루션이나 중간 속도 시스템은 Tail Latency를 유발해 거래량이 최고조인 시간대에 사기 탐지 모델이 타임아웃되게 만들 수 있기 때문입니다. 테이프는 아카이브 매체로 실시간 추론 경로에 쓸 수 없습니다. 또한 다중 사이트 동기화는 최신 모델 가중치와 과거 데이터가 서로 다른 지리적 데이터센터 전반에서 사용 가능하도록 보장하여 고가용성과 지역화된 추론을 지원합니다.",
+    "explanation_en": "Fraud detection in financial services is a real-time AI workload. The system must ingest transaction data, retrieve historical customer profiles, and perform inference in milliseconds. This requires a storage architecture supporting multi-protocol access (such as S3 for ingestion and POSIX/NFS for inference engines) combined with low latency. In these environments, storage latency directly impacts the time to decision. An all-flash tier is mandatory, as traditional HDD solutions or moderate-speed systems introduce tail latency that can cause the fraud detection model to time out during peak transaction windows. Tape is an archival medium and cannot serve a real-time inference path. Additionally, multi-site synchronization ensures the latest model weights and historical data are available across different geographic data centers for high availability and localized inference."
+  },
+  {
+    "id": "n040",
+    "domain": "d1",
+    "type": "single",
+    "question": "A system administrator needs to validate a GPU-based server and ensure that no errors occur under load. What command should be used?",
+    "question_ko": "시스템 관리자가 GPU 기반 서버를 검증하고 부하 상태에서 오류가 발생하지 않는지 확인해야 합니다. 어떤 명령을 사용해야 하는가?",
+    "choices": [
+      "nvsm dump health",
+      "stress-test --usage",
+      "nvsm show health",
+      "nvsm stress-test"
+    ],
+    "choices_ko": [
+      "nvsm dump health",
+      "stress-test --usage",
+      "nvsm show health",
+      "nvsm stress-test"
+    ],
+    "answer": [3],
+    "explanation": "요구 사항은 서버를 검증하고 부하 상태에서 오류가 발생하지 않음을 확인하는 것이므로, 정적 상태 조회가 아니라 실제 스트레스 테스트가 필요합니다. nvsm stress-test는 NVSM CLI에 실제로 존재하며 문서화된 명령입니다. NVSM User Guide는 문법을 nvsm stress-test [--usage] [-h|--help] [-force] [-no-prompt] [<test>] [DURATION]로 명시하고, \"Performing a Stress Test\" 절에서 이 명령이 지정된 시간 동안 GPU, PCIe 링크, DIMM, 스토리지 드라이브, CPU, 네트워크 카드를 대용량 워크로드로 동시에 스트레스한 뒤 컴포넌트별 통과/실패 요약을 제공한다고 설명합니다. nvsm show health는 구성 요소의 특정 시점 상태를 정적으로 점검할 뿐 어떠한 부하도 가하지 않으므로 스트레스 상황에서 오류가 없음을 입증할 수 없습니다. nvsm dump health는 지원 에스컬레이션을 위해 로그와 텔레메트리를 헬스 리포트 파일로 수집하는 명령으로 역시 부하를 생성하지 않습니다. stress-test --usage는 nvsm 접두어가 빠져 있어 유효한 명령이 아니며, --usage는 실제 nvsm stress-test 명령의 사용법 메시지를 출력하는 플래그일 뿐입니다.",
+    "explanation_en": "The requirement is to validate the server and confirm that no errors occur under load, which calls for an actual stress test rather than a static status query. nvsm stress-test is a real, documented command in the NVSM CLI: the NVSM User Guide lists the syntax as nvsm stress-test [--usage] [-h|--help] [-force] [-no-prompt] [<test>] [DURATION], and its \"Performing a Stress Test\" section explains that the command simultaneously stresses the GPUs, PCIe links, DIMMs, storage drives, CPUs, and network cards with heavy workloads for the specified duration, then reports a per-component pass/fail summary. nvsm show health performs a static point-in-time health check and does not apply any load, so it cannot demonstrate that the system is error-free under stress. nvsm dump health collects logs and telemetry into a health report file for support escalation — again, no load is generated. stress-test --usage is missing the nvsm prefix and is therefore not a valid command; --usage is merely the flag that prints the usage message for the real nvsm stress-test command."
+  }
+]
